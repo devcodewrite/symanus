@@ -1,10 +1,13 @@
 {
-    "name": "laravel/laravel",
+    "name": "symanus/symanus",
+    "version": "1.0",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "Symanus web application. School management system for schools at all educational levels.",
     "keywords": [
-        "framework",
-        "laravel"
+        "school management system",
+        "laravel",
+        "education system",
+        "management system"
     ],
     "license": "MIT",
     "require": {
@@ -12,6 +15,7 @@
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "laravel/breeze": "1.9.2",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0"
     },
