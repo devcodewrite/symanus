@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Permission;
 use App\Models\UserRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -24,6 +25,8 @@ class UpdateUsersTable extends Migration
             $table->string('phone', 14)->nullable()->unique('phone');
             $table->tinyText('avatar')->nullable();
             $table->foreignIdFor(UserRole::class)->constrained();
+            $table->foreignIdFor(Permission::class)->nullable()->constrained();
+            $table->enum('rstatus', ['open', 'close'])->default('open');
             $table->softDeletes();
         });
     }
@@ -40,6 +43,7 @@ class UpdateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->nullable(false)->change();
             $table->dropConstrainedForeignId('user_role_id');
+            $table->dropConstrainedForeignId('permission_id');
             $table->dropSoftDeletes();
         });
         Schema::dropColumns('users', ['username','firstname', 'surname', 'phone', 'avatar']);

@@ -38,4 +38,36 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the staff associated with the user.
+     */
+    public function staff()
+    {
+        return $this->hasOne(Staff::class);
+    }
+
+    /**
+     * Get the guardian associated with the user.
+     */
+    public function guardian()
+    {
+        return $this->hasOne(Guardian::class);
+    }
+
+    /**
+     * Get the user role that owns the user.
+     */
+    public function userRole()
+    {
+        return $this->belongsTo(UserRole::class);
+    }
+
+    /**
+     * Get the permission that owns the user.
+     */
+    public function permission()
+    {
+        return $this->belongsTo(Permission::class);
+    }
 }

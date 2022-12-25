@@ -2,21 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserRole extends Model
+class Setting extends Model
 {
+    use HasFactory;
 
-   /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'title', 'permission_id'
+        'key', 'value'
     ];
 
-    /**
+     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
@@ -31,20 +33,4 @@ class UserRole extends Model
      */
     protected $casts = [
     ];
-
-    /**
-    * Get the permission that owns the user role.
-    */
-    public function permission()
-    {
-        return $this->belongsTo(Permission::class);
-    }
-
-    /**
-     * Get the users for the user role.
-     */
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
 }
