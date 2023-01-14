@@ -3,10 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guardian;
+use DataTables;
+use DB;
 use Illuminate\Http\Request;
+use Response;
 
 class GuardianController extends Controller
 {
+    /**
+     * Display a listing of resource for tadatables
+     * @return \Iluminate\Http\Response
+     */
+    public function datatable()
+    {
+        return DataTables::of(Guardian::with('user:id,username,firstname,surname,email,rstate'))->make(true);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,6 +27,7 @@ class GuardianController extends Controller
     public function index()
     {
         //
+        return view('guardians.list');
     }
 
     /**
@@ -25,6 +38,7 @@ class GuardianController extends Controller
     public function create()
     {
         //
+        return view('guardians.add');
     }
 
     /**
@@ -81,5 +95,44 @@ class GuardianController extends Controller
     public function destroy(Guardian $guardian)
     {
         //
+    }
+
+     /**
+     * Display a listing of the resource for select2.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function select2(Request $request)
+    {
+        //
+        if ($request->ajax()) {
+
+            $term = trim($request->get('term',''));
+            $take = 10;
+            $page = $request->get('page', 1);
+            $skip = ($page - 1 )*$take;
+
+            $total = Guardian::where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")->count();
+            
+            $guardians = Guardian::select(['id', DB::raw('concat(firstname ," ", surname) as text'), 'avatar', 'sex'])
+                        ->where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")
+                        ->orderBy('firstname', 'asc')
+                        ->skip($skip)
+                        ->take($take)
+                        ->get();
+            $out = [
+                'results' => $guardians,
+                'pagination' => [
+                   'more' => ($skip + $take < $total),
+                   'page' => intval($page),
+                   'totalRows' => $total,
+                   'totalPages' => intval($total/$take + ($total%$take > 0?1:0))
+                ]
+            ];
+
+            return Response::json($out);
+        }
+
+       return Response::json(['message' => 'Invalid request data']);
     }
 }

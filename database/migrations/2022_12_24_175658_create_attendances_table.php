@@ -17,7 +17,7 @@ class CreateAttendancesTable extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->date('adate')->unique('adate');
+            $table->date('adate')->index('adate');
             $table->foreignIdFor(Classes::class, 'class_id')->constrained();
             $table->foreignIdFor(User::class)->constrained();
             $table->enum('status', ['draft', 'submitted', 'approved', 'rejected'])->default('draft');

@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Classes;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class StudentFactory extends Factory
 {
@@ -13,8 +16,15 @@ class StudentFactory extends Factory
      */
     public function definition()
     {
-        return [
-            //
-        ];
+        $sex = Arr::random(['male', 'female']);
+        $class = Classes::inRandomOrder()->first();
+
+            return [
+                'firstname' => $this->faker->firstName($sex),
+                'surname' => $this->faker->lastName(),
+                'sex' => $sex,
+                'class_id' => $class->id,
+                'studentid' => Str::random(10),
+            ];
     }
 }

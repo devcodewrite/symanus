@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +18,7 @@ class CreateClassesTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('level')->unique('level');
-            $table->foreignIdFor(Staff::class)->nullable()->constrained();
+            $table->foreignIdFor(User::class)->nullable()->constrained();
             $table->softDeletes();
             $table->timestamps();
         });

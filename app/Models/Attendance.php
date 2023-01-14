@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Attendance extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes are mass assignable
@@ -31,6 +32,8 @@ class Attendance extends Model
      * @var array
      */
     protected $casts = [
+        'created_at' => 'datetime:d/m/y h:i a',
+        'updated_at' => 'datetime:d/m/y h:i a'
     ];
 
     /**
@@ -52,8 +55,16 @@ class Attendance extends Model
     /**
     * The students that belong to the attendance.
     */
-    public function attendances()
+    public function students()
     {
         return $this->belongsToMany(Student::class, 'attendance_students');
+    }
+
+     /**
+    * The students that belong to the attendance.
+    */
+    public function checklist()
+    {
+        return $this->hasMany(AttendanceStudent::class, 'attendance_id');
     }
 }

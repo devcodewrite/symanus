@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
@@ -14,7 +15,8 @@ class Payment extends Model
      * @var array
      */
     protected $fillable = [
-        'paid_at', 'student_id', 'fee_type_id', 'amount', 'paid_by', 'user_id'
+        'paid_at', 'student_id', 'fee_type_id', 'amount', 'paid_by', 'user_id', 'bill_id',
+        'create_at','updated_at'
     ];
 
      /**
@@ -31,6 +33,8 @@ class Payment extends Model
      * @var array
      */
     protected $casts = [
+        'created_at' => 'datetime:d/m/y h:i a',
+        'updated_at' => 'datetime:d/m/y h:i a'
     ];
 
     /**
@@ -48,7 +52,6 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 
     /**
     * Get the fee type that owns the payment.

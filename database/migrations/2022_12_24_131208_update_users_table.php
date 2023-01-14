@@ -22,11 +22,12 @@ class UpdateUsersTable extends Migration
             $table->string('username')->unique('username');
             $table->string('firstname');
             $table->string('surname');
+            $table->enum('sex', ['male', 'female', 'other'])->default('male');
             $table->string('phone', 14)->nullable()->unique('phone');
             $table->tinyText('avatar')->nullable();
             $table->foreignIdFor(UserRole::class)->constrained();
             $table->foreignIdFor(Permission::class)->nullable()->constrained();
-            $table->enum('rstatus', ['open', 'close'])->default('open');
+            $table->enum('rstate', ['open', 'close'])->default('open');
             $table->softDeletes();
         });
     }
@@ -41,11 +42,10 @@ class UpdateUsersTable extends Migration
         // remove changes
         Schema::table('users', function(Blueprint $table){
             $table->string('name');
-            $table->string('email')->nullable(false)->change();
             $table->dropConstrainedForeignId('user_role_id');
             $table->dropConstrainedForeignId('permission_id');
             $table->dropSoftDeletes();
         });
-        Schema::dropColumns('users', ['username','firstname', 'surname', 'phone', 'avatar']);
+        Schema::dropColumns('users', ['username','firstname', 'surname', 'phone', 'avatar', 'sex']);
     }
 }

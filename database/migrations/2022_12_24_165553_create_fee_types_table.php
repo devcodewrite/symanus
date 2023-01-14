@@ -16,6 +16,7 @@ class CreateFeeTypesTable extends Migration
         Schema::create('fee_types', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->enum('status', ['open', 'close'])->default('open');
             $table->softDeletes();
             $table->timestamps();
         });

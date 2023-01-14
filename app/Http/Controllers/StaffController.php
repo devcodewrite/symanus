@@ -3,10 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Staff;
+use DataTables;
 use Illuminate\Http\Request;
 
 class StaffController extends Controller
 {
+    
+    /**
+     * Display a listing of resource for tadatables
+     * @return \Iluminate\Http\Response
+     */
+    public function datatable()
+    {
+        return DataTables::of(Staff::with('user:id,username,firstname,surname,email,rstate'))->make(true);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,6 +25,7 @@ class StaffController extends Controller
     public function index()
     {
         //
+        return view('staffs.list');
     }
 
     /**
@@ -25,6 +36,7 @@ class StaffController extends Controller
     public function create()
     {
         //
+        return view('staffs.add');
     }
 
     /**

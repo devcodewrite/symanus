@@ -3,10 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Semester;
+use DataTables;
 use Illuminate\Http\Request;
 
 class SemesterController extends Controller
 {
+    /**
+     * Display a listing of resource for tadatables
+     * @return \Iluminate\Http\Response
+     */
+    public function datatable()
+    {
+        return DataTables::of(Semester::all())->make(true);
+    }
+
     /**
      * Display a listing of the resource.
      *

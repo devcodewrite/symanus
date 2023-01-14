@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FeeType extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +16,8 @@ class FeeType extends Model
      * @var array
      */
     protected $fillable = [
-        'title'
+        'title',
+        'status'
     ];
 
      /**
@@ -32,6 +34,8 @@ class FeeType extends Model
      * @var array
      */
     protected $casts = [
+        'created_at' => 'datetime:d/m/y h:i a',
+        'updated_at' => 'datetime:d/m/y h:i a'
     ];
 
     /**

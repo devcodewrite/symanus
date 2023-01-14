@@ -31,6 +31,8 @@ class AttendanceStudent extends Model
      * @var array
      */
     protected $casts = [
+        'created_at' => 'datetime:d/m/y h:i a',
+        'updated_at' => 'datetime:d/m/y h:i a'
     ];
 
      /**

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Student;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class StudentSeeder extends Seeder
 {
@@ -14,10 +14,6 @@ class StudentSeeder extends Seeder
      */
     public function run()
     {
-        //
-        DB::table('students')->insert([
-            ['firstname' => 'Fred','surname' => 'Mensah', 'studentid' => rand(22120000,22129999),'sex' => 'male', 'class_id' => 1],
-            ['firstname' => 'Pual', 'surname' => 'Mensah', 'studentid' => rand(22120000,22129999), 'sex' => 'male', 'class_id' => 2]
-        ]);
+       Student::factory()->count(200)->create();
     }
 }

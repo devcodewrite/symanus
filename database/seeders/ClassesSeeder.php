@@ -16,8 +16,8 @@ class ClassesSeeder extends Seeder
     {
         //
         DB::table('classes')->insert([
-            ['name' => 'CLASS ONE','level' => 0, 'staff_id' => 1],
-            ['name' => 'CLASS TWO', 'level' => 1, 'staff_id' => 2]
+            ['name' => 'CLASS ONE','level' => 0, 'user_id' => 1],
+            ['name' => 'CLASS TWO', 'level' => 1, 'user_id' => 1]
         ]);
     }
 }

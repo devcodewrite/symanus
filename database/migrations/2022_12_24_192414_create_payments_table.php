@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Bill;
 use App\Models\FeeType;
 use App\Models\Student;
 use App\Models\User;
@@ -22,6 +23,7 @@ class CreatePaymentsTable extends Migration
             $table->decimal('amount');
             $table->date('paid_at');
             $table->foreignIdFor(FeeType::class)->constrained();
+            $table->foreignIdFor(Bill::class)->constrained();
             $table->string('paid_by')->nullable();
             $table->foreignIdFor(User::class)->constrained();
             $table->timestamps();

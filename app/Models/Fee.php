@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Fee extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes are mass assignable
      * @var array
      */
     protected $fillable = [
-        'description', 'class_id', 'rstatus'
+        'description', 'class_id', 'rstatus', 'fee_type_id'
     ];
 
      /**
@@ -31,6 +32,8 @@ class Fee extends Model
      * @var array
      */
     protected $casts = [
+        'created_at' => 'datetime:d/m/y h:i a',
+        'updated_at' => 'datetime:d/m/y h:i a'
     ];
 
      /**
@@ -39,5 +42,13 @@ class Fee extends Model
     public function class()
     {
         return $this->belongsTo(Classes::class, 'class_id');
+    }
+    
+     /**
+     * Get the fee type that owns the fee.
+     */
+    public function feeType()
+    {
+        return $this->belongsTo(FeeType::class, 'fee_type_id');
     }
 }

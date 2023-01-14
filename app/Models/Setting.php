@@ -4,10 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Setting extends Model
 {
     use HasFactory;
+
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'key';
 
     /**
      * The attributes that are mass assignable.
@@ -33,4 +41,10 @@ class Setting extends Model
      */
     protected $casts = [
     ];
+
+    public function getValue($key = '', $default='')
+    {
+        $data = $this->find($key);
+        return $data?$data->value:$default;
+    }
 }

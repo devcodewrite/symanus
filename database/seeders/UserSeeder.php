@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
             'firstname' => 'Super',
             'surname' => 'Administrator',
             'username' => 'admin',
+            'sex' => 'male',
             'email' => 'admin@allghanaschools.com',
             'password' => Hash::make('pass'),
             'user_role_id' => 1,
