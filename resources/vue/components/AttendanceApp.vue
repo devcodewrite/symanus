@@ -160,6 +160,8 @@ export default {
                     Swal.fire({
                       icon: "success",
                       text: "Attendance submitted successfully!",
+                    }).then(val => {
+                      location.reload();
                     });
                   } else {
                     Swal.fire({

@@ -134,8 +134,9 @@ class UserController extends Controller
             'user_role_id' => $request->user_role_id,
         ]);
         event(new Registered($user));
-
         if($user){
+            $user->sendEmailVerificationNotification();
+            
             $out = [
                 'data' => $user,
                 'message' => 'user created successfully!',
