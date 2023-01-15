@@ -17,6 +17,8 @@ class CreateFeeTypesTable extends Migration
             $table->id();
             $table->string('title');
             $table->enum('status', ['open', 'close'])->default('open');
+            $table->enum('bill_ex_st_affiliation',['staffed', 'non-staffed'])->nullable();
+            $table->enum('bill_ex_st_transit',['walk', 'bus'])->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
