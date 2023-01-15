@@ -234,6 +234,9 @@ class UserController extends Controller
         }
         $user->fill($data);
 
+        if($user->isDirty(['user_role_id'])){
+            
+        }
         if($user->save()){
             $out = [
                 'data' => $user,

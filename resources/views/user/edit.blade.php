@@ -34,7 +34,7 @@
                     <h5 class="text-cyan-600">{{ isset($user) ? 'Edit User' : 'New User' }}</h5>
                 </div>
                 <div class="w-full">
-                    <div aria-label="formbody" class="mt-6 px-6 py-4 grid md:grid-cols-2 gap-6 overflow-hidden">
+                    <div aria-label="formbody" class="mt-6 px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- User first Name -->
                         <div class="w-full field">
                             <x-label for="firstname" :value="__('User First Name')" />
@@ -92,13 +92,13 @@
                             </x-select>
                         </div>
                          <!-- User ID -->
-                         <div class="w-full field row-start-4">
+                         <div class="w-full field md:row-start-4">
                             <x-label for="username" :value="__('Username/ID')" />
                             <x-input id="username" class="block w-full" type="text" name="username" required
                                 :value="old('username', isset($user) ? $user->username : '')" placeholder="Enter the {{ __('User ID') }}" />
                         </div>
                         @if (!isset($user))
-                            <div class="w-full field row-start-4">
+                            <div class="w-full field md:row-start-4">
                                 <x-label for="password" :value="__('Login Password')" />
                                 <x-input id="password" class="block w-full" type="password" name="password" required
                                     placeholder="Enter the {{ __('User Password') }}" />
@@ -106,7 +106,7 @@
                         @endif
 
                         <!-- User Avatar -->
-                        <div class="w-full flex flex-col md:flex-row gap-3 row-start-5">
+                        <div class="w-full flex flex-col md:flex-row gap-3 md:row-start-5">
                             <div class="w-24">
                                 <img src="{{ isset($user) ? $user->getAvatar() : asset('img/no-image.png') }} "
                                     class="shadow-md bg-white-100 p-1 w-24 avatar-placeholder" alt="User Photo" />
