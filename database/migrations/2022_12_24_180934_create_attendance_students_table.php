@@ -16,8 +16,8 @@ class CreateAttendanceStudentsTable extends Migration
     public function up()
     {
         Schema::create('attendance_students', function (Blueprint $table) {
-            $table->foreignIdFor(Attendance::class)->primary()->constrained();
-            $table->foreignIdFor(Student::class)->primary()->constrained();
+            $table->foreignIdFor(Attendance::class)->constrained();
+            $table->foreignIdFor(Student::class)->constrained();
             $table->enum('status', ['present', 'absent']);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
