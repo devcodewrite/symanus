@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             StaffSeeder::class,
             ClassesSeeder::class,
             StudentSeeder::class,
+            ModuleSeeder::class,
+            AddRanApiTokenSeeder::class,
         ]);
        
     }
