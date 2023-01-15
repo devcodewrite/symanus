@@ -5,7 +5,7 @@
     <style type="text/css">
         .st0 {
             fill: none;
-            stroke: #000000;
+            stroke: #c6c4c4;
             stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
@@ -14,7 +14,7 @@
 
         .st1 {
             fill: none;
-            stroke: #000000;
+            stroke: #b1aeae;
             stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
@@ -24,7 +24,7 @@
 
         .st2 {
             fill: none;
-            stroke: #000000;
+            stroke: #807f7f;
             stroke-width: 2;
             stroke-linejoin: round;
             stroke-miterlimit: 10;

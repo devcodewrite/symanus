@@ -46,8 +46,8 @@
                                 <option value=""></option>
                                 @for ($i = 0; $i < 10; $i++)
                                     <option
-                                    value="{{ old('level', isset($class)?$class->level:$i) }}" 
-                                    {{ old('level', isset($class)?$class->level:'')===$i?'selected':'' }}>
+                                    value="{{ $i }}" 
+                                    {{  isset($class)?$class->level===$i?'selected':'' }}>
                                     level {{ $i }} </option>
                                 @endfor
                             </x-select>

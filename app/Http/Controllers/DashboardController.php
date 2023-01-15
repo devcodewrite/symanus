@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\AttendanceStudent;
+use App\Models\Bill;
 use App\Models\Classes;
 use App\Models\Course;
 use App\Models\Fee;
@@ -39,6 +40,7 @@ class DashboardController extends Controller
             'staff' => new Staff(),
             'class' => new Classes(),
             'payment' => new Payment(),
+            'bill' => new Bill(),
             'module' => new Module(),
         ];
 

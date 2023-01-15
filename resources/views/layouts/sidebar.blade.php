@@ -218,7 +218,7 @@
                     <x-svg.course />
                 </x-slot>
             </x-sidebar-nav-link>
-            <x-sidebar-nav-link title="Settings" url="{{ route('settings.index') }}">
+            <x-sidebar-nav-link title="Settings">
                 <x-slot name="icon">
                     <x-svg.setting />
                 </x-slot>
