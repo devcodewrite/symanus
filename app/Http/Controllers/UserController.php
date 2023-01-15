@@ -89,7 +89,7 @@ class UserController extends Controller
         $rules = [
             'firstname' => ['required', 'string', 'max:45'],
             'surname' => ['required', 'string', 'max:45'],
-            'username' => ['required', 'string', 'unique:users'],
+            'username' => ['required', 'email', 'unique:users'],
             'sex' => ['required', 'string', 'in:male,female,other'],
             'phone' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -195,7 +195,7 @@ class UserController extends Controller
         $rules = [
             'firstname' => ['nullable', 'string', 'max:45'],
             'surname' => ['nullable', 'string', 'max:45'],
-            'username' => ['nullable', 'string', 'max:45'],
+            'username' => ['nullable', 'email', 'max:45'],
             'sex' => ['nullable', 'string', 'in:male,female,other'],
             'password' => ['nullable', Password::defaults()],
             'user_role_id' => ['nullable', 'integer', 'exists:user_roles,id'],
