@@ -18,7 +18,7 @@
     @endsection
     <!-- Content -->
     <div class="w-full px-4 sm:px-6 md:px-8 lg:pl-72 py-5">
-        <form novalidate class="class-details-form"
+        <form novalidate class="fee-details-form"
             action="{{ isset($fee) ? route('fees.update', ['fee' => $fee->id]) : route('fees.store') }} ">
             @csrf
             @if (isset($fee))
@@ -30,7 +30,7 @@
             <x-input id="id" type="hidden" name="id" :value="old('id', isset($fee) ? $fee->id : '')" />
             <div class="p-5 bg-white rounded-5 w-full mb-5 divide-y divide-slate-300">
                 <div class="flex py-5 mb-5">
-                    <x-svg.class class="flex-shrink-0 mx-3 overflow-visible h-5 w-5 text-gray-400 dark:text-gray-600" />
+                    <x-svg.payment class="flex-shrink-0 mx-3 overflow-visible h-5 w-5 text-gray-400 dark:text-gray-600" />
                     <h5 class="text-cyan-600">{{ isset($fee) ? 'Edit Fee' : 'New Fee' }}</h5>
                 </div>
                 <div class="w-full">
