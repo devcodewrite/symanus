@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\Student;
 use Illuminate\Database\Seeder;
 use Database\Seeders\UserRoleSeeder;
@@ -18,12 +19,11 @@ class DatabaseSeeder extends Seeder
     {
         // add default super admin user
         $this->call([
+            ModuleSeeder::class,
+            SettingSeeder::class,
+            PermissionSeeder::class,
             UserRoleSeeder::class,
             UserSeeder::class,
-            StaffSeeder::class,
-            ClassesSeeder::class,
-            StudentSeeder::class,
-            ModuleSeeder::class,
             AddRanApiTokenSeeder::class,
         ]);
        
