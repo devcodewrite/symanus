@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Attendance;
+use App\Models\AttendanceStudent;
+use App\Observers\AttendanceObserver;
+use App\Observers\AttendanceStudentObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,6 +31,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Attendance::observe(AttendanceObserver::class);
     }
 }

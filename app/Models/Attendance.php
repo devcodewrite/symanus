@@ -59,12 +59,30 @@ class Attendance extends Model
     {
         return $this->belongsToMany(Student::class, 'attendance_students');
     }
-
+   
      /**
     * The students that belong to the attendance.
     */
     public function checklist()
     {
         return $this->hasMany(AttendanceStudent::class, 'attendance_id');
+    }
+
+    /**
+    * The students that belong to the attendance.
+    */
+    public function absentStudents()
+    {
+        return 
+            $this->belongsToMany(Student::class, 'attendance_students')
+            ->where('attendance_students.status', 'absent');
+    }
+
+    /**
+    * The guardians that belong to the attendance.
+    */
+    public function studentGuardians()
+    {
+        return $this->hasMany(Guardian::class, 'attendance_students');
     }
 }

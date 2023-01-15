@@ -2,9 +2,8 @@
 
 namespace App\Notifications;
 
-include_once (__DIR__.'../../../../lib/Zenoph/Notify/AutoLoader.php');
+require (__DIR__.'../../../lib/Zenoph/Notify/AutoLoader.php');
 
-use App\Models\Notification as ModelsNotification;
 use Zenoph\Notify\Enums\AuthModel;
 use Zenoph\Notify\Request\NotifyRequest;
 use Zenoph\Notify\Request\SMSRequest;
@@ -32,12 +31,8 @@ class SMSChannel
         } else {
             $id = $notifiable->getKey();
         }
-
         if(method_exists($notification, 'toSMS')){
             return $this->sendSMS($notifiable, $notification);
-        }
-        if(method_exists($notification, 'toArray')){
-            return $this->saveToDB($notifiable, $notification);
         }
         return false;
     }
@@ -70,10 +65,10 @@ class SMSChannel
             $smsReq->setMessageType(TextMessageType::TEXT);
             
             // add message destinations. 
-            if(typeof($sms->destinations) === 'string') 
+            if(gettype($sms->destinations) === 'string') 
                 $smsReq->adddestination($sms->destinations);
             
-            if(typeof($sms->destinations) === 'array')
+            if(gettype($sms->destinations) === 'array')
                  $result->destination_count =$smsReq->addDestinationsFromCollection($sms->destinations);
             
                  // submit must be after the loop
@@ -93,16 +88,5 @@ class SMSChannel
             $result->status = false;
             $result->message =  $ex->getMessage();
         }
-    }
-
-     /**
-     * Save the given sms to database.
-     *
-     * @param  mixed  $notifiable
-     * @param  mixed $notification
-     * @return object
-     */
-    private function saveToDB($notifiable, Notification $notification){
-        return ModelsNotification::createOrFail($notification->toArray($notifiable));
     }
 }

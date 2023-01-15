@@ -235,13 +235,10 @@ class UserController extends Controller
         }
         $user->fill($data);
 
-        if($user->isDirty(['user_role_id'])){
-            
-        }
         if($user->save()){
             $out = [
                 'data' => $user,
-                'message' => 'user created successfully!',
+                'message' => 'user updated successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];

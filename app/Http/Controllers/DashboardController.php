@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\AttendanceStudent;
 use App\Models\Classes;
 use App\Models\Course;
 use App\Models\Fee;
@@ -13,7 +14,9 @@ use App\Models\Setting;
 use App\Models\Staff;
 use App\Models\Student;
 use App\Models\User;
+use App\Notifications\StudentAbsent;
 use Illuminate\Http\Request;
+use Notification;
 
 class DashboardController extends Controller
 {
@@ -24,7 +27,7 @@ class DashboardController extends Controller
      */
     public function show()
     {
-        
+       
         $data = [
             'setting' => new Setting(),
             'user' => new User(),

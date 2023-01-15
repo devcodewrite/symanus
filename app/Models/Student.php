@@ -6,10 +6,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 class Student extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Notifiable;
 
     /**
      * The attributes that are mass assignable
@@ -17,7 +18,7 @@ class Student extends Model
      */
     protected $fillable = [
         'studentid', 'firstname','class_id', 'surname', 'sex', 'address', 'dateofbirth', 'avatar',
-        'rstatus', 'admitted_at', 'transit', 'affiliation', 'linked_files', 
+        'rstatus', 'admitted_at', 'transit', 'affiliation', 'linked_files', 'guardian_id',
     ];
 
      /**

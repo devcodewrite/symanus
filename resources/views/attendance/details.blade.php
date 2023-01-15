@@ -65,7 +65,7 @@
                                 <div class="item-end">
                                     <span
                                         class="uppercase py-2 px-4 rounded text-white font-semibold shadow-md
-                                         {{ ['draft' => 'bg-yellow-600', 'approved' => 'bg-green-600', 'sumbitted' => 'bg-sky-600', 'rejected' => 'bg-red-600'][$attendance->status] }}">{{ $attendance->status }}</span>
+                                         {{ ['draft' => 'bg-yellow-600', 'approved' => 'bg-green-600', 'submitted' => 'bg-sky-600', 'rejected' => 'bg-red-600'][$attendance->status] }}">{{ $attendance->status }}</span>
                                 </div>
                             </div>
                             <div class="flex flex-col w-full divide-y divide-slate-300">
@@ -83,11 +83,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex flex-row gap-3 pt-5">
+                        <div class="md:flex md:flex-row grid grid-cols-3 items-end gap-3 pt-5">
                             @if ($attendance->status === 'rejected' || $attendance->status === 'submitted')
-                                <x-a-button-p class="py-3.5 max-w-fit approve">
+                                <x-a-button-w class="py-3.5 max-w-fit approve">
                                     {{ __('Approve') }}
-                                </x-a-button-p>
+                                </x-a-button-w>
                                 <x-a-button-p class="py-3.5 max-w-fit draft">
                                     {{ __('Move to Draft') }}
                                 </x-a-button-p>
@@ -100,9 +100,9 @@
                             @endif
 
                             @if ($attendance->status === 'approved' || $attendance->status === 'submitted')
-                                <x-a-button-p class="ml-3 py-3.5 max-w-fit reject">
+                                <x-a-button-r class="ml-3 py-3.5 max-w-fit reject">
                                     {{ __('Reject') }}
-                                </x-a-button-p>
+                                </x-a-button-r>
                             @endif
                             <x-a-button-p class="py-3.5 max-w-fit" :href="route('attendances.edit', ['attendance' => $attendance->id])">
                                 {{ __('Modify') }}
@@ -150,6 +150,7 @@
                             </div>
                             <div class="pt-5">
                                 <p class="alert-processing">Processing...</p>
+                                <div class="overflow-x-auto p-1">
                                 <table class="dt-related-students display w-full"
                                     data-attendance-id="{{ $attendance->id }}">
                                     <thead class="uppercase">
@@ -167,6 +168,7 @@
                                         </tr>
                                     </thead>
                                 </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -178,6 +180,7 @@
     <!-- End Content -->
     @section('script')
         <script src="{{ asset('js/attendance/related-students.js') }} " defer></script>
+        <script src="{{ asset('js/attendance/details.js') }} " defer></script>
     @endsection
 
 </x-app-layout>

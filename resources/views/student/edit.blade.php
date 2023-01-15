@@ -111,7 +111,7 @@
                                 placeholder="Select the guardian">
                                 @if (isset($student->gaurdian))
                                     <option value="{{ $student->guardian_id }} " selected>
-                                        {{ $student->guardian->firstname . ' ' . $student->guardian->surname }}@{{ $student - > guardian - > phone }}
+                                        {{ $student->guardian->firstname . ' ' . $student->guardian->surname }}@{{ $student ->guardian->phone }}
                                     </option>
                                 @endif
                             </x-select>

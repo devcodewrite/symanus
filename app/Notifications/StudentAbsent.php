@@ -2,24 +2,24 @@
 
 namespace App\Notifications;
 
-use App\Broadcasting\SmsChannel;
+use App\Models\Attendance;
 use App\Models\Setting;
+use Hash;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
 class StudentAbsent extends Notification
 {
     use Queueable;
-
-    private $guardian;
+    public $attendance;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Attendance $of)
     {
-        //
+        $this->attendance = $of;
     }
 
     /**
@@ -32,20 +32,22 @@ class StudentAbsent extends Notification
     {
         return ['sms'];
     }
-
+   
     public function toSMS ($notifiable) 
     {
-       
+        if(!$notifiable->guardian) return false;
         return (new SMSMessage())
             ->message($this->makeMessage($notifiable))
-            ->destinations($this->guardian->phone);
+            ->destinations($notifiable->guardian->phone);
     }
 
     public function toArray ($notifiable) {
+        if(!$notifiable->guardian) return null;
+
         return [
-            'guardian_id' => $this->id,
+            'id' => Hash::make(uniqid()),
             'message' => $this->makeMessage($notifiable),
-            'destinations' => $this->guardian->phone,
+            'destinations' => $notifiable->guardian->phone,
         ]; // leave empty if you dont understand it
     }
 
@@ -55,9 +57,11 @@ class StudentAbsent extends Notification
         $school_name = $school?$school->value:'School';
         $school = Setting::find('school_phone');
         $school_phone = $school?$school->value:'0246092155';
+        $firstname =$notifiable->firstname;
+        $surname = $notifiable->surname;
 
-        return "{$notifiable->firstname} {$notifiable->surname} is absent from $school_name on "
-                .now('Africa/Accra')->format('d/m/y')
-                .".Kindly call school on: $school_phone to confirm this claim. Thank you.\n\nPowered by CODEWRITE | www.codewrite.org";
+        return "$firstname $surname is absent from $school_name on "
+                .date('d/m/y',strtotime($this->attendance->adate))
+                .".Kindly call $school_name on: $school_phone to confirm this claim. Thank you.\n\nPowered by CODEWRITE | www.codewrite.org";
     }
 }

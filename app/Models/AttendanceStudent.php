@@ -9,6 +9,14 @@ class AttendanceStudent extends Model
 {
     use HasFactory;
 
+     /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+    ];
+
     /**
      * The attributes are mass assignable
      * @var array
@@ -50,4 +58,5 @@ class AttendanceStudent extends Model
     {
         return $this->belongsTo(Student::class);
     }
+
 }
