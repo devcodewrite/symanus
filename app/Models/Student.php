@@ -92,8 +92,10 @@ class Student extends Model
 
     public function getBalance(FeeType $feeType = null, $from = null, $to = null)
     {
-        $from = $from?$from:Bill::orderBy('bdate', 'asc')->first()->bdate;
-        $to = $to?$to:Bill::orderBy('bdate', 'desc')->first()->bdate;
+        $billForDate = Bill::orderBy('bdate', 'asc')->first();
+        $from = $from?$from:($billForDate?$billForDate->bdate:now('Africa/Accra')->format('Y-m-d'));
+        $billForDate = Bill::orderBy('bdate', 'desc')->first();
+        $to = $to?$to:($billForDate?$billForDate->bdate:now('Africa/Accra')->format('Y-m-d'));
        // $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
 
        if($feeType){
