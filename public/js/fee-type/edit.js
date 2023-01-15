@@ -45,9 +45,9 @@ form.on("submit", function (e) {
                         let redirect_url = backto?backto:default_redirect;
 
                         if(redirect_url && !d.input?.stay) setTimeout(location.assign(redirect_url),500);
+                    }else{
+                        location.assign(changeParam(location.href, 'id', ''));
                     }
-                    
-                    location.assign(changeParam(location.href, 'id', ''));
                 }else {
                     Swal.fire({
                         icon: "error",
