@@ -17,7 +17,10 @@ class FeeType extends Model
      */
     protected $fillable = [
         'title',
-        'status'
+        'status',
+        'bill_ex_st_affiliation',
+        'bill_ex_st_transit',
+        'bill_ex_st_attendance'
     ];
 
      /**

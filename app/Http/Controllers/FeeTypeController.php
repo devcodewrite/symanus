@@ -53,6 +53,9 @@ class FeeTypeController extends Controller
     {
         $rules = [
             'title' => 'required|string|max:45',
+            'bill_ex_st_affiliation' => 'nullable|in:staffed,non-staffed',
+            'bill_ex_st_transit' => 'nullable|in:walk,bus',
+            'bill_ex_st_attendance' => 'nullable|in:present,absent',
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";
@@ -121,6 +124,9 @@ class FeeTypeController extends Controller
         $rules = [
             'title' => 'string|max:45',
             'status' => 'required_if:action,change-status',
+            'bill_ex_st_affiliation' => 'nullable|in:staffed,non-staffed',
+            'bill_ex_st_transit' => 'nullable|in:walk,bus',
+            'bill_ex_st_attendance' => 'nullable|in:present,absent',
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";

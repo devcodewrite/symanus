@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Notification;
 
 class NotificationPolicy
 {

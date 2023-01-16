@@ -16,7 +16,8 @@ class UserRoleSeeder extends Seeder
     {
         //added default role
         DB::table('user_roles')->insert([
-            'title' => 'Administrator'
+            'title' => 'Administrator',
+            'permission_id' => 2,
         ]);
     }
 }

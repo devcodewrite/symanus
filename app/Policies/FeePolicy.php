@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Fee;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class FeePolicy
 {
@@ -18,7 +19,8 @@ class FeePolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->fees))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -30,7 +32,8 @@ class FeePolicy
      */
     public function view(User $user, Fee $fee)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->fees))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -41,7 +44,8 @@ class FeePolicy
      */
     public function create(User $user)
     {
-        //
+        return  in_array('create',explode(',',$user->permission->fees))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**

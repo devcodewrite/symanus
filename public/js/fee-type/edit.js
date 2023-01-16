@@ -33,20 +33,22 @@ form.on("submit", function (e) {
                 }
 
                 if (d.status === true) {
+                    Swal.fire({
+                        icon: "success",
+                        text: d.message,
+                    });
                     if(typeof d.input === 'object'){
                         if(d.input._method === 'post'){
                             $(form).trigger('reset');
                             $('select').val('').trigger('change.select2');
                         }
-                        let default_redirect = form.getAttribute('data-redirect-url');
-                            default_redirect = default_redirect?default_redirect+`/${d.data.id}`:null;
                         let crrurl = new URL(location.href);
                         let backto = crrurl.searchParams.get('backtourl');
-                        let redirect_url = backto?backto:default_redirect;
+                        let redirect_url = backto?backto:crrurl.href;
 
                         if(redirect_url && !d.input?.stay) setTimeout(location.assign(redirect_url),500);
                     }else{
-                        location.assign(changeParam(location.href, 'id', ''));
+                        
                     }
                 }else {
                     Swal.fire({

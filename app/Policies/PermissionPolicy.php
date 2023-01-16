@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class PermissionPolicy
 {
@@ -18,7 +19,8 @@ class PermissionPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->permissions))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -30,7 +32,8 @@ class PermissionPolicy
      */
     public function view(User $user, Permission $permission)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->permissions))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -41,7 +44,8 @@ class PermissionPolicy
      */
     public function create(User $user)
     {
-        //
+        return  in_array('create',explode(',',$user->permission->permissions))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -53,7 +57,8 @@ class PermissionPolicy
      */
     public function update(User $user, Permission $permission)
     {
-        //
+        return  in_array('update',explode(',',$user->permission->permissions))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -65,7 +70,8 @@ class PermissionPolicy
      */
     public function delete(User $user, Permission $permission)
     {
-        //
+        return  in_array('delete',explode(',',$user->permission->permissions))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**

@@ -14,39 +14,46 @@
         </x-sidebar-nav-link>
 
         <!-- Student and Guardians -->
-        @if ($module->hasModuleGroup('Students & Guardians Managment'))
+        @if ($module->hasModuleGroup('Students & Guardians Managment') 
+        && (Gate::inspect('view', $student)->allowed()||Gate::inspect('view', $guardian)->allowed()))
             <p class="text-sm font-bold">Students & Guardians</p>
-            @if ($module->hasModule('Students Management'))
+            @if ($module->hasModule('Students Management') &&Gate::inspect('view', $student)->allowed())
                 <x-sidebar-nav-link title="Students" uri="students">
                     <x-slot name="icon">
                         <x-svg.student />
                     </x-slot>
                     <x-sidebar-nav-sublink title="List Students" url="{{ route('students.index') }}" uri="students" />
+                    @if(Gate::inspect('view', $student)->allowed())
                     <x-sidebar-nav-sublink title="New Student" url="{{ route('students.create') }}"
                         uri="students/create" />
+                        @endif
                 </x-sidebar-nav-link>
             @endif
-            @if ($module->hasModule('Guardians Managment'))
-                <x-sidebar-nav-sublink title="Gurdians" uri="guardians">
-                    <x-sidebar-nav-sublink title="List Guaridans" url="{{ route('guardians.index') }}"
+            @if ($module->hasModule('Guardians Management') && Gate::inspect('view', $guardian)->allowed())
+                <x-sidebar-nav-link title="Gurdians" uri="guardians">
+                    <x-sidebar-nav-sublink title="List Guardians" url="{{ route('guardians.index') }}"
                         uri="guardians" />
+                        @if(Gate::inspect('create', $guardian)->allowed())
                     <x-sidebar-nav-sublink title="New Guardian" url="{{ route('guardians.create') }}"
                         uri="guardians/create" />
-                </x-sidebar-nav-sublink>
+                        @endif
+                </x-sidebar-nav-link>
             @endif
         @endif
         <!-- Education -->
         @if ($module->hasModuleGroup('Education Managment'))
             <p class="text-sm font-bold">Education</p>
-            @if ($module->hasModule('Attendance Management'))
+            @if ($module->hasModule('Attendance Management') && Gate::inspect('view', $attendance)->allowed())
                 <x-sidebar-nav-link title="Attendance" uri="attendance">
                     <x-slot name="icon">
                         <x-svg.attendance />
                     </x-slot>
                     <x-sidebar-nav-sublink title="List Attendances" url="{{ route('attendances.index') }}"
                         uri="attendances" />
+                        @if(Gate::inspect('create', $attendance)->allowed())
                     <x-sidebar-nav-sublink title="Take Attendances" url="{{ route('attendances.create') }}"
                         uri="attendances/create" />
+                        @endif
                 </x-sidebar-nav-link>
             @endif
             @if ($module->hasModule('Assessment Management'))
@@ -70,32 +77,39 @@
                         uri="courses/create" />
                 </x-sidebar-nav-link>
             @endif
-            @if ($module->hasModule('Classes Management'))
+            @if ($module->hasModule('Classes Management') && Gate::inspect('view', $class)->allowed())
                 <x-sidebar-nav-link title="Classes" uri="classes">
                     <x-slot name="icon">
                         <x-svg.class />
                     </x-slot>
                     <x-sidebar-nav-sublink title="List Classes" url="{{ route('classes.index') }}" uri="classes" />
+                    @if(Gate::inspect('create', $class)->allowed())
                     <x-sidebar-nav-sublink title="New Class" url="{{ route('classes.create') }}"
                         uri="classes/create" />
+                    @endif
                 </x-sidebar-nav-link>
             @endif
         @endif
         <!-- Accounting -->
         @if ($module->hasModuleGroup('Finance & Accounting Management'))
             <p class="text-sm font-bold">Accounting</p>
-            <x-sidebar-nav-link title="Accounting Overview" uri="accouting-overview">
-                <x-slot name="icon">
-                    <x-svg.dashboard />
-                </x-slot>
-            </x-sidebar-nav-link>
-            @if ($module->hasModule('Fees Collection Management'))
+            @if(Gate::inspect('report', $bill)->allowed())
+                <x-sidebar-nav-link title="Accounting Overview" uri="accouting-overview">
+                    <x-slot name="icon">
+                        <x-svg.dashboard />
+                    </x-slot>
+                </x-sidebar-nav-link>
+            @endif
+            
+            @if ($module->hasModule('Fees Collection Management') && Gate::inspect('view', $fee)->allowed() )
                 <x-sidebar-nav-link title="Fees" uri="fees">
                     <x-slot name="icon">
                         <x-svg.payment />
                     </x-slot>
                     <x-sidebar-nav-sublink title="List Fees" url="{{ route('fees.index') }}" uri="fees" />
+                    @if(Gate::inspect('create', $fee)->allowed())
                     <x-sidebar-nav-sublink title="New Fees" url="{{ route('fees.create') }}" uri="fees/create" />
+                    @endif
                 </x-sidebar-nav-link>
                 <x-sidebar-nav-link title="Bills & Payments" uri="bills">
                     <x-slot name="icon">
@@ -106,13 +120,16 @@
                         uri="bills/create" />
                 </x-sidebar-nav-link>
             @endif
-            @if ($module->hasModule('Expense Management'))
+            @if ($module->hasModule('Expense Management')&& Gate::inspect('view', $expense)->allowed())
                 <x-sidebar-nav-link title="Expense Report" uri="expense-reports">
                     <x-slot name="icon">
                         <x-svg.attendance />
                     </x-slot>
                     <x-sidebar-nav-sublink title="List Expense Reports" url="{{ route('staffs.index') }}" />
-                    <x-sidebar-nav-sublink title="New Expense Reports" url="{{ route('staffs.create') }}" />
+                    @if(Gate::inspect('create', $expense)->allowed())
+                        <x-sidebar-nav-sublink title="New Expense Reports" url="{{ route('staffs.create') }}" />
+                    @endif
+                    
                 </x-sidebar-nav-link>
             @endif
             @if ($module->hasModule('Salaries Management'))
@@ -130,7 +147,7 @@
                         <x-svg.attendance />
                     </x-slot>
                     @if ($module->hasModuleGroup('Finance & Accounting Management'))
-                        @if ($module->hasModule('Fees Collection Management'))
+                        @if ($module->hasModule('Fees Collection Management') && Gate::inspect('report', $bill)->allowed())
                             <x-sidebar-nav-sublink title="Student balances"
                                 url="{{ route('reporting.student-balances') }}" uri="reporting/student-balances" />
                             <x-sidebar-nav-sublink title="Fee bills by class"
@@ -141,7 +158,7 @@
                                 url="{{ route('reporting.income-by-class') }}" uri="reporting/income-by-class" />
                             <x-sidebar-nav-sublink title="Income by user"
                                 url="{{ route('reporting.income-by-user') }}" uri="reporting/income-by-user" />
-                            @if ($module->hasModule('Expense Management'))
+                            @if ($module->hasModule('Expense Management')&& Gate::inspect('report', $expense)->allowed())
                                 <x-sidebar-nav-sublink title="Expense by user" url="{{ route('staffs.index') }}" />
                                 <x-sidebar-nav-sublink title="Expense by expense type"
                                     url="{{ route('staffs.index') }}" />
@@ -158,22 +175,32 @@
         <!-- HRM -->
         @if ($module->hasModuleGroup('Human Resource Management (HR)'))
             <p class="text-sm font-bold">HRM</p>
-            @if ($module->hasModule('Users & Roles Management'))
+            @if ($module->hasModule('Users & Roles Management') && Gate::inspect('view', auth()->user())->allowed())
                 <x-sidebar-nav-link title="Users" uri="users">
                     <x-slot name="icon">
                         <x-svg.user />
                     </x-slot>
-                    <x-sidebar-nav-sublink title="List Users" url="{{ route('users.index') }}" uri="users" />
+                    @if(Gate::inspect('view', auth()->user())->allowed())
+                        <x-sidebar-nav-sublink title="List Users" url="{{ route('users.index') }}" uri="users" />
+                    @endif
+                    @if(Gate::inspect('create', auth()->user())->allowed())
                     <x-sidebar-nav-sublink title="New User" url="{{ route('users.create') }}" uri="users/create" />
+                    @endif
                 </x-sidebar-nav-link>
             @endif
-            @if ($module->hasModule('Staff/Teachers Management'))
+            
+            @if ($module->hasModule('Staff/Teachers Management') && Gate::inspect('view', auth()->user())->allowed())
                 <x-sidebar-nav-link title="Staffs" uri="staffs">
                     <x-slot name="icon">
                         <x-svg.teacher />
                     </x-slot>
-                    <x-sidebar-nav-sublink title="List Staffs" url="{{ route('staffs.index') }}" />
-                    <x-sidebar-nav-sublink title="New Staff" url="{{ route('staffs.create') }}" />
+                    @if(Gate::inspect('view', new Staff())->allowed())
+                        <x-sidebar-nav-sublink title="List Staffs" url="{{ route('staffs.index') }}" />
+                    @endif
+                  
+                    @if(Gate::inspect('create',new Staff())->allowed())
+                        <x-sidebar-nav-sublink title="New Staff" url="{{ route('staffs.create') }}" />
+                    @endif
                 </x-sidebar-nav-link>
             @endif
             @if ($module->hasModule('Leave Management'))
@@ -186,8 +213,6 @@
                 </x-sidebar-nav-link>
             @endif
         @endif
-
-        <p class="text-sm font-bold">Account & Setup</p>
         <!-- Account -->
         <x-sidebar-nav-link title="Account">
             <x-slot name="icon">
@@ -203,43 +228,58 @@
                 <x-slot name="icon">
                     <x-svg.sms />
                 </x-slot>
+                @if(Gate::inspect('view', auth()->user())->allowed())
                 <x-sidebar-nav-sublink title="List SMS" />
+                @endif
+                @if(Gate::inspect('view', auth()->user())->allowed())
                 <x-sidebar-nav-sublink title="Send SMS" />
+                @endif
+               @if(Gate::inspect('view', auth()->user())->allowed())
                 <x-sidebar-nav-sublink title="Top-up SMS Units" />
+               @endif
+               
             </x-sidebar-nav-link>
         @endif
+        @if (Gate::inspect('view', $setting)->allowed())
         <!-- Setup -->
         <x-sidebar-nav-link title="Setup" uri="setup">
             <x-slot name="icon">
                 <x-svg.setting />
             </x-slot>
-            <x-sidebar-nav-link title="Modules" url="{{ route('modules.index') }}">
+            @if (Gate::inspect('view', $setting)->allowed())
+            <x-sidebar-nav-link title="Modules" url="{{ route('modules.index') }}" uri="setup/modules">
                 <x-slot name="icon">
                     <x-svg.course />
                 </x-slot>
             </x-sidebar-nav-link>
-            <x-sidebar-nav-link title="Settings" url="{{ route('settings.index') }}">
+            @endif
+            <x-sidebar-nav-link title="Settings">
                 <x-slot name="icon">
                     <x-svg.setting />
                 </x-slot>
             </x-sidebar-nav-link>
-            <x-sidebar-nav-link title="Permissions" url="{{ route('permissions.create') }}">
+            @if (Gate::inspect('view', $permission)->allowed())
+            <x-sidebar-nav-link title="Permissions" url="{{ route('permissions.create') }}" uri="setup/permissions">
                 <x-slot name="icon">
                     <x-svg.permission />
                 </x-slot>
             </x-sidebar-nav-link>
+            @endif
+            @if (Gate::inspect('view', $setting)->allowed())
             <x-sidebar-nav-link title="Attributes" uri="setup/attributes">
                 <x-slot name="icon">
                     <x-svg.database />
                 </x-slot>
+                @if (Gate::inspect('create', $userRole)->allowed())
                 <x-sidebar-nav-link title="User Roles" url="{{ route('user-roles.create') }}"
                     uri="setup/attributes/user-roles/create">
                     <x-slot name="icon">
                         <x-svg.arrow-right />
                     </x-slot>
                 </x-sidebar-nav-link>
-
-                @if ($module->hasModule('Fees Collection Management'))
+                @endif
+                
+                @if ($module->hasModule('Fees Collection Management') && Gate::inspect('create', $feeType)->allowed())
                     <x-sidebar-nav-link title="Fee Types" url="{{ route('fee-types.create') }}"
                         uri="setup/attributes/fee-types/create">
                         <x-slot name="icon">
@@ -248,7 +288,7 @@
                     </x-sidebar-nav-link>
                 @endif
 
-                @if ($module->hasModule('Expense Management'))
+                @if ($module->hasModule('Expense Management') && Gate::inspect('view', $expense)->allowed())
                     <x-sidebar-nav-link title="Expense Types" url="{{ route('fee-types.create') }}"
                         uri="setup/attributes/expense-types/create">
                         <x-slot name="icon">
@@ -256,15 +296,18 @@
                         </x-slot>
                     </x-sidebar-nav-link>
                 @endif
+                @if (Gate::inspect('view', $semester)->allowed())
                 <x-sidebar-nav-link title="Semesters" url="{{ route('semesters.create') }}"
                     uri="setup/attributes/semesters/create">
                     <x-slot name="icon">
                         <x-svg.arrow-right />
                     </x-slot>
                 </x-sidebar-nav-link>
+                @endif
             </x-sidebar-nav-link>
+            @endif
         </x-sidebar-nav-link>
-
+        @endif
         <!-- Authentication -->
         <form method="POST" action="{{ route('logout') }}">
             @csrf

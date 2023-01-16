@@ -60,4 +60,12 @@ class Bill extends Model
         return $this->hasMany(Payment::class);
     }
     
+    public function paidCount(){
+        $count = 0;
+        foreach(Bill::all() as $bill ){
+            if($bill->fees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
+                $count++;
+        }
+        return $count;
+    }
 }

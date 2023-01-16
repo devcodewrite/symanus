@@ -50,10 +50,10 @@ class ModuleSeeder extends Seeder
             ],
             [
                 'group_label' => 'Students & Guardians Managment', 
-                'name' => "Guardian Management", 
+                'name' => "Guardians Management", 
                 'description' => "Allows you to manage Guardians' User Accounts.",
-                'status' => 'disabled',
-                'default_status' => 'disabled',
+                'status' => 'enabled',
+                'default_status' => 'enabled',
                 'locked' => 0
             ],
             [
@@ -69,16 +69,16 @@ class ModuleSeeder extends Seeder
                 'name' => "Courses Management", 
                 'description' => "Manage courses, assign Teachers to courses and make assessements.",
                 'status' => 'disabled',
-                'default_status' => 'enabled',
-                'locked' => 0
+                'default_status' => 'disabled',
+                'locked' => 1
             ],
             [
                 'group_label' => 'Education Managment', 
                 'name' => "Report Card Management", 
                 'description' => "Generate report cards and promote students by assessments. This requires Courses Management Module.",
                 'status' => 'disabled',
-                'default_status' => 'enabled',
-                'locked' => 0
+                'default_status' => 'disabled',
+                'locked' => 1
             ],
             [
                 'group_label' => 'Education Managment', 

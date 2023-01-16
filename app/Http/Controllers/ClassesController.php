@@ -125,7 +125,7 @@ class ClassesController extends Controller
     {
         $rules = [
             'name' => 'required|string|max:45',
-            'level' => 'required|integer|unique:classes,level',
+            'level' => 'required|integer',
             'user_id' => 'nullable|integer|unique:classes,user_id|exists:users,id',
         ];
         $validator = Validator::make($request->input(), $rules);
@@ -260,7 +260,6 @@ class ClassesController extends Controller
      */
     public function datatable_action(Request $request)
     {
-        
         if($request->input('action') === 'delete' && $request->input('data')){
             $ids = [];
             foreach($request->input('data') as $class){

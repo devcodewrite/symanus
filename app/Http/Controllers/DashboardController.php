@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\AttendanceStudent;
+use App\Models\Bill;
 use App\Models\Classes;
 use App\Models\Course;
 use App\Models\Fee;
+use App\Models\FeeType;
 use App\Models\Guardian;
 use App\Models\Module;
 use App\Models\Payment;
@@ -27,7 +29,7 @@ class DashboardController extends Controller
      */
     public function show()
     {
-       
+      
         $data = [
             'setting' => new Setting(),
             'user' => new User(),
@@ -39,6 +41,7 @@ class DashboardController extends Controller
             'staff' => new Staff(),
             'class' => new Classes(),
             'payment' => new Payment(),
+            'bill' => new Bill(),
             'module' => new Module(),
         ];
 

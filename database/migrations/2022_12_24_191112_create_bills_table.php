@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Fee;
+use App\Models\Attendance;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -21,6 +21,7 @@ class CreateBillsTable extends Migration
             $table->foreignIdFor(Student::class)->constrained();
             $table->date('bdate');
             $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(Attendance::class)->nullable();
             $table->timestamps();
         });
     }

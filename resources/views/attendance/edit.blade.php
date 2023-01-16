@@ -33,7 +33,7 @@
                     <div aria-label="formbody" class="mt-6 px-6 py-4 grid md:grid-cols-2 gap-12 overflow-hidden">
                         <!-- Date -->
                         <div class="w-full field">
-                            <x-label for="adate" :value="__('Admission Date')" />
+                            <x-label for="adate" :value="__('Date')" />
                             <x-input id="adate" class="block w-full" type="date" name="adate" required
                             :value="old('adate', isset($attendance)?$attendance->adate:date('Y-m-d'))" placeholder="Enter the {{ __('Date of Creation') }}" />
                         </div>
@@ -48,7 +48,6 @@
                                 @endif
                             </x-select>
                         </div>
-
                         <!-- User -->
                         <div class="w-full field">
                             <x-label for="user" :value="__('Assign To:')" />
@@ -60,6 +59,11 @@
                                         {{ $attendance->user->surname }} </option>
                                 @endif
                             </x-select>
+                        </div>
+                        <div class="field w-full flex items-end gap-2">
+                            <x-label for="generate-bill" :value="__('Auto Bill Students')" />
+                            <x-input id="generate-bill" class="mt-1" type="checkbox" checked name="bill_students"
+                                value="yes" />
                         </div>
                     </div>
                   

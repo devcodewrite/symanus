@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\AttendanceStudent;
+use App\Models\FeeType;
 use App\Models\Student;
 use App\Notifications\StudentAbsent;
 
@@ -27,7 +28,16 @@ class AttendanceStudentObserver
      */
     public function updated(AttendanceStudent $attendanceStudent)
     {
-       
+        // this is to exclude bills
+       if($attendanceStudent->status === 'absent')
+         $feeTypes = FeeType::where('bill_ex_st_attendance', 'absent')->get();
+         $types = [];
+         foreach($feeTypes as $type) array_push($types, $type->id);
+        //deleting any payment made for bill
+         $attendanceStudent->student
+                ->bills()
+                ->whereIn('fee_type_id', $types)
+                ->delete();
     }
 
     /**

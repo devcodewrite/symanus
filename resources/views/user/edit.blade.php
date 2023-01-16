@@ -94,7 +94,7 @@
                          <!-- User ID -->
                          <div class="w-full field md:row-start-4">
                             <x-label for="username" :value="__('Username/ID')" />
-                            <x-input id="username" class="block w-full" type="text" name="username" required
+                            <x-input id="username" class="block w-full" type="email" name="username" required
                                 :value="old('username', isset($user) ? $user->username : '')" placeholder="Enter the {{ __('User ID') }}" />
                         </div>
                         @if (!isset($user))

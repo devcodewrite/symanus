@@ -34,7 +34,10 @@ require("datatables.net-searchpanes-dt");
 require("datatables.net-select-dt");
 require("select2");
 
-$(".select2").select2();
+$(".select2").select2({
+    allowClear: true,
+    placeholder: "Select an option",
+});
 
 $(".dt-action-select")
     .select2()

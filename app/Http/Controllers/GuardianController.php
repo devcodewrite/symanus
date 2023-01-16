@@ -6,6 +6,7 @@ use App\Models\Guardian;
 use DataTables;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Response;
 
 class GuardianController extends Controller
@@ -37,8 +38,7 @@ class GuardianController extends Controller
      */
     public function create()
     {
-        //
-        return view('guardians.add');
+        return view('guardians.edit');
     }
 
     /**
@@ -60,7 +60,10 @@ class GuardianController extends Controller
      */
     public function show(Guardian $guardian)
     {
-        //
+        $data = [
+            'guardian' => $guardian,
+        ];
+        return view('guardians.details', $data);
     }
 
     /**

@@ -122,7 +122,7 @@
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">Born On</span>
                                     <span class="w-1/2">
-                                        {{ date('d/m/y', strtotime($student->dateofbirth)) }}
+                                        {{ $student->dateofbirth?date('d/m/y', strtotime($student->dateofbirth)):'Not set' }}
                                     </span>
                                 </div>
                             </div>
@@ -159,15 +159,20 @@
                         </div>
 
                         <div class="py-5">
-                            <x-a-button-p class="ml-3 py-3.5 item-end">
-                                {{ __('Clone') }}
-                            </x-a-button-p>
+                          
                             <x-a-button-p class="ml-3 py-3.5 item-end" :href="route('students.edit', ['student' => $student->id])">
                                 {{ __('Modify') }}
                             </x-a-button-p>
+                            @if($student->rstate === 'open')
                             <x-a-button class="ml-3 py-3.5 shadow-md">
                                 {{ __('Close') }}
                             </x-a-button>
+                            @else
+                            <x-a-button class="ml-3 py-3.5 shadow-md">
+                                {{ __('Open') }}
+                            </x-a-button>
+                            @endif
+                           
                         </div>
                     </div>
                     <div class="hidden" id="basic-tabs-2" role="tabpanel" aria-labelledby="basic-tabs-item-2">

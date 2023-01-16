@@ -133,19 +133,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="w-full flex gap-3 items-end">
-                            <!-- exclusion -->
-                            <div class="w-1/2 field">
-                                <x-label for="exclusion1" :value="__('Exclude staffed students')" />
-                                <x-input id="exclusion1" class="mt-1" type="radio" name="exclusion"
-                                    value="staffed" />
-                            </div>
-                            <div class="w-1/2 field">
-                                <x-label for="exclusion2" :value="__('Exclude non staffed students')" />
-                                <x-input id="exclusion2" class="mt-1" type="radio" name="exclusion"
-                                    value="non-staffed" />
-                            </div>
-                        </div>
+                       
                         @endif
                     </div>
 
