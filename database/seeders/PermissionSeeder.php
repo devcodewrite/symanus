@@ -33,6 +33,7 @@ class PermissionSeeder extends Seeder
            'bills' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),
            'semesters' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),
            'staffs' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),
+           'sms' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),
            'locked' => 1,
            'is_admin' => 1,
         ],[
@@ -53,6 +54,7 @@ class PermissionSeeder extends Seeder
            'bills' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),
            'semesters' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),
            'staffs' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),
+           'sms' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),
            'locked' => 1,
            'is_admin' => 1,
         ]]);

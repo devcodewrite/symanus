@@ -15,7 +15,10 @@ class CreateExpenseTypesTable extends Migration
     {
         Schema::create('expense_types', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->enum('status', ['open', 'close'])->default('open');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

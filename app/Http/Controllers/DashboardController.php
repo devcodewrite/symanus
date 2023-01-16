@@ -13,6 +13,7 @@ use App\Models\Guardian;
 use App\Models\Module;
 use App\Models\Payment;
 use App\Models\Setting;
+use App\Models\SMS;
 use App\Models\Staff;
 use App\Models\Student;
 use App\Models\User;
@@ -43,6 +44,7 @@ class DashboardController extends Controller
             'payment' => new Payment(),
             'bill' => new Bill(),
             'module' => new Module(),
+            'sms' => new SMS(),
         ];
 
         return view('dashboard', $data);

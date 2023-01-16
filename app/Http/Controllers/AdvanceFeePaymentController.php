@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdvanceFeePayment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Response;
+use Validator;
 
 class AdvanceFeePaymentController extends Controller
 {
@@ -81,5 +84,58 @@ class AdvanceFeePaymentController extends Controller
     public function destroy(AdvanceFeePayment $advanceFeePayment)
     {
         //
-    }
+    } 
+    /**
+    * Update a resource for json
+    * @return \Iluminate\Http\Response
+    */
+   public function make_payments_json(Request $request)
+   {
+
+       $rules = [ 
+           'amount' => 'required|numeric',
+           'student_id' => 'required|exists:students,id',
+           'attendance_id' => 'required|exists:attendances,id',
+       ];
+
+       $validator = Validator::make($request->input(), $rules);
+       $error = "";
+       foreach($validator->errors()->messages() as $message){
+           $error .= $message[0]."\n";
+       }
+
+       if ($validator->fails()) {
+           $out = [
+               'message' => trim($error),
+               'status' => false,
+               'input' => $request->all()
+           ];
+           return Response::json($out);
+       }
+
+        $payment = [
+               'student_id'=> $request->input('student_id'),
+               'paid_at' => Carbon::now('Africa/Accra')->format('Y-m-d'),
+               'paid_by' => $request->input('student.firstname').' '.$request->input('student.surname'),
+               'attendance_id' => $request->attendance_id,
+               'user_id' => auth()->user()->id,
+        ];
+        $dvfeepay = AdvanceFeePayment::create($payment);
+       if($dvfeepay) {
+               $out = [
+                   'data' => $dvfeepay,
+                   'message' => 'Payment made successfully!',
+                   'status' => true,
+                   'input' => $request->all()
+               ];
+           } else {
+               $out = [
+                   'message' => "Data couldn't be processed! Please try again!",
+                   'status' => false,
+                   'input' => $request->all()
+               ];
+           }
+       return Response::json($out);
+     
+   }
 }

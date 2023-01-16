@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdvanceFeePaymentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\ClassesController;
@@ -45,7 +46,7 @@ Route::middleware('auth:api')->prefix('/datatables')->group(function(){
 Route::middleware('auth:api')->prefix('/json')->group(function(){
     Route::get('/attendance-related-students', [AttendanceController::class, 'related_students_json']);
     Route::put('/attendance-related-students', [AttendanceController::class, 'update_related_students_json']);
-    Route::put('/bill-payment-by-attendance', [PaymentController::class, 'attendance_student_payments_json']);
+    Route::put('/student-advance-payment', [AdvanceFeePaymentController::class, 'make_payments_json']);
     Route::put('/student-balance', [StudentController::class, 'student_balance_json']);
 });
 Route::middleware('auth:api')->prefix('/datatable-actions')->group(function(){

@@ -19,7 +19,7 @@
     <!-- Content -->
     <div class="w-full px-4 sm:px-6 md:px-8 lg:pl-72 py-5">
         <form novalidate class="fee-details-form"
-            action="{{ isset($fee) ? route('fees.update', ['fee' => $fee->id]) : route('fees.store') }} ">
+            action="{{ isset($fee) ? route('fees.update', ['fee' => $fee->id]) : route('fees.store') }}" data-redirect-url="{{route('fees.index')}} ">
             @csrf
             @if (isset($fee))
                 @method('put')

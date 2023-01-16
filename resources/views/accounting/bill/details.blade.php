@@ -48,7 +48,7 @@
                                 <div class="mx-3">
                                     <p class="text-sky-600 font-semibold">{{ $bill->id }} </p>
                                     <p class="mt-2 font-semibold"> {{ __('GHS ') }}
-                                        {{ $bill->fees()->sum('amount') }} </p>
+                                        {{ $bill->totalBill()}} </p>
                                     <p class="uppercase text-gray-600">{{ $bill->bdate }} </p>
                                 </div>
                             </div>
@@ -81,7 +81,10 @@
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">Remaining unpaid</span>
                                     <span class="w-1/2 text-blue-600 font-semibold">
-                                        {{ __('GHS ') }} {{ number_format($bill->fees()->sum('amount') - $bill->payments()->sum('amount'),2) }}
+                                        @php
+                                           $balance = $bill->totalBill() - $bill->payments()->sum('amount');
+                                        @endphp
+                                        {{ __('GHS ') }} {{ $balance < 0 ?0.00 : number_format($balance,2) }}
                                     </span>
                                 </div>
                             </div>
@@ -105,10 +108,10 @@
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-full font-semibold">Line items</span>
                                 </div>
-                                @foreach ($bill->fees()->get() as $key => $row)
+                                @foreach ($bill->billFees as $key => $row)
                                     <div class="flex flex-row justify-between py-3">
                                         <span class="px-2">#{{ $key + 1 }}</span>
-                                        <span class="w-1/3 text-gray-600"> {{ $row->feeType->title }} </span>
+                                        <span class="w-1/3 text-gray-600"> {{ $row->fee->feeType->title }} </span>
                                         <span class="w-2/3">
                                             {{ $row->amount }}
                                         </span>
@@ -127,7 +130,7 @@
                         </div>
                     </div>
                     <div id="basic-tabs-2" class="{{ isset($payment)?'':'hidden' }}" role="tabpanel" aria-labelledby="basic-tabs-item-2">
-                        @if($bill->fees()->sum('amount') - $bill->payments()->sum('amount') > 0)
+                        @if($bill->totalBill()- $bill->payments()->sum('amount') > 0)
                             
                       
                         <form class="payment-details-form w-full"
@@ -146,24 +149,18 @@
                                 class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-6 items-end content-center justify-start">
                                  <!-- Fee type -->
                                  <div class="w-full field" id="bill-fee-types">
-                                    <x-label for="feetype" :value="__('Fee type(s)')" />
-                                    <div class="flex gap-1">
+                                    <x-label for="feetype" :value="__('Fee type')" />
                                         <x-select id="feetype"
-                                            class="mt-1 w-full overfllow-y-auto block select2-feetype shadow-md"
-                                            name="feeTypes[]" required multiple>
+                                            class="mt-1 min-w-max select2-feetype shadow-md"
+                                            name="fee_type_id">
                                             <option value=""></option>
                                             @foreach ($bill->fees as $key => $fee)
                                                 <option value="{{ old('fee_type_id', $fee->feeType->id) }}"
                                                     {{ old('fee_type_id', isset($payment) ? $payment->feeType->id : '') ===  $fee->feeType->id ? 'selected' : '' }}>
-                                                    {{  $fee->feeType->title }}
+                                                    {{  $fee->feeType->title }}{{ '@' }}{{ $bill->billFees->where('fee_id',$fee->id)->first()->amount }}
                                                 </option>
                                             @endforeach
                                         </x-select>
-                                        <a href="{{ route('fee-types.create', ['backtourl' => route('bills.create')]) }}"
-                                            class="bg-white rounded outline outline-offset-1 outline-blue-500 text-center flex items-center px-5">
-                                            <i class="fa fa-plus text-gray-600"></i>
-                                        </a>
-                                    </div>
                                 </div>
 
                                 <!-- Fee Type amount -->
@@ -214,8 +211,7 @@
                                     <tr class="border">
                                         <th class="w-5">#</th>
                                         <th class="border text-center">Amount</th>
-                                        <th class="border ">Updated Date</th>
-                                        <th class="border">Created Date</th>
+                                        <th class="border">Added Date</th>
                                         <th class="border">Action</th>
                                     </tr>
                                 </thead>
@@ -225,7 +221,6 @@
                                         <tr>
                                             <td class="border text-center">{{ $row->id }}</td>
                                             <td class="border text-center">{{ $row->amount }}</td>
-                                            <td class="border text-center">{{ $row->updated_at }}</td>
                                             <td class="border text-center">{{ $row->created_at }}</td>
                                             <td class="border text-center flex items-end gap-3">
                                                 <form
@@ -236,10 +231,7 @@
                                                     <input type="hidden" name="id"
                                                         value="{{ $row->id }} ">
                                                 </form>
-                                                <a
-                                                    href="{{ route('bills.show', ['bill' => $bill->id, 'id' => $row->id]) }} "><i
-                                                        class="fa text-4xl text-gray-400 hover:text-sky-600 fa-edit"></i></a>
-                                                        <a
+                                                    <a
                                                         class="delete-payment"
                                                         href="{{ route('payments.destroy', ['payment' => $row->id]) }} "><i
                                                             class="fa text-4xl text-gray-400 hover:text-sky-600 fa-trash"></i></a>

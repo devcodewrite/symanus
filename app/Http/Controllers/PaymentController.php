@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bill;
+use App\Models\BillFee;
 use App\Models\Payment;
 use Carbon\Carbon;
 use DataTables;
@@ -57,7 +58,7 @@ class PaymentController extends Controller
             'amount' => 'required|numeric',
             'paid_by' => 'required|string|max:100',
             'paid_at' => 'required|date',
-            'feeTypes' => 'required|array',
+            'fee_type_id' => 'nullable|integer',
             'student_id' => 'required|integer|exists:students,id',
             'bill_id' => 'required|integer|exists:bills,id'
         ];
@@ -75,19 +76,56 @@ class PaymentController extends Controller
             ];
             return Response::json($out);
         }
-        $payments  = [];
-        foreach($request->input('feeTypes', []) as $feeType){
-            $row = [
-                'fee_type_id' => $feeType,
+
+        $bill = Bill::find($request->bill_id);
+        if($request->input('fee_type_id')){
+            $fee = $bill->fees->where('fee_type_id', $request->fee_type_id)->first();
+            $billFee = BillFee::where('fee_id', $fee->id)->where('bill_id', $request->bill_id)->first();
+            
+            if($request->amount != $billFee->amount){
+                $out = [
+                    'message' => "Amount should be {$billFee->amount}!",
+                    'status' => false,
+                    'input' => $request->all()
+                ];
+                return Response::json($out);
+            }
+
+            $payment = Payment::insert([
+                'student_id' => $request->student_id,
+                'fee_type_id' => $request->fee_type_id,
+                'amount' => $request->amount,
+                'paid_at' => $request->paid_at,
+                'bill_id' => $request->bill_id,
                 'updated_at' => Carbon::now(),
                 'created_at'=> Carbon::now(),
                 'user_id' => auth()->user()->id,
-            ];
-            array_push($payments, $validator->safe()->merge($row)->except('feeTypes'));
+            ]);
         }
-
-        $payment = Payment::insert($payments);
-
+        else {
+            $payments = [];
+            if($request->amount != $bill->totalBill()){
+                $out = [
+                    'message' => "Amount should be {$bill->totalBill()}!",
+                    'status' => false,
+                    'input' => $request->all()
+                ];
+                return Response::json($out);
+            }
+            foreach($bill->billFees as $billFee){
+                array_push($payments, [
+                    'student_id' => $request->student_id,
+                    'fee_type_id' => $billFee->fee->feeType->id,
+                    'amount' => $request->amount,
+                    'paid_at' => $request->paid_at,
+                    'bill_id' => $request->bill_id,
+                    'updated_at' => Carbon::now(),
+                    'created_at'=> Carbon::now(),
+                    'user_id' => auth()->user()->id,
+                ]);
+            }
+            $payment = Payment::insert($payments);
+        }
         if($payment){
             $out = [
                 'message' => 'Payment made successfully!',

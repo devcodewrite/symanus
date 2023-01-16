@@ -52,6 +52,11 @@ class Bill extends Model
         return $this->belongsToMany(Fee::class, 'bill_fees');
     }
 
+    public function billFees()
+    {
+        return $this->hasMany(BillFee::class);
+    }
+
     /**
      * Get the payments for the bill.
      */
@@ -63,9 +68,18 @@ class Bill extends Model
     public function paidCount(){
         $count = 0;
         foreach(Bill::all() as $bill ){
-            if($bill->fees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
+            if($bill->billFees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
                 $count++;
         }
         return $count;
     }
+
+    /**
+     * Get the total bill amount for bill
+     */
+
+     public function totalBill()
+     {
+        return $this->billFees()->sum('amount');
+     }
 }

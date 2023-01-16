@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Module;
+use App\Models\Permission;
 use App\Models\UserRole;
 use App\Models\UserRoleRole;
 use DataTables;
@@ -103,7 +104,29 @@ class UserRoleController extends Controller
             return Response::json($out);
         }
 
-        $userRole = UserRole::create($validator->safe()->except('stay'));
+        $perm = Permission::create([
+            'settings' => '',
+            'permissions' =>'',
+            'modules' =>'',
+            'user_roles' =>'',
+            'users' =>'',
+            'students' =>'',
+            'guardians' =>'',
+            'classes' =>'',
+            'attendances' =>'',
+            'fee_types' =>'',
+            'fees' =>'',
+            'expense_types' =>'',
+            'expenses' =>'',
+            'bills' =>'',
+            'semesters' =>'',
+            'staffs' =>'',
+            'sms' =>'',
+            'locked' => 0,
+            'is_admin' => 0,
+         ]);
+
+        $userRole = UserRole::create($validator->safe()->merge(['permission_id' => $perm->id])->except('stay'));
         if($userRole){
             $out = [
                 'data' => $userRole,

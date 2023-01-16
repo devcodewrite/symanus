@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Attendance;
 use App\Models\AttendanceStudent;
+use App\Models\UserRole;
 use App\Observers\AttendanceObserver;
 use App\Observers\AttendanceStudentObserver;
+use App\Observers\UserRoleObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -33,5 +35,6 @@ class EventServiceProvider extends ServiceProvider
     {
         Attendance::observe(AttendanceObserver::class);
         AttendanceStudent::observe(AttendanceStudentObserver::class);
+        UserRole::observe(UserRoleObserver::class);
     }
 }

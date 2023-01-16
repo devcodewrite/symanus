@@ -8,6 +8,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Response;
+use Validator;
 
 class GuardianController extends Controller
 {
@@ -49,7 +50,54 @@ class GuardianController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'firstname' => 'required|string|max:45',
+            'surname' => 'required|string|max:60',
+            'sex' => 'required|string',
+            'guardian_id' => 'nullable|integer|exists:guardians,id',
+            'occupation' => 'nullable|string',
+            'address' => 'string|nullable',
+            'avatar' => 'image',
+        ];
+        $validator = Validator::make($request->input(), $rules);
+        $error = "";
+        foreach($validator->errors()->messages() as $message){
+            $error .= $message[0]."\n";
+        }
+
+        if ($validator->fails()) {
+            $out = [
+                'message' => trim($error),
+                'status' => false,
+                'input' => $request->all()
+            ];
+            return Response::json($out);
+        }
+        $file = $request->file('avatar');
+        if($file){
+            $file_name = date('ymd').Str::lower("_{$request->firstname}{$request->surname}");
+            $extension = $file->getClientOriginalExtension();
+            $path = $request->file('avatar')->storeAs('avatars/guardians',"$file_name.$extension",'public');
+            $data = $validator->safe()->merge(['avatar'=> url("storage/$path")])->except(['stay']);
+        }else {
+            $data =  $validator->safe()->except(['avatar','stay']);
+        }
+        $guardian = Guardian::create($data);
+        if($guardian){
+            $out = [
+                'data' => $guardian,
+                'message' => 'guardian created successfully!',
+                'status' => true,
+                'input' => $request->all()
+            ];
+        }else {
+            $out = [
+                'message' => "Data couldn't be processed! Please try again!",
+                'status' => false,
+                'input' => $request->all()
+            ];
+        }
+        return Response::json($out);
     }
 
     /**
@@ -74,7 +122,7 @@ class GuardianController extends Controller
      */
     public function edit(Guardian $guardian)
     {
-        //
+        return view('guardian.edit', ['guardian' => $guardian]);
     }
 
     /**
@@ -86,7 +134,54 @@ class GuardianController extends Controller
      */
     public function update(Request $request, Guardian $guardian)
     {
-        //
+        $rules = [
+            'firstname' => 'required|string|max:45',
+            'surname' => 'required|string|max:60',
+            'sex' => 'required|string',
+            'guardian_id' => 'nullable|integer|exists:guardians,id',
+            'occupation' => 'nullable|string',
+            'address' => 'string|nullable',
+            'avatar' => 'image',
+        ];
+        $validator = Validator::make($request->input(), $rules);
+        $error = "";
+        foreach($validator->errors()->messages() as $message){
+            $error .= $message[0]."\n";
+        }
+
+        if ($validator->fails()) {
+            $out = [
+                'message' => trim($error),
+                'status' => false,
+                'input' => $request->all()
+            ];
+            return Response::json($out);
+        }
+        $file = $request->file('avatar');
+        if($file){
+            $file_name = date('ymd').Str::lower("_{$request->firstname}{$request->surname}");
+            $extension = $file->getClientOriginalExtension();
+            $path = $request->file('avatar')->storeAs('avatars/guardians',"$file_name.$extension",'public');
+            $data = $validator->safe()->merge(['avatar'=> url("storage/$path")])->except(['stay']);
+        }else {
+            $data =  $validator->safe()->except(['avatar','stay']);
+        }
+        $guardian->fill($data);
+        if($guardian->save()){
+            $out = [
+                'data' => $guardian,
+                'message' => 'Guardian updated successfully!',
+                'status' => true,
+                'input' => $request->all()
+            ];
+        }else {
+            $out = [
+                'message' => "Data couldn't be processed! Please try again!",
+                'status' => false,
+                'input' => $request->all()
+            ];
+        }
+        return Response::json($out);
     }
 
     /**
@@ -97,7 +192,18 @@ class GuardianController extends Controller
      */
     public function destroy(Guardian $guardian)
     {
-        //
+        if($guardian->delete()){
+            $out = [
+                'message' => 'Guardian delete successfully!',
+                'status' => true,
+            ];
+        }else {
+            $out = [
+                'message' => "Data couldn't be processed! Please try again!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 
      /**

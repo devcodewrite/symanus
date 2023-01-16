@@ -31,6 +31,7 @@ class CreatePermissionsTable extends Migration
             $table->set('bills', ['view','create','update', 'delete', 'force-delete','report']);
             $table->set('semesters', ['view','create','update', 'delete', 'force-delete','report']);
             $table->set('staffs', ['view','create','update', 'delete', 'force-delete','report']);
+            $table->set('sms', ['view','create','update', 'delete', 'force-delete','report']);
             $table->boolean('locked')->default(0);
             $table->boolean('is_admin')->default(0);
             $table->timestamps();

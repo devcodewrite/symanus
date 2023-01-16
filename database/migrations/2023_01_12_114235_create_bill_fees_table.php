@@ -18,6 +18,7 @@ class CreateBillFeesTable extends Migration
         Schema::create('bill_fees', function (Blueprint $table) {
             $table->foreignIdFor(Bill::class)->constrained();
             $table->foreignIdFor(Fee::class)->constrained();
+            $table->decimal('amount');
             $table->timestamps();
         });
     }

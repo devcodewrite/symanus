@@ -129,7 +129,7 @@ form.on("submit", function (e) {
                             $('select').val('').trigger('change.select2');
                         }
                         let default_redirect = form.getAttribute('data-redirect-url');
-                            default_redirect = default_redirect?default_redirect+`/${d.data.id}`:null;
+                            default_redirect = default_redirect?default_redirect+`/${d.data?.id}`:null;
                         let crrurl = new URL(location.href);
                         let backto = crrurl.searchParams.get('backtourl');
                         let redirect_url = backto?backto:default_redirect;

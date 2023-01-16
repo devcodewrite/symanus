@@ -47,8 +47,8 @@ export default {
               text: res.message,
             });
           Swal.fire({
-            title: `Make Payment for ${checkitem.student.firstname} ${checkitem.student.surname}`,
-            text: `Amount GHS ${Number.parseFloat(res.data).toFixed(2)}`,
+            title: `Make Adavance Payment`,
+            text: `Student: ${checkitem.student.firstname} ${checkitem.student.surname}`,
             input: "number",
             inputAttributes: {
               placeholder: "Enter the amount",
@@ -63,7 +63,7 @@ export default {
             confirmButtonText: "Pay",
           }).then((result) => {
             if (!result.isConfirmed) return null;
-            return fetch(`../api/json/bill-payment-by-attendance`, {
+            return fetch(`../api/json/student-advance-payment`, {
               method: "PUT",
               headers: {
                 "Content-type": "application/json",

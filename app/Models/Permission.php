@@ -16,7 +16,25 @@ class Permission extends Model
      * @var array
      */
     protected $fillable = [
-        'type'
+        'settings',
+            'permissions',
+            'modules',
+            'user_roles',
+            'users',
+            'students',
+            'guardians',
+            'classes',
+            'attendances',
+            'fee_types',
+            'fees',
+            'expense_types',
+            'expenses',
+            'bills',
+            'semesters',
+            'staffs',
+            'sms',
+            'locked',
+            'is_admin',
     ];
 
      /**
@@ -25,6 +43,9 @@ class Permission extends Model
      * @var array
      */
     protected $hidden = [
+        'created_at',
+        'updated_at',
+        'locked',
     ];
 
     /**

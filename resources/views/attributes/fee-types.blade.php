@@ -90,10 +90,7 @@
                                 </option>
                             </x-select>
                         </div>
-
-                               
                                 <div class="flex">
-                                  
                                     @if (isset($feetype))
                                     <x-button-p class="ml-3 py-3.5 shadow-md ">
                                         {{ __('Save') }}

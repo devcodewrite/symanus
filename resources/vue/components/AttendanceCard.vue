@@ -5,8 +5,9 @@
       <div class="flex flex-col items-start">
         <span class="font-semibold">{{ checkitem.student.firstname }} {{ checkitem.student.surname }}</span>
         <span class="text-xs">{{ checkitem.student.studentid }} </span>
+        <span class="text-xs text-green-600 mt-1">GHS {{ checkitem.balance }} </span>
       </div>
-      <span class="text-[10px] text-gray-600 place-self-end flex self-end content-start w-full">{{ checkitem.updated_at }} </span>
+      <span class="text-[8px] text-gray-600 place-self-end flex self-end content-start w-full">{{ checkitem.updated_at }} </span>
     </div>
     <StatusButton @click="onClick()" :isLoading="isLoading" :status="checkitem.status" />
   </button>

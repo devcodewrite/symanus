@@ -67,6 +67,7 @@ Route::middleware(['auth'])->group(function (){
 
     // users and roles
         Route::resource('users',UserController::class);
+        Route::put('users/{user}/update-permission',[UserController::class,'update_permission' ])->name('users.update-permission');
         Route::resource('sms',UserRoleController::class);
 
      // logged in user account

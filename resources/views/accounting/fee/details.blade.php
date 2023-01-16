@@ -28,18 +28,22 @@
                             role="tab">
                             Fee
                         </button>
+                        @if(false)
                         <button type="button"
                             class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
                             id="basic-tabs-item-2" data-hs-tab="#basic-tabs-2" aria-controls="basic-tabs-2"
                             role="tab">
                             Related Billings
                         </button>
+                        @endif
+                        @if(false)
                         <button type="button"
                             class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
                             id="basic-tabs-item-3" data-hs-tab="#basic-tabs-3" aria-controls="basic-tabs-3"
                             role="tab">
                             Related Payments
                         </button>
+                        @endif
                     </nav>
                 </div>
 
@@ -77,6 +81,12 @@
                                     <span class="w-1/2 text-gray-600">Fee Class</span>
                                     <span class="w-1/2">
                                         {{ $fee->class->name }}
+                                    </span>
+                                </div>
+                                <div class="flex flex-row justify-between py-3">
+                                    <span class="w-1/2 text-gray-600">Fee Type</span>
+                                    <span class="w-1/2">
+                                        {{ $fee->feeType->title }}
                                     </span>
                                 </div>
 

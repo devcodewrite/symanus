@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\AttendanceStudent;
+use App\Models\Bill;
+use App\Models\BillFee;
 use App\Models\Classes;
+use App\Models\Fee;
+use App\Models\FeeType;
 use App\Models\Student;
 use DataTables;
 use DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Response;
 use Validator;
 
@@ -22,11 +27,17 @@ class AttendanceController extends Controller
      */
     public function related_students_json(Request $request)
     {
-       return Response::json(
-        AttendanceStudent::with('student:id,firstname,surname,studentid,sex,avatar')
-        ->with('attendance:id,adate,status')
-        ->where('attendance_id',$request->input('attendance_id', 0))
-       ->get());
+       $students = AttendanceStudent::with('student:id,firstname,surname,studentid,sex,avatar')
+                ->with('attendance:id,adate,status')
+                ->with('bills')
+                ->where('attendance_id', $request->input('attendance_id', 0))
+                ->get();
+        $result = [];
+        foreach($students as $student){
+            $student->balance = $student->bills->where('student_id', $student->student_id)->first()->totalBill();
+            array_push($result, $student);
+        }
+        return Response::json($result);
     }
 
     /**
@@ -35,38 +46,17 @@ class AttendanceController extends Controller
      */
     public function update_related_students_json(Request $request)
     {
-        if($request->input('check_all') !== null){
-            if(AttendanceStudent::where('attendance_id',$request->input('attendance_id', 0))
-                ->update(['status' => ($request->input('check_all')?'present':'absent')])){
-                   $data = AttendanceStudent::with('student:id,firstname,surname,studentid,sex,avatar')
-                    ->where('attendance_id',$request->input('attendance_id', 0))
-                   ->get();
+        if ($request->input('check_all') !== null) {
+            if (AttendanceStudent::where('attendance_id', $request->input('attendance_id', 0))
+                ->update(['status' => ($request->input('check_all') ? 'present' : 'absent')])
+            ) {
+                $data = AttendanceStudent::with('student:id,firstname,surname,studentid,sex,avatar')
+                    ->where('attendance_id', $request->input('attendance_id', 0))
+                    ->get();
 
-                    $out = [
-                        'data' => $data,
-                        'message' => 'All status changed successfully!',
-                        'status' => true,
-                        'input' => $request->all()
-                    ];
-                } else {
-                    $out = [
-                        'message' => "Data couldn't be processed! Please try again!",
-                        'status' => false,
-                        'input' => $request->all()
-                    ];
-                }
-            return Response::json($out);
-        }
-        if(AttendanceStudent::where('attendance_id',$request->input('data.attendance_id', 0))
-                ->where( 'student_id', $request->input('data.student', 0))
-                ->update(['status' => $request->input('data.status', 'absent')]))
-                {
-                $atst = AttendanceStudent::where('attendance_id',$request->input('data.attendance_id', 0))
-                        ->where( 'student_id', $request->input('data.student', 0))
-                        ->first();
                 $out = [
-                    'data' => $atst,
-                    'message' => 'Status changed successfully!',
+                    'data' => $data,
+                    'message' => 'All status changed successfully!',
                     'status' => true,
                     'input' => $request->all()
                 ];
@@ -77,8 +67,29 @@ class AttendanceController extends Controller
                     'input' => $request->all()
                 ];
             }
+            return Response::json($out);
+        }
+        if (AttendanceStudent::where('attendance_id', $request->input('data.attendance_id', 0))
+            ->where('student_id', $request->input('data.student', 0))
+            ->update(['status' => $request->input('data.status', 'absent')])
+        ) {
+            $atst = AttendanceStudent::where('attendance_id', $request->input('data.attendance_id', 0))
+                ->where('student_id', $request->input('data.student', 0))
+                ->first();
+            $out = [
+                'data' => $atst,
+                'message' => 'Status changed successfully!',
+                'status' => true,
+                'input' => $request->all()
+            ];
+        } else {
+            $out = [
+                'message' => "Data couldn't be processed! Please try again!",
+                'status' => false,
+                'input' => $request->all()
+            ];
+        }
         return Response::json($out);
-      
     }
 
     /**
@@ -200,8 +211,9 @@ class AttendanceController extends Controller
                 fn () => Attendance::select([
                     'class_id as value',
                     'classes.name as label',
-                    DB::raw('count(*) as total')])
-                    ->join('classes', 'classes.id','=','attendances.class_id')
+                    DB::raw('count(*) as total')
+                ])
+                    ->join('classes', 'classes.id', '=', 'attendances.class_id')
                     ->groupBy('class_id')
                     ->groupBy('classes.name')
                     ->get(),
@@ -244,7 +256,7 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-      $classid = $request->input('class_id');
+        $classid = $request->input('class_id');
 
         $rules = [
             'adate' => [
@@ -271,19 +283,37 @@ class AttendanceController extends Controller
             ];
             return Response::json($out);
         }
-       DB::beginTransaction();
-       $attendance = Attendance::create($validator->safe()->except('stay'));
+        DB::beginTransaction();
+        $attendance = Attendance::create($validator->safe()->except('stay'));
         $atsts = Student::select([
-                        'id as student_id', 
-                        DB::raw("$attendance->id as attendance_id"),
-                        DB::raw("'absent' as status"),
-                        ])
-                        ->where('class_id', $request->input('class_id')
-                        )->get()
-                        ->toArray();
-                    
-        if(!AttendanceStudent::insert($atsts) && !$attendance){
+            'id as student_id',
+            DB::raw("$attendance->id as attendance_id"),
+            DB::raw("'absent' as status"),
+        ])
+            ->where(
+                'class_id',
+                $request->input('class_id')
+            )->get()
+            ->toArray();
+
+        if (!AttendanceStudent::insert($atsts) || !$attendance || sizeof($atsts) === 0) {
             DB::rollBack();
+        } else {
+            if ($request->input('bill_students')) {
+                $fees = Fee::where('rstatus', 'open')->get();
+                foreach ($fees as $fee) {
+                    $students =  $fee->class->students
+                        ->whereNotIn('affiliation', [$fee->feeType->bill_ex_st_affiliation])
+                        ->whereNotIn('transit', [$fee->feeType->bill_ex_st_transit]);
+
+                    foreach ($students as $row) {
+                        $bill =  Bill::updateOrCreate(
+                            ['user_id' => auth()->user()->id, 'student_id' => $row->id, 'bdate' => $attendance->adate]
+                        );
+                        BillFee::updateOrCreate(['bill_id' => $bill->id, 'fee_id' => $fee->id, 'amount' => $fee->amount]);
+                    }
+                }
+            }
         }
         DB::commit();
 
@@ -295,11 +325,19 @@ class AttendanceController extends Controller
                 'input' => $request->all()
             ];
         } else {
-            $out = [
-                'message' => "Data couldn't be processed! Please try again!",
-                'status' => false,
-                'input' => $request->all()
-            ];
+            if (sizeof($atsts) === 0) {
+                $out = [
+                    'message' => "No student found for this attendance!",
+                    'status' => false,
+                    'input' => $request->all()
+                ];
+            } else {
+                $out = [
+                    'message' => "Data couldn't be processed! Please try again!",
+                    'status' => false,
+                    'input' => $request->all()
+                ];
+            }
         }
         return Response::json($out);
     }
@@ -346,8 +384,8 @@ class AttendanceController extends Controller
                 'nullable',
                 'date',
                 Rule::unique('attendances')
-                ->where('class_id', $request->input('class_id'))
-                ->where('adate','<>',$request->input('adate'))
+                    ->where('class_id', $request->input('class_id'))
+                    ->where('adate', '<>', $request->input('adate'))
             ],
             'user_id' => 'nullable|integer|exists:users,id',
             'status' => 'nullable|string|in:approved,draft,rejected,submitted'
@@ -365,7 +403,7 @@ class AttendanceController extends Controller
             ];
             return Response::json($out);
         }
-       $attendance->fill($validator->safe()->except('stay', 'class_id'));
+        $attendance->fill($validator->safe()->except('stay', 'class_id'));
 
         if ($attendance->save()) {
             $out = [
@@ -392,6 +430,17 @@ class AttendanceController extends Controller
      */
     public function destroy(Attendance $attendance)
     {
-        //
+        if ( $attendance->delete()) {
+            $out = [
+                'message' => 'Attendance deleted successfully!',
+                'status' => true,
+            ];
+        } else {
+            $out = [
+                'message' => "Cannot delete this record!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 }

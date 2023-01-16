@@ -125,13 +125,13 @@ form.on("submit", function (e) {
                             let default_redirect =
                                 form.getAttribute("data-redirect-url");
                             default_redirect = default_redirect
-                                ? default_redirect + `/${d.data.id}`
+                                ? default_redirect + `/${d?.data?.id}`
                                 : null;
                             let crrurl = new URL(location.href);
                             let backto = crrurl.searchParams.get("backtourl");
                             let redirect_url = backto
                                 ? backto
-                                : default_redirect;
+                                : (d.data?default_redirect:form.getAttribute("data-redirect-url"));
 
                             if (redirect_url && !d.input?.stay)
                                 setTimeout(location.assign(redirect_url), 500);

@@ -24,7 +24,6 @@ class CreateAdvanceFeePaymentsTable extends Migration
             $table->decimal('amount');
             $table->date('paid_for_date');
             $table->foreignIdFor(Attendance::class)->nullable();
-            $table->foreignIdFor(FeeType::class)->constrained();
             $table->string('paid_by')->nullable();
             $table->foreignIdFor(User::class)->constrained();
             $table->timestamps();

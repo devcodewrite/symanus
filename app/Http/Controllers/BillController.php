@@ -148,38 +148,32 @@ class BillController extends Controller
         $billFee = null;
         if($request->input('function2') === 'fees'){
             foreach($dates as $bdate){
-                foreach(Fee::where('rstatus', 'open')->find($request->input('fees')) as $fee){
+                $fees = [];
+                foreach(Fee::where('rstatus', 'open')->whereIn('id', $request->input('fees'))->get() as $fee){
                     $students =  $fee->class->students
                     ->whereNotIn('affiliation', [$fee->feeType->bill_ex_st_affiliation])
                     ->whereNotIn('transit', [$fee->feeType->bill_ex_st_transit]);
-
+                    if($fee) array_push($fees, $fee);
+                  
                     foreach($students as $row){
-                        $bill =  Bill::updateOrCreate(
-                            array_merge(['user_id' => auth()->user()->id],['student_id' => $row->id], $bdate));
-                        
-                        $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id], ['fee_id' => $fee->id]);
+                        $bill =  Bill::updateOrCreate(['user_id' => auth()->user()->id, 'student_id' => $row->id, 'bdate' =>$bdate['bdate']]);
+                        $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id, 'amount' => $fee->amount]);
                     }
                 }
             }
         }else {
             foreach($dates as $bdate){
-                $fees = [];
-                $feeTypes = FeeType::where('status', 'open')->find($request->input('feeTypes'));
-                foreach($feeTypes as $row){
-                    $fee = Fee::where('rstatus', 'open')->find($row->id);
-                    if($fee) array_push($fees, $fee);
-                }
-               
+                $fees = Fee::where('rstatus', 'open')->whereIn('fee_type_id',$request->input('feeTypes'));
                 foreach($fees as $fee){
                     $students =  $fee->class->students
                     ->whereNotIn('affiliation', [$fee->feeType->bill_ex_st_affiliation])
                     ->whereNotIn('transit', [$fee->feeType->bill_ex_st_transit]);
-
+               
                     foreach($students as $row){
                         $bill =  Bill::updateOrCreate(
                             array_merge(['user_id' => auth()->user()->id],['student_id' => $row->id], $bdate));
                         
-                        $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id], ['fee_id' => $fee->id]);
+                        $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id,'amount' => $fee->amount]);
                     }
                 }
             }
@@ -248,11 +242,7 @@ class BillController extends Controller
     public function update(Request $request, Bill $bill)
     {
         $rules = [ 
-            'amount' => 'required|numeric',
-            'rstatus' => 'required|in:open,close',
-            'description' => 'nullable|string|max:100',
-            'fee_type_id' => 'required|integer|exists:fee_types,id',
-            'class_id' => 'required|integer|exists:classes,id',
+            'fees' => 'nullable|array',
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";
@@ -268,10 +258,13 @@ class BillController extends Controller
             ];
             return Response::json($out);
         }
-
-        if($bill->fill($validator->safe()->except('stay'))->save()){
+        foreach($bill->fees as $fee)
+         $bf = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id]);
+        
+         if($bf){
             $out = [
-                'message' => 'Bill(s) created successfully!',
+                'data' => $bill,
+                'message' => 'Bill update successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];

@@ -28,30 +28,38 @@
                             role="tab">
                             User
                         </button>
-                        @if($module->hasModule('Courses Management'))
-                        <button type="button"
-                            class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
-                            id="basic-tabs-item-2" data-hs-tab="#basic-tabs-2" aria-controls="basic-tabs-2"
-                            role="tab">
-                            Related Courses
-                        </button>
+                        @if ($module->hasModule('Courses Management'))
+                            <button type="button"
+                                class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
+                                id="basic-tabs-item-2" data-hs-tab="#basic-tabs-2" aria-controls="basic-tabs-2"
+                                role="tab">
+                                Related Courses
+                            </button>
                         @endif
-                        @if($module->hasModule('Report Card Management'))
-                        <button type="button"
-                            class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
-                            id="basic-tabs-item-3" data-hs-tab="#basic-tabs-3" aria-controls="basic-tabs-3"
-                            role="tab">
-                            Related Assessments
-                        </button>
+                        @if ($module->hasModule('Report Card Management'))
+                            <button type="button"
+                                class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
+                                id="basic-tabs-item-3" data-hs-tab="#basic-tabs-3" aria-controls="basic-tabs-3"
+                                role="tab">
+                                Related Assessments
+                            </button>
                         @endif
 
-                        @if($module->hasModule('Fees Collection Management'))
-                        <button type="button"
-                            class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
-                            id="basic-tabs-item-4" data-hs-tab="#basic-tabs-4" aria-controls="basic-tabs-4"
-                            role="tab">
-                            Related Fees/Bills
-                        </button>
+                        @if (false)
+                            <button type="button"
+                                class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
+                                id="basic-tabs-item-4" data-hs-tab="#basic-tabs-4" aria-controls="basic-tabs-4"
+                                role="tab">
+                                Related Fees/Bills
+                            </button>
+                        @endif
+                        @if (Gate::inspect('update', auth()->user()))
+                            <button type="button"
+                                class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
+                                id="basic-tabs-item-5" data-hs-tab="#basic-tabs-5" aria-controls="basic-tabs-5"
+                                role="tab">
+                                Permissions
+                            </button>
                         @endif
                     </nav>
                 </div>
@@ -104,7 +112,7 @@
                                     @endif
 
                                 </div>
-                               
+
                             </div>
 
                             <div class="flex flex-col w-full divide-y divide-slate-300">
@@ -112,23 +120,23 @@
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">User Class(s)</span>
                                     <span class="w-1/2">
-                                       @foreach($user->classes as $key => $row)
+                                        @foreach ($user->classes as $key => $row)
                                             <span class="shadow-md p-2 rounded mx-1"> {{ $row->name }} </span>
-                                       @endforeach
+                                        @endforeach
                                     </span>
                                 </div>
                                 @if ($module->hasModule('Courses Management'))
-                                <div class="flex flex-row justify-between py-3">
-                                    <span class="w-1/2 text-gray-600">Total courses for this user</span>
-                                    <span class="w-1/2">
-                                        {{ $user->class->courses->count() }}
-                                    </span>
-                                </div>
-                            @endif
+                                    <div class="flex flex-row justify-between py-3">
+                                        <span class="w-1/2 text-gray-600">Total courses for this user</span>
+                                        <span class="w-1/2">
+                                            {{ $user->class->courses->count() }}
+                                        </span>
+                                    </div>
+                                @endif
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">User Affiliation</span>
                                     <span class="w-1/2 uppercase">
-                                       
+
                                     </span>
                                 </div>
                             </div>
@@ -164,6 +172,25 @@
                             tab body.
                         </p>
                     </div>
+                    <div id="basic-tabs-5" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-5">
+                        <form class="user-permission-form"
+                            action="{{ route('users.update-permission', ['user' => $user->id]) }} "
+                            novalidate>
+                            @csrf
+                            @method('put')
+                          
+                            <div class="grid grid-cols-3 overflow-x-auto gap-5 divide-y divide-slate-300">
+                                @foreach ($user->permission->toArray() as $key => $value)
+                                    @continue($key === 'id')
+                                    <x-permission-card :key="$key" :options="$value" />
+                                @endforeach
+                            </div>
+                            <div class="p-5">
+                                <x-button-p class="ml-3 py-3.5 item-end">
+                                    {{ __('Save Changes') }}
+                                </x-button-p>
+                            </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -171,6 +198,7 @@
 
     <!-- End Content -->
     @section('script')
+    <script src="{{ asset('js/user/permission.js') }} " defer></script>
     @endsection
 
 </x-app-layout>

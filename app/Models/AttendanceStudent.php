@@ -59,4 +59,8 @@ class AttendanceStudent extends Model
         return $this->belongsTo(Student::class);
     }
 
+    public function bills(){
+        return $this->hasMany(Bill::class, 'attendance_id', 'attendance_id');
+    }
+
 }

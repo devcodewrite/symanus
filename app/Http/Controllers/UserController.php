@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Module;
+use App\Models\Permission;
 use App\Models\User;
 use App\Models\UserRole;
 use DataTables;
@@ -240,6 +241,26 @@ class UserController extends Controller
             $out = [
                 'data' => $user,
                 'message' => 'user updated successfully!',
+                'status' => true,
+                'input' => $request->all()
+            ];
+        }else {
+            $out = [
+                'message' => "Data couldn't be processed! Please try again!",
+                'status' => false,
+                'input' => $request->all()
+            ];
+        }
+        return Response::json($out);
+    }
+
+    public function update_permission(Request $request, User $user)
+    {
+       $perm = Permission::updateOrCreate(['id' => $user->permission_id],$request->input());
+        if($perm){
+            $out = [
+                'data' => $perm,
+                'message' => 'permission updated successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];
