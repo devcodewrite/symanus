@@ -50,7 +50,7 @@ class ModuleSeeder extends Seeder
             ],
             [
                 'group_label' => 'Students & Guardians Managment', 
-                'name' => "Guardian Management", 
+                'name' => "Guardians Management", 
                 'description' => "Allows you to manage Guardians' User Accounts.",
                 'status' => 'enabled',
                 'default_status' => 'enabled',

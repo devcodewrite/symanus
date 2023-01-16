@@ -67,6 +67,15 @@ class Classes extends Model
     {
         return $this->hasManyThrough(Payment::class, Student::class, 'class_id');
     }
+
+     /**
+     * Get the fees for the class.
+     */
+    public function fees()
+    {
+        return $this->hasMany(Fee::class);
+    }
+
     /**
      * Get the bills for the class.
      */

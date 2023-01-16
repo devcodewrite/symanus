@@ -166,7 +166,7 @@ class StudentController extends Controller
     public function create()
     {
         $st = Student::orderBy('id', 'desc')->first();
-        $st = $st?$st:0;
+        $st = $st?$st:(object)['id' => 0];
         $data = [
             'new_studentid' => date('ym').Str::padLeft(strval($st->id + 1),6, 0),
         ];

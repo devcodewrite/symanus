@@ -48,7 +48,6 @@
                                 @endif
                             </x-select>
                         </div>
-
                         <!-- User -->
                         <div class="w-full field">
                             <x-label for="user" :value="__('Assign To:')" />
@@ -60,6 +59,11 @@
                                         {{ $attendance->user->surname }} </option>
                                 @endif
                             </x-select>
+                        </div>
+                        <div class="field w-full flex items-end gap-2">
+                            <x-label for="generate-bill" :value="__('Auto Bill Students')" />
+                            <x-input id="generate-bill" class="mt-1" type="checkbox" checked name="bill_students"
+                                value="yes" />
                         </div>
                     </div>
                   

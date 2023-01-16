@@ -81,7 +81,7 @@ Route::middleware(['auth'])->group(function (){
         Route::resource('settings',SettingController::class);
         Route::resource('permissions',PermissionController::class);
         Route::prefix('/attributes')->group(function (){
-            Route::resource('expense-types',ExpenseController::class);
+            Route::resource('expense-types',E::class);
             Route::resource('fee-types',FeeTypeController::class);
             Route::resource('semesters',SemesterController::class);  
             Route::resource('user-roles',UserRoleController::class);  

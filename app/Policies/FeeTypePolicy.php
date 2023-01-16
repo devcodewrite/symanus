@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\FeeType;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class FeeTypePolicy
 {
@@ -18,7 +19,8 @@ class FeeTypePolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->fee_types))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -30,7 +32,8 @@ class FeeTypePolicy
      */
     public function view(User $user, FeeType $feeType)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->fee_types))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -41,7 +44,8 @@ class FeeTypePolicy
      */
     public function create(User $user)
     {
-        //
+        return  in_array('create',explode(',',$user->permission->fee_types))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -53,7 +57,8 @@ class FeeTypePolicy
      */
     public function update(User $user, FeeType $feeType)
     {
-        //
+        return  in_array('update',explode(',',$user->permission->fee_types))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -77,7 +82,8 @@ class FeeTypePolicy
      */
     public function restore(User $user, FeeType $feeType)
     {
-        //
+        return  in_array('restore',explode(',',$user->permission->fee_types))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -89,6 +95,7 @@ class FeeTypePolicy
      */
     public function forceDelete(User $user, FeeType $feeType)
     {
-        //
+        return  in_array('force-delete',explode(',',$user->permission->fee_types))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 }

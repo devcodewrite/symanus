@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -55,6 +54,7 @@ class Student extends Model
         return $this->belongsTo(Classes::class, 'class_id');
     }
 
+
     /**
      * Get the payments for the student.
      */
@@ -62,6 +62,15 @@ class Student extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+     /**
+     * Get the fees for the student.
+     */
+    public function fees()
+    {
+        return $this->hasMany(Fee::class, 'class_id');
+    }
+
     /**
      * Get the bills for the student.
      */

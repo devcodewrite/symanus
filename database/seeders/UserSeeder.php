@@ -23,7 +23,8 @@ class UserSeeder extends Seeder
             'email' => 'admin@allghanaschools.com',
             'password' => Hash::make('pass'),
             'user_role_id' => 1,
-            'email_verified_at' => date('Y-m-d H:i:s', )
+            'email_verified_at' => date('Y-m-d H:i:s', ),
+            'permission_id' => 1
         ]);
     }
 }

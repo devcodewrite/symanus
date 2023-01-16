@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\ExpenseType;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class ExpenseTypePolicy
 {
@@ -18,7 +19,8 @@ class ExpenseTypePolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->expense_types))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -30,7 +32,8 @@ class ExpenseTypePolicy
      */
     public function view(User $user, ExpenseType $expenseType)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->expense_types))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -41,7 +44,8 @@ class ExpenseTypePolicy
      */
     public function create(User $user)
     {
-        //
+        return  in_array('create',explode(',',$user->permission->expense_types))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**

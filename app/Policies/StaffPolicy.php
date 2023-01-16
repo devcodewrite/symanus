@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class StaffPolicy
 {
@@ -18,7 +19,8 @@ class StaffPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->staffs))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -30,7 +32,8 @@ class StaffPolicy
      */
     public function view(User $user, Staff $staff)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->staffs))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -41,7 +44,8 @@ class StaffPolicy
      */
     public function create(User $user)
     {
-        //
+        return  in_array('create',explode(',',$user->permission->staffs))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -53,7 +57,8 @@ class StaffPolicy
      */
     public function update(User $user, Staff $staff)
     {
-        //
+        return  in_array('delete',explode(',',$user->permission->staffs))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -65,7 +70,8 @@ class StaffPolicy
      */
     public function delete(User $user, Staff $staff)
     {
-        //
+        return  in_array('delete',explode(',',$user->permission->staffs))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**

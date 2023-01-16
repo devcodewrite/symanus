@@ -71,6 +71,9 @@ class User extends Authenticatable
      */
     public function permission()
     {
+        if(!$this->belongsTo(Permission::class)->first()){
+           return $this->userRole->permission();
+        }
         return $this->belongsTo(Permission::class);
     }
 

@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Module;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class ModulePolicy
 {
@@ -18,7 +19,8 @@ class ModulePolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->modules))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -30,7 +32,8 @@ class ModulePolicy
      */
     public function view(User $user, Module $module)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->modules))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -41,7 +44,8 @@ class ModulePolicy
      */
     public function create(User $user)
     {
-        //
+        return  in_array('create',explode(',',$user->permission->modules))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -53,7 +57,8 @@ class ModulePolicy
      */
     public function update(User $user, Module $module)
     {
-        //
+        return  in_array('update',explode(',',$user->permission->modules))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use PhpParser\Builder\Class_;
 
 class Fee extends Model
 {
@@ -51,4 +52,12 @@ class Fee extends Model
     {
         return $this->belongsTo(FeeType::class, 'fee_type_id');
     }
+    /*
+    * Get the students for the fee.
+    */
+   public function students()
+   {
+       return $this->hasManyThrough(Student::class, Classes::class);
+   }
+    
 }

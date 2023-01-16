@@ -50,6 +50,48 @@
                                     <x-input id="title" class="mt-1 block w-full" type="text" name="title"
                                         :value="old('title', isset($feetype) ? $feetype->title : '')" required autofocus placeholder="{{ __('Label') }}" />
                                 </div>
+
+                                 <!-- Transit -->
+                        <div class="w-full field">
+                            <x-label for="bill_ex_st_transit" :value="__('Exclude bills for transit:')" />
+                            <x-select id="bill_ex_st_transit" class="block w-full select2" name="bill_ex_st_transit"
+                                placeholder="Select a transit">
+                                <option value=""></option>
+                                <option value="walk" {{ isset($feetype)? ($feetype->bill_ex_st_transit === 'walk' ? 'selected' : ''):'' }}>Students that Walk to
+                                    school</option>
+                                <option value="bus" {{ isset($feetype)? ($feetype->bill_ex_st_transit === 'bus' ? 'selected' : ''):'' }}>Students that Take
+                                    school bus</option>
+                            </x-select>
+                        </div>
+
+                        <!-- Affiliation -->
+                        <div class="w-full field">
+                            <x-label for="bill_ex_st_affiliation" :value="__('Exclude bills for affiliation:')" />
+                            <x-select id="bill_ex_st_affiliation" class="block w-full select2" name="bill_ex_st_affiliation" 
+                                placeholder="Select an affiliation">
+                                <option value=""></option>
+                                <option value="staffed"
+                                    {{ isset($feetype)? ($feetype->bill_ex_st_affiliation === 'staffed' ? 'selected' : ''):'' }}>Staffed Students</option>
+                                <option value="non-staffed"
+                                    {{ isset($feetype)? ($feetype->bill_ex_st_affiliation === 'non-staffed' ? 'selected' : ''):'' }}>Non Staffed Students
+                                </option>
+                            </x-select>
+                        </div>
+                         <!-- Attendance -->
+                         <div class="w-full field">
+                            <x-label for="attendance" :value="__('Exclude bills for attendance:')" />
+                            <x-select id="attendance" class="block w-full select2" name="bill_ex_st_attendance"
+                                placeholder="Select a attendance status">
+                                <option value="">Select a attendance status</option>
+                                <option value="present"
+                                    {{ isset($feetype)? ($feetype->bill_ex_st_attendance === 'present' ? 'selected' : ''):'' }}>Students Present</option>
+                                <option value="absent"
+                                    {{ isset($feetype)? ($feetype->bill_ex_st_attendance === 'absent' ? 'selected' : ''):'' }}>Students Absent
+                                </option>
+                            </x-select>
+                        </div>
+
+                               
                                 <div class="flex">
                                   
                                     @if (isset($feetype))
@@ -73,6 +115,9 @@
                                     <tr class="border">
                                         <th class="w-5">#</th>
                                         <th class="border text-center">Label</th>
+                                        <th class="border text-center">Exclude bills for transit</th>
+                                        <th class="border text-center">Exclude bills for affiliation</th>
+                                        <th class="border text-center">Exclude bills for attendance</th>
                                         <th class="border ">Updated Date</th>
                                         <th class="border">Created Date</th>
                                         <th class="border">Action</th>
@@ -84,6 +129,9 @@
                                         <tr>
                                             <td class="border text-center">{{ $row->id }}</td>
                                             <td class="border text-center">{{ $row->title }}</td>
+                                            <td class="border text-center">{{ $row->bill_ex_st_transit }}</td>
+                                            <td class="border text-center">{{ $row->bill_ex_st_affiliation }}</td>
+                                            <td class="border text-center">{{ $row->bill_ex_st_attendance }}</td>
                                             <td class="border text-center">{{ $row->updated_at }}</td>
                                             <td class="border text-center">{{ $row->created_at }}</td>
                                             <td class="border text-center flex items-end gap-3">

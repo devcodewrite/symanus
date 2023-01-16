@@ -8,6 +8,7 @@ use App\Models\Bill;
 use App\Models\Classes;
 use App\Models\Course;
 use App\Models\Fee;
+use App\Models\FeeType;
 use App\Models\Guardian;
 use App\Models\Module;
 use App\Models\Payment;
@@ -28,7 +29,7 @@ class DashboardController extends Controller
      */
     public function show()
     {
-       
+      
         $data = [
             'setting' => new Setting(),
             'user' => new User(),

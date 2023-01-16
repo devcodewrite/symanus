@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class PaymentPolicy
 {
@@ -18,7 +19,8 @@ class PaymentPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->payments))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -30,7 +32,8 @@ class PaymentPolicy
      */
     public function view(User $user, Payment $payment)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->payments))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -41,7 +44,8 @@ class PaymentPolicy
      */
     public function create(User $user)
     {
-        //
+        return  in_array('create',explode(',',$user->permission->payments))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -53,7 +57,8 @@ class PaymentPolicy
      */
     public function update(User $user, Payment $payment)
     {
-        //
+        return  in_array('update',explode(',',$user->permission->payments))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -65,8 +70,22 @@ class PaymentPolicy
      */
     public function delete(User $user, Payment $payment)
     {
-        //
+        return  in_array('delete',explode(',',$user->permission->payments))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
+
+      /*
+    * Determine whether the user can report the model.
+    *
+    * @param  \App\Models\User  $user
+    * @param  \App\Models\Bill  $bill
+    * @return \Illuminate\Auth\Access\Response|bool
+    */
+   public function report(User $user, Payment $payment)
+   {
+       return  in_array('report',explode(',',$user->permission->payments))
+       ?Response::allow():Response::deny("You don't have permission to view this model");
+   }
 
     /**
      * Determine whether the user can restore the model.

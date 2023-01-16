@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Guardian;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class GuardianPolicy
 {
@@ -18,7 +19,8 @@ class GuardianPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->guardians))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -30,7 +32,8 @@ class GuardianPolicy
      */
     public function view(User $user, Guardian $guardian)
     {
-        //
+        return  in_array('view',explode(',',$user->permission->guardians))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -41,7 +44,8 @@ class GuardianPolicy
      */
     public function create(User $user)
     {
-        //
+        return  in_array('create',explode(',',$user->permission->guardians))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -53,7 +57,8 @@ class GuardianPolicy
      */
     public function update(User $user, Guardian $guardian)
     {
-        //
+        return  in_array('update',explode(',',$user->permission->guardians))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -65,7 +70,8 @@ class GuardianPolicy
      */
     public function delete(User $user, Guardian $guardian)
     {
-        //
+        return  in_array('delete',explode(',',$user->permission->guardians))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -77,7 +83,8 @@ class GuardianPolicy
      */
     public function restore(User $user, Guardian $guardian)
     {
-        //
+        return  in_array('restore',explode(',',$user->permission->guardians))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -89,6 +96,7 @@ class GuardianPolicy
      */
     public function forceDelete(User $user, Guardian $guardian)
     {
-        //
+        return  in_array('force-delte',explode(',',$user->permission->guardians))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 }

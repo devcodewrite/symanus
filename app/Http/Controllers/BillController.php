@@ -116,7 +116,6 @@ class BillController extends Controller
             'bill_to' => 'required_if:function1,range|date',
             'fees' => 'required_if:function2,fees|array',
             'feeTypes' => 'required_if:function2,feeTypes|array',
-            'afilliation' => 'nullable|in:staffed,non-staffed',
         ];
 
         $validator = Validator::make($request->input(), $rules);
@@ -146,43 +145,41 @@ class BillController extends Controller
         }else {
             array_push($dates,['bdate' => $request->input('bdate')]);
         }
-
+        $billFee = null;
         if($request->input('function2') === 'fees'){
             foreach($dates as $bdate){
-                foreach(Fee::find($request->input('fees')) as $fee){
-                    if($request->input('affiliation')){
-                        $students =  $fee->class->students()->whereIn('affiliation',[$request->input('affiliation')])->get();
-                    }
-                   else {
-                        $students =  $fee->class->students;
-                   }
+                foreach(Fee::where('rstatus', 'open')->find($request->input('fees')) as $fee){
+                    $students =  $fee->class->students
+                    ->whereNotIn('affiliation', [$fee->feeType->bill_ex_st_affiliation])
+                    ->whereNotIn('transit', [$fee->feeType->bill_ex_st_transit]);
+
                     foreach($students as $row){
                         $bill =  Bill::updateOrCreate(
-                            array_merge(['student_id' => $row->id], $bdate),
-                        [   'user_id' => auth()->user()->id]);
-                        $billFee = BillFee::create(['bill_id'=>$bill->id, 'fee_id' => $fee->id]);
+                            array_merge(['user_id' => auth()->user()->id],['student_id' => $row->id], $bdate));
+                        
+                        $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id], ['fee_id' => $fee->id]);
                     }
                 }
             }
         }else {
             foreach($dates as $bdate){
                 $fees = [];
-                $feeTypes = FeeType::find($request->input('feeTypes'));
-                foreach($feeTypes as $row)
-                    array_push($fees, Fee::find($row->id));
-            
+                $feeTypes = FeeType::where('status', 'open')->find($request->input('feeTypes'));
+                foreach($feeTypes as $row){
+                    $fee = Fee::where('rstatus', 'open')->find($row->id);
+                    if($fee) array_push($fees, $fee);
+                }
+               
                 foreach($fees as $fee){
-                    if($request->input('affiliation')){
-                        $students =  $fee->class->students()->whereIn('affiliation',[$request->input('affiliation')])->get();
-                    }
-                   else {
-                    $students =  $fee->class->students;
-                   }
+                    $students =  $fee->class->students
+                    ->whereNotIn('affiliation', [$fee->feeType->bill_ex_st_affiliation])
+                    ->whereNotIn('transit', [$fee->feeType->bill_ex_st_transit]);
+
                     foreach($students as $row){
                         $bill =  Bill::updateOrCreate(
-                            array_merge(['student_id' => $row->id], $bdate),
-                        [   'user_id' => auth()->user()->id]);
-                        $billFee = BillFee::create(['bill_id'=>$bill->id, 'fee_id' => $fee->id]);
+                            array_merge(['user_id' => auth()->user()->id],['student_id' => $row->id], $bdate));
+                        
+                        $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id], ['fee_id' => $fee->id]);
                     }
                 }
             }
@@ -194,11 +191,19 @@ class BillController extends Controller
                 'input' => $request->all()
             ];
         }else {
+                if(sizeof($fees) > 0)
+                $out = [
+                    'message' => "Data couldn't be processed! Please try again!",
+                    'status' => false,
+                    'input' => $request->all()
+                ];
+            else
             $out = [
-                'message' => "Data couldn't be processed! Please try again!",
+                'message' => "No fees found! Please try again!",
                 'status' => false,
                 'input' => $request->all()
             ];
+
         }
         return Response::json($out);
     }

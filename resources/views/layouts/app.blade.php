@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
     <meta name="description" content="CWSMS - Robust school management system.">
     <meta name="author" content="Codewrite Technology Limited">
     <meta name="keywords"
@@ -41,7 +41,7 @@
                 @yield('breadcrumb')
             </div>
         </div>
-        @include('layouts.sidebar')
+        <x-side-bar-layout></x-side-bar-layout>
         
         <!-- Page Content -->
         <main>
