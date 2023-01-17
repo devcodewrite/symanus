@@ -39,13 +39,10 @@ class AttendanceController extends Controller
             if ($bill) $student->balance = $bill->totalBill();
             else $student->balance = "0.00";
 
-            $adv = AdvanceFeePayment::where([
+            $student->advance = AdvanceFeePayment::where([
                 'attendance_id' => $request->input('attendance_id', 0),
                 'student_id' => $student->student_id,
-            ])->first();
-
-            if($adv)  $student->advance = $adv->amount;
-            else $student->advance = "0.00";
+            ])->sum('amount');
 
             array_push($result, $student);
         }
