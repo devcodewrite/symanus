@@ -19,7 +19,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username','firstname', 'surname', 'phone', 'email', 'password','sex','avatar','user_role_id'
+        'username','firstname', 'surname', 'phone', 'email', 'password','sex','avatar','user_role_id',
+        'permission_id','api_token'
     ];
 
     /**
@@ -123,9 +124,9 @@ class User extends Authenticatable
             $bills = $this->bills()->whereBetween('bdate', [$from, $to])->get();
             $totalBills = 0;
             foreach ($bills as $bill) {
-                $totalBills += $bill->fees()
+                $totalBills += $bill->billFees()->join('fees', 'fees.id', '=', 'bill_fees.fee_id')
                     ->where('fee_type_id', $feeType->id)
-                    ->sum('amount');
+                    ->sum('bill_fees.amount');
             }
             return $totalBills;
         }

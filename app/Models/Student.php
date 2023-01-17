@@ -17,7 +17,7 @@ class Student extends Model
      */
     protected $fillable = [
         'studentid', 'firstname','class_id', 'surname', 'sex', 'address', 'dateofbirth', 'avatar',
-        'rstatus', 'admitted_at', 'transit', 'affiliation', 'linked_files', 'guardian_id',
+        'rstate', 'admitted_at', 'transit', 'affiliation', 'linked_files', 'guardian_id',
     ];
 
      /**
@@ -112,7 +112,9 @@ class Student extends Model
         $bills = $this->bills()->whereBetween('bdate', [$from, $to])->get();
         $totalBills = 0;
         foreach($bills as $bill){
-             $totalBills += $bill->fees()->where('fee_type_id',$feeType->id)->totalBill();
+            $totalBills += $bill->billFees()->join('fees', 'fees.id', '=', 'bill_fees.fee_id')
+                    ->where('fee_type_id', $feeType->id)
+                    ->sum('bill_fees.amount');
         }
         $totalPayment = $this->payments()
                 ->where('fee_type_id', $feeType->id)
@@ -127,7 +129,7 @@ class Student extends Model
        $totalBills = 0;
        
        foreach($bills as $bill){
-            $totalBills += $bill->totalBill();
+            $totalBills += $bill->billFees->sum('amount');
        }
        $totalPayment = $this->payments()
                 ->whereBetween('paid_at', [$from, $to])

@@ -25,6 +25,15 @@ class BillFee extends Model
         return $this->belongsTo(Fee::class);
     }
 
+
+     /**
+    * Get the fee that owns the billfee.
+    */
+    public function fees()
+    {
+        return $this->hasMany(Fee::class);
+    }
+
     /**
     * Get the bill that owns the billfee.
     */

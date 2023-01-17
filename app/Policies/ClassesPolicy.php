@@ -32,7 +32,11 @@ class ClassesPolicy
      */
     public function view(User $user, Classes $classes)
     {
-        return  in_array('view',explode(',',$user->permission->classes))
+        $c = [];
+        foreach($classes->all() as $class){
+            array_push($c, $class->id);
+        }
+        return  $user->classes->whereIn('id', $c)->count() > 0
         ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 

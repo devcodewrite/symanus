@@ -126,7 +126,7 @@ class ClassesController extends Controller
         $rules = [
             'name' => 'required|string|max:45',
             'level' => 'required|integer',
-            'user_id' => 'nullable|integer|unique:classes,user_id|exists:users,id',
+            'user_id' => 'nullable|integer|exists:users,id',
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";

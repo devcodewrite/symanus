@@ -49,6 +49,19 @@ class AttendancePolicy
     }
 
     /**
+     * Determine whether the user can create models for any class.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function createForAnyClass(User $user)
+    {
+        return $user->permission->is_admin
+        ?Response::allow():Response::deny("You don't have permission to view this model");
+    }
+
+
+    /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user

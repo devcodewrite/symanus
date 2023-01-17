@@ -18,6 +18,7 @@ class CreateUserRolesTable extends Migration
             $table->id();
             $table->string('title', 45);
             $table->foreignIdFor(Permission::class)->nullable()->constrained();
+            $table->enum('status', ['open', 'close'])->default('open');
             $table->timestamps();
         });
     }

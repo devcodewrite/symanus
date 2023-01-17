@@ -133,7 +133,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'avatar' => $avatar,
             'user_role_id' => $request->user_role_id,
-            'api_token' => Hash::make(uniqid()),
+            'api_token' => Hash::sha1(uniqid()),
         ]);
         event(new Registered($user));
         if($user){

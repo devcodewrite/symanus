@@ -164,11 +164,11 @@
                                 {{ __('Modify') }}
                             </x-a-button-p>
                             @if($student->rstate === 'open')
-                            <x-a-button class="ml-3 py-3.5 shadow-md">
+                            <x-a-button class="ml-3 py-3.5 shadow-md close">
                                 {{ __('Close') }}
                             </x-a-button>
                             @else
-                            <x-a-button class="ml-3 py-3.5 shadow-md">
+                            <x-a-button class="ml-3 py-3.5 shadow-md open">
                                 {{ __('Open') }}
                             </x-a-button>
                             @endif
@@ -205,6 +205,7 @@
     <!-- End Content -->
     @section('script')
         <script src="{{ asset('js/student/related-bills.js') }} " defer></script>
+        <script src="{{ asset('js/student/details.js') }} " defer></script>
     @endsection
 
 </x-app-layout>

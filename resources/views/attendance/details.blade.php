@@ -29,24 +29,23 @@
                             role="tab">
                             Attendance
                         </button>
-                        @if($attendance->status === 'draft')
-                        <button type="button"
-                            class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
-                            id="basic-tabs-item-2" data-hs-tab="#basic-tabs-2" aria-controls="basic-tabs-2"
-                            role="tab">
-                            Marking 
-                        </button>
+                        @if ($attendance->status === 'draft')
+                            <button type="button"
+                                class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
+                                id="basic-tabs-item-2" data-hs-tab="#basic-tabs-2" aria-controls="basic-tabs-2"
+                                role="tab">
+                                Marking
+                            </button>
                         @endif
-                        
                         <button type="button"
                             class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-black"
                             id="basic-tabs-item-3" data-hs-tab="#basic-tabs-3" aria-controls="basic-tabs-3"
                             role="tab">
                             Related Students
                         </button>
+
                     </nav>
                 </div>
-
                 <div class="mt-3 p-5">
                     <div class="divide-y divide-slate-300" id="basic-tabs-1" role="tabpanel"
                         aria-labelledby="basic-tabs-item-1">
@@ -76,9 +75,48 @@
                                     </span>
                                 </div>
                                 <div class="flex flex-row justify-between py-3">
-                                    <span class="w-1/2 text-gray-600">Total students for this attendance</span>
+                                    <span class="w-1/2 text-gray-600">Total students</span>
                                     <span class="w-1/2">
                                         {{ $attendance->students->count() }}
+                                    </span>
+                                </div>
+                                <div class="flex flex-row justify-between py-3">
+                                    <span class="w-1/2 text-gray-600">Total absentees</span>
+                                    <span class="w-1/2">
+                                        {{ $attendance->studentAbsent() }}
+                                    </span>
+                                </div>
+                                <div class="flex flex-row justify-between py-3">
+                                    <span class="w-1/2 text-gray-600">Total present</span>
+                                    <span class="w-1/2">
+                                        {{ $attendance->studentPresent() }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col w-full divide-y divide-slate-300">
+                                <div class="flex flex-row justify-between py-3">
+                                    <span class="w-1/2 text-gray-600">Estimated Amount</span>
+                                    <span class="w-1/2 text-green-600 font-semibold">
+                                        GHS {{ $attendance->totalBill() }}
+                                    </span>
+                                </div>
+                                <div class="flex flex-row justify-between py-3">
+                                    <span class="w-1/2 text-gray-600">Advance Amount</span>
+                                    <span class="w-1/2 text-sky-600 font-semibold">
+                                       GHS {{ $attendance->totalAdvance() }}
+                                    </span>
+                                </div>
+                                <div class="flex flex-row justify-between py-3">
+                                    <span class="w-1/2 text-gray-600">Expected Amount</span>
+                                    <span class="w-1/2">
+                                        GHS {{ $attendance->expectedPayments() }}
+                                    </span>
+                                </div>
+                                <div class="flex flex-row justify-between py-3">
+                                    <span class="w-1/2 text-black-600 font-semibold">Over Turn Amount</span>
+                                    <span class="w-1/2 text-green-600 font-semibold">
+                                        GHS {{ number_format($attendance->totalAdvance() + $attendance->expectedPayments(),2)  }}
                                     </span>
                                 </div>
                             </div>
@@ -97,6 +135,9 @@
                                 <x-a-button-p class="py-3.5 max-w-fit submit">
                                     {{ __('Submit for Approval') }}
                                 </x-a-button-p>
+                                <x-a-button-w class="py-3.5 max-w-fit" :href="route('attendances.show', ['attendance'=>$attendance->id])">
+                                    {{ __('Refresh') }}
+                                </x-a-button-w>
                             @endif
 
                             @if ($attendance->status === 'approved' || $attendance->status === 'submitted')
@@ -107,18 +148,38 @@
                             <x-a-button-p class="py-3.5 max-w-fit" :href="route('attendances.edit', ['attendance' => $attendance->id])">
                                 {{ __('Modify') }}
                             </x-a-button-p>
-                            <x-a-button class="py-3.5 max-w-fit delete" >
+                            <x-a-button class="py-3.5 max-w-fit delete">
                                 {{ __('Delete') }}
                             </x-a-button>
                         </div>
                     </div>
                     <div id="basic-tabs-2" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-2">
-                        @if($attendance->status === 'draft')
-                        <div id="vue-attendance-marking" data-attendance-id="{{ $attendance->id }}">
-                            <attendance-app />
-                        </div>
+                        @if ($attendance->status === 'draft')
+                            <div>
+                                <div id="vue-attendance-marking" data-attendance-id="{{ $attendance->id }}">
+                                    <attendance-app />
+                                </div>
+                            </div>
                         @endif
                     </div>
+                    @if ($attendance->status !== 'draft')
+                    <div id="basic-tabs-4" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-4">
+                        <div id="summary-report" class="bg-white w-full divide-y divide-slate-300">
+                            <div class="flex flex-col md:flex-row items-center justify-between mb-3">
+                                <div class="flex">
+                                    <x-svg.attendance
+                                        class="svg-icon-student flex-shrink-0 mx-3 overflow-visible h-5 w-5 text-gray-400 dark:text-gray-600" />
+                                    <h2 class="text-cyan-600 uppercase">Summary of Attendance and Bills</h2>
+                                    <h3 class="text-cyan-600 uppercase"> {{ $attendance->class->name; }} </h3>
+                                    <h6 class="text-cyan-600 uppercase">{{ ''; }} </h6>
+                                </div>
+                            </div>
+                            <div class="pt-5 md:w-3/4 divede-y divide-slate-300">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                     <div id="basic-tabs-3" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-3">
                         <div class="bg-white w-full divide-y divide-slate-300">
                             <div class="flex flex-col md:flex-row items-center justify-between mb-3">
@@ -151,28 +212,27 @@
                             <div class="pt-5">
                                 <p class="alert-processing">Processing...</p>
                                 <div class="overflow-x-auto p-1">
-                                <table class="dt-related-students display w-full"
-                                    data-attendance-id="{{ $attendance->id }}">
-                                    <thead class="uppercase">
-                                        <tr>
-                                            <th class="w-5"></th>
-                                            <th class="w-5">Ref#</th>
-                                            <th>Student Name</th>
-                                            <th>Sex</th>
-                                            <th>Transit</th>
-                                            <th>Affiliation</th>
-                                            <th>Guardian</th>
-                                            <th>Status</th>
-                                            <th>Last Updated</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                                    <table class="dt-related-students display w-full"
+                                        data-attendance-id="{{ $attendance->id }}">
+                                        <thead class="uppercase">
+                                            <tr>
+                                                <th class="w-5"></th>
+                                                <th class="w-5">Ref#</th>
+                                                <th>Student Name</th>
+                                                <th>Sex</th>
+                                                <th>Transit</th>
+                                                <th>Affiliation</th>
+                                                <th>Guardian</th>
+                                                <th>Status</th>
+                                                <th>Last Updated</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>

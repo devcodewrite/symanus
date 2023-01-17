@@ -274,19 +274,19 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        $rules =[ 'name' => 'required|string|max:45'];
         $rules = [
-            'firstname' => 'required|string|max:45',
-            'surname' => 'required|string|max:60',
-            'sex' => 'required|string',
-            'admitted_at' => 'required|date',
+            'firstname' => 'nullable|string|max:45',
+            'surname' => 'nullable|string|max:60',
+            'sex' => 'nullable|string',
+            'admitted_at' => 'nullable|date',
             'class_id' => 'nullable|integer|exists:classes,id',
             'guardian_id' => 'nullable|integer|exists:guardians,id',
-            'transit' => 'required|string',
-            'affiliation' => 'required|string',
+            'transit' => 'nullable|string',
+            'affiliation' => 'nullable|string',
             'address' => 'string|nullable',
             'dateofbirth' => 'nullable|date',
-            'avatar' => 'image',
+            'avatar' => 'image|nullable',
+            'rstate' => 'nullable|in:close,open'
         ];
 
         $validator = Validator::make($request->input(), $rules);

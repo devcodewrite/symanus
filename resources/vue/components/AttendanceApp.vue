@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-100 p-2 flex flex-col">
+  <div v-if="checklist.length > 0" class="bg-gray-100 p-2 flex flex-col">
     <Header
       @toggle-check-all="toggleCheckAll"
       :isChecked="checkAll"
@@ -15,12 +15,14 @@
     </div>
     <Footer />
   </div>
+  <p v-if="checklist.length === 0" class="text-black-600 font-semibold">
+    Initializing app...
+  </p>
 </template>
 <script>
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
 import AttendanceCardList from "./AttendanceCardList.vue";
-import { getTransitionRawChildren } from '@vue/runtime-core';
 
 export default {
   name: "AttendanceApp",
@@ -120,7 +122,7 @@ export default {
         });
     },
     async submit() {
-      console.log('submit');
+      console.log("submit");
       Swal.fire({
         title: "Are you sure ?",
         text: "You wouldn't be able to make any changes afterwards.",
@@ -130,50 +132,56 @@ export default {
       }).then((result) => {
         if (!result.isConfirmed) return;
         const id = $("#vue-attendance-marking").data("attendance-id");
-        const res = fetch(
-          `../attendances/${id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-              status: "submitted",
-              _token: $('meta[name="csrf-token"]').attr("content"),
-            }),
-          }
-        );
+        const res = fetch(`../attendances/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            status: "submitted",
+            _token: $('meta[name="csrf-token"]').attr("content"),
+          }),
+        });
         res.then((res) => {
           res.json().then((result) => {
-              if (
-                    typeof result.status !== "boolean" ||
-                    typeof result.message !== "string"
-                  ) {
-                    Swal.fire({
-                      icon: "error",
-                      text: "Malformed data response! Please try agian.",
-                    });
-                    return;
-                  }
-                  if (result.status === true) {
-                    this.checklist = this.fetchChecklist();
-                    Swal.fire({
-                      icon: "success",
-                      text: "Attendance submitted successfully!",
-                    }).then(val => {
-                      location.reload();
-                    });
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      text: result.message,
-                    });
-                  }
+            if (
+              typeof result.status !== "boolean" ||
+              typeof result.message !== "string"
+            ) {
+              Swal.fire({
+                icon: "error",
+                text: "Malformed data response! Please try agian.",
+              });
+              return;
+            }
+            if (result.status === true) {
+              this.checklist = this.fetchChecklist();
+              Swal.fire({
+                icon: "success",
+                text: "Attendance submitted successfully!",
+              }).then((val) => {
+                location.reload();
+              });
+            } else {
+              Swal.fire({
+                icon: "error",
+                text: result.message,
+              });
+            }
           });
         });
       });
     },
     async toggleCheckAll() {
+      Swal.fire({
+        title: "Loading...",
+        html: "Please wait...",
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       const id = $("#vue-attendance-marking").data("attendance-id");
       this.checkAll = !this.checkAll;
       const res = await fetch(
@@ -191,6 +199,7 @@ export default {
       );
       const qdata = await res.json();
       this.checklist = qdata.data;
+      Swal.close();
     },
     async fetchChecklist() {
       const id = $("#vue-attendance-marking").data("attendance-id");
@@ -254,7 +263,7 @@ export default {
       if (this.checkAll && item.status === "absent") {
         this.checkAll = false;
       }
-      //console.log(qdata)
+
       this.checklist = this.checklist.map((checkitem) =>
         checkitem.student_id === item.student_id
           ? {

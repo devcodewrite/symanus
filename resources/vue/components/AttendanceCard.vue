@@ -1,13 +1,13 @@
 <template>
   <button @click="onDblClick()" class="w-full p-1 rounded-lg flex flex-row justify-between hover:bg-blue-200 cursor-pointer bg-white shadow-md h-24">
       <img :src="[checkitem.student.avatar?checkitem.student.avatar:'../img/no-image.png']" alt="Student Photo" class="w-24 h-full" />
-    <div class="p-1 flex flex-col text-sm justify-between">
-      <div class="flex flex-col items-start">
-        <span class="font-semibold">{{ checkitem.student.firstname }} {{ checkitem.student.surname }}</span>
-        <span class="text-xs">{{ checkitem.student.studentid }} </span>
+    <div class="flex flex-col justify-between h-full w-full px-2">
+      <div class="flex flex-col items-start content-start pt-1">
+        <span class="font-semibold text-xs break-all">{{ checkitem.student.firstname }} {{ checkitem.student.surname }}</span>
+        <span class="text-[9px] text-slate-600">{{ checkitem.student.studentid }} </span>
         <span class="text-xs text-green-600 mt-1">GHS {{ checkitem.balance }} </span>
       </div>
-      <span class="text-[8px] text-gray-600 place-self-end flex self-end content-start w-full">{{ checkitem.updated_at }} </span>
+      <span class="text-[8px] text-gray-600 self-end flex items-start w-full">Last update: {{ checkitem.updated_at }} </span>
     </div>
     <StatusButton @click="onClick()" :isLoading="isLoading" :status="checkitem.status" />
   </button>

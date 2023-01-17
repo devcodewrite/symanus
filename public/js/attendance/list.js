@@ -196,6 +196,7 @@ var classTable = $(".dt-attendances").DataTable({
     ],
     searchPanes:{
         columns:[2,3,5],
+        serverSide: true,
     },
     columnDefs: [
         {

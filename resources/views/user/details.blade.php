@@ -143,13 +143,11 @@
                         </div>
 
                         <div class="py-5">
-                            <x-a-button-p class="ml-3 py-3.5 item-end">
-                                {{ __('Clone') }}
-                            </x-a-button-p>
+                          
                             <x-a-button-p class="ml-3 py-3.5 item-end" :href="route('users.edit', ['user' => $user->id])">
                                 {{ __('Modify') }}
                             </x-a-button-p>
-                            <x-a-button class="ml-3 py-3.5 shadow-md">
+                            <x-a-button class="ml-3 py-3.5 shadow-md .close">
                                 {{ __('Close') }}
                             </x-a-button>
                         </div>
@@ -174,15 +172,22 @@
                     </div>
                     <div id="basic-tabs-5" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-5">
                         <form class="user-permission-form"
-                            action="{{ route('users.update-permission', ['user' => $user->id]) }} "
+                            action="{{ isset($user->permission_id) ? route('permissions.update', ['permission' => $user->permission_id]) : route('permissions.store') }}"
+
                             novalidate>
                             @csrf
-                            @method('put')
+                            @if($user->permission_id)
+                                @method('put')
+                            @else
+                                @method('post')
+                                <input type="hidden" name="user_id" value="{{$user->id}}">
+                            @endif
+                           
                           
                             <div class="grid grid-cols-3 overflow-x-auto gap-5 divide-y divide-slate-300">
                                 @foreach ($user->permission->toArray() as $key => $value)
                                     @continue($key === 'id')
-                                    <x-permission-card :key="$key" :options="$value" />
+                                    <x-permission-card :key="$key" :options="$value" :permission="$user->permission" />
                                 @endforeach
                             </div>
                             <div class="p-5">
@@ -190,6 +195,7 @@
                                     {{ __('Save Changes') }}
                                 </x-button-p>
                             </div>
+                        </form>
                     </div>
                 </div>
             </div>

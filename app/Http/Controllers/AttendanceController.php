@@ -27,14 +27,17 @@ class AttendanceController extends Controller
      */
     public function related_students_json(Request $request)
     {
-       $students = AttendanceStudent::with('student:id,firstname,surname,studentid,sex,avatar')
-                ->with('attendance:id,adate,status')
-                ->with('bills')
-                ->where('attendance_id', $request->input('attendance_id', 0))
-                ->get();
+        $students = AttendanceStudent::with('student:id,firstname,surname,studentid,sex,avatar')
+            ->with('attendance:id,adate,status')
+            ->with('bills')
+            ->where('attendance_id', $request->input('attendance_id', 0))
+            ->get();
         $result = [];
-        foreach($students as $student){
-            $student->balance = $student->bills->where('student_id', $student->student_id)->first()->totalBill();
+        foreach ($students as $student) {
+            $bill = $student->bills->where('student_id', $student->student_id)->first();
+            if ($bill) $student->balance = $bill->totalBill();
+            else $student->balance = "0.00";
+
             array_push($result, $student);
         }
         return Response::json($result);
@@ -49,17 +52,28 @@ class AttendanceController extends Controller
         if ($request->input('check_all') !== null) {
             if (AttendanceStudent::where('attendance_id', $request->input('attendance_id', 0))
                 ->update(['status' => ($request->input('check_all') ? 'present' : 'absent')])
+
             ) {
-                $data = AttendanceStudent::with('student:id,firstname,surname,studentid,sex,avatar')
+                $students = AttendanceStudent::with('student:id,firstname,surname,studentid,sex,avatar')
+                    ->with('attendance:id,adate,status')
+                    ->with('bills')
                     ->where('attendance_id', $request->input('attendance_id', 0))
                     ->get();
+                $result = [];
+                foreach ($students as $student) {
+                    $bill = $student->bills->where('student_id', $student->student_id)->first();
+                    if ($bill) $student->balance = $bill->totalBill();
+                    else $student->balance = "0.00";
 
+                    array_push($result, $student);
+                }
                 $out = [
-                    'data' => $data,
-                    'message' => 'All status changed successfully!',
-                    'status' => true,
+                    'data' => $result,
+                    'message' => "Attendance updated successfully!",
+                    'status' => false,
                     'input' => $request->all()
                 ];
+
             } else {
                 $out = [
                     'message' => "Data couldn't be processed! Please try again!",
@@ -74,8 +88,13 @@ class AttendanceController extends Controller
             ->update(['status' => $request->input('data.status', 'absent')])
         ) {
             $atst = AttendanceStudent::where('attendance_id', $request->input('data.attendance_id', 0))
+                ->with('bills')
+                ->where('attendance_id', $request->input('data.attendance_id', 0))
                 ->where('student_id', $request->input('data.student', 0))
                 ->first();
+            $bill = $atst->bills->where('student_id', $atst->student_id)->first();
+            $atst->balance = $bill->totalBill();
+
             $out = [
                 'data' => $atst,
                 'message' => 'Status changed successfully!',
@@ -300,16 +319,20 @@ class AttendanceController extends Controller
             DB::rollBack();
         } else {
             if ($request->input('bill_students')) {
-                $fees = Fee::where('rstatus', 'open')->get();
+                $fees = Fee::where('rstatus','open')->where('class_id',$attendance->class_id)->get();
                 foreach ($fees as $fee) {
                     $students =  $fee->class->students
                         ->whereNotIn('affiliation', [$fee->feeType->bill_ex_st_affiliation])
                         ->whereNotIn('transit', [$fee->feeType->bill_ex_st_transit]);
 
                     foreach ($students as $row) {
-                        $bill =  Bill::updateOrCreate(
-                            ['user_id' => auth()->user()->id, 'student_id' => $row->id, 'bdate' => $attendance->adate]
-                        );
+                        $bill =  Bill::updateOrCreate([
+                                'user_id' => auth()->user()->id,
+                                 'student_id' => $row->id, 
+                                 'bdate' => $attendance->adate, 
+                                 'attendance_id' => $attendance->id
+                                 ]);
+
                         BillFee::updateOrCreate(['bill_id' => $bill->id, 'fee_id' => $fee->id, 'amount' => $fee->amount]);
                     }
                 }
@@ -430,7 +453,7 @@ class AttendanceController extends Controller
      */
     public function destroy(Attendance $attendance)
     {
-        if ( $attendance->delete()) {
+        if ($attendance->delete()) {
             $out = [
                 'message' => 'Attendance deleted successfully!',
                 'status' => true,

@@ -1,3 +1,7 @@
+@php
+    use App\Models\Classes;
+    use App\Models\Attendance;
+@endphp
 <x-app-layout>
     @section('style')
         <link rel="stylesheet" href="{{asset('plugins/validator/fv.css')}}">
@@ -27,7 +31,7 @@
             <div class="p-5 bg-white rounded-5 w-full mb-5 divide-y divide-slate-300">
                 <div class="flex py-5 mb-5">
                     <x-svg.attendance class="flex-shrink-0 mx-3 overflow-visible h-5 w-5 text-gray-400 dark:text-gray-600" />
-                    <h5 class="text-cyan-600">{{ isset($attendance)?'Edit Class':'New Attendance' }}</h5>
+                    <h5 class="text-cyan-600">{{ isset($attendance)?'Edit Attendance':'New Attendance' }}</h5>
                 </div>
                 <div class="w-full">
                     <div aria-label="formbody" class="mt-6 px-6 py-4 grid md:grid-cols-2 gap-12 overflow-hidden">
@@ -38,6 +42,7 @@
                             :value="old('adate', isset($attendance)?$attendance->adate:date('Y-m-d'))" placeholder="Enter the {{ __('Date of Creation') }}" />
                         </div>
                          <!-- Class -->
+                         @if(Gate::inspect('createForAnyClass', new Attendance())->allowed())
                          <div class="w-full field">
                             <x-label for="class" :value="__('Assigned Class:')" />
                             <x-select id="class" class="mt-1 block w-full select2-class" name="class_id" required
@@ -48,7 +53,28 @@
                                 @endif
                             </x-select>
                         </div>
+                        @else
+                        <div class="w-full field">
+                            <x-label for="class" :value="__('Assigned Class:')" />
+                            <x-select id="class" class="mt-1 block w-full select2" name="class_id" required
+                                        placeholder="Select the class"  :disabled="isset($attendance)">
+                                @if(isset($attendance))
+                                    <option value="{{ $attendance->class_id }} "  selected>
+                                        {{ $attendance->class->name }} </option>
+
+                                @else
+                                        @foreach(auth()->user()->classes as $key => $row)
+                                        <option value="{{ $row->id }}">
+                                            {{ $row->name }} </option>
+                                        @endforeach
+                                @endif
+
+                            </x-select>
+                        </div>
+                        @endif
+
                         <!-- User -->
+                        @if(Gate::inspect('viewAny', auth()->user()->all())->allowed())
                         <div class="w-full field">
                             <x-label for="user" :value="__('Assign To:')" />
                             <x-select id="user" class="mt-1 block w-full select2-users" required name="user_id"
@@ -57,9 +83,23 @@
                                     <option value="{{ $attendance->user_id }}"  selected>
                                         {{ $attendance->user->firstname }} 
                                         {{ $attendance->user->surname }} </option>
+                                    @else
+                                        @foreach(auth()->user()->classes as $key => $row)
+                                        <option value="{{ $row->id }}">
+                                            {{ $row->name }} </option>
+                                        @endforeach
                                 @endif
                             </x-select>
                         </div>
+                        @else
+                        <div class="w-full field">
+                            <x-label for="user" :value="__('Assign To:')" />
+                            <x-select id="user" class="mt-1 block w-full select2" required name="user_id" readonly
+                                placeholder="Select the User" >
+                                <option value="{{auth()->user()->id}}">{{ auth()->user()->firstname }} {{ auth()->user()->surname }}</option>
+                            </x-select>
+                        </div>
+                        @endif
                         <div class="field w-full flex items-end gap-2">
                             <x-label for="generate-bill" :value="__('Auto Bill Students')" />
                             <x-input id="generate-bill" class="mt-1" type="checkbox" checked name="bill_students"

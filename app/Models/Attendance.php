@@ -69,13 +69,24 @@ class Attendance extends Model
     }
 
     /**
-    * The students that belong to the attendance.
+    * The students that belong to the attendance absent
     */
     public function absentStudents()
     {
         return 
             $this->belongsToMany(Student::class, 'attendance_students')
             ->where('attendance_students.status', 'absent')
+            ->get();
+    }
+
+     /**
+    * The students that belong to the attendance present
+    */
+    public function presentStudents()
+    {
+        return 
+            $this->belongsToMany(Student::class, 'attendance_students')
+            ->where('attendance_students.status', 'present')
             ->get();
     }
 
@@ -95,4 +106,46 @@ class Attendance extends Model
         return $this->hasMany(Bill::class, 'attendance_id');
     }
 
+     /**
+    * The bills that belong to the attendance.
+    */
+    public function advancePaments()
+    {
+        return $this->hasMany(AdvanceFeePayment::class, 'attendance_id');
+    }
+    public function totalAdvance()
+    {
+       return $this->advancePaments()->sum('amount');
+    }
+
+    public function expectedPayments()
+    {
+        return $this->belongsToMany(Student::class, 'attendance_students')
+                ->join('bills', 'bills.student_id','=', 'attendance_students.student_id')
+                ->join('bill_fees', 'bill_fees.bill_id', '=', 'bills.id')
+                ->where('attendance_students.status', 'present')
+                ->sum('bill_fees.amount');
+    }
+    public function totalBill()
+    {
+        return $this->bills()
+            ->join('bill_fees', 'bill_fees.bill_id', '=', 'bills.id')
+            ->where('bills.attendance_id', $this->id)
+            ->sum('bill_fees.amount');
+    }
+
+    public function totalStudent()
+    {
+        return $this->students->count();
+    }
+
+    public function studentPresent()
+    {
+        return $this->students->count() - $this->absentStudents()->count();
+    }
+
+    public function studentAbsent()
+    {
+        return $this->absentStudents()->count();
+    }
 }
