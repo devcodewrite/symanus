@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdvanceFeePayment;
+use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Response;
@@ -91,11 +92,10 @@ class AdvanceFeePaymentController extends Controller
     */
    public function make_payments_json(Request $request)
    {
-
        $rules = [ 
            'amount' => 'required|numeric',
-           'student_id' => 'required|exists:students,id',
-           'attendance_id' => 'required|exists:attendances,id',
+           'id' => 'required|exists:students,id',
+           'attendance.id' => 'required|exists:attendances,id',
        ];
 
        $validator = Validator::make($request->input(), $rules);
@@ -114,13 +114,16 @@ class AdvanceFeePaymentController extends Controller
        }
 
         $payment = [
-               'student_id'=> $request->input('student_id'),
+               'student_id'=> $request->input('id'),
+               'amount' => $request->amount,
                'paid_at' => Carbon::now('Africa/Accra')->format('Y-m-d'),
-               'paid_by' => $request->input('student.firstname').' '.$request->input('student.surname'),
-               'attendance_id' => $request->attendance_id,
+               'paid_by' => $request->firstname.' '.$request->surname,
+               'attendance_id' => $request->input('attendance.id'),
+               'fee_type_id' => $request->input('fee_type_id'),
                'user_id' => auth()->user()->id,
         ];
-        $dvfeepay = AdvanceFeePayment::create($payment);
+
+        $dvfeepay = AdvanceFeePayment::updateOrCreate($payment);
        if($dvfeepay) {
                $out = [
                    'data' => $dvfeepay,

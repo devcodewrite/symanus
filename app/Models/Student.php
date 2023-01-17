@@ -137,4 +137,12 @@ class Student extends Model
 
        return $totalBills-$totalPayment;
     }
+
+    public function getBalanceByAttendance(int $attendance)
+    {
+        return $this->bills()
+        ->join('bill_fees', 'bill_fees.bill_id', '=', 'bills.id')
+        ->where('bills.attendance_id', $attendance)
+        ->sum('bill_fees.amount');
+    }
 }

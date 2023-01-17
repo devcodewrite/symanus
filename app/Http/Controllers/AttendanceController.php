@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdvanceFeePayment;
 use App\Models\Attendance;
 use App\Models\AttendanceStudent;
 use App\Models\Bill;
@@ -37,6 +38,14 @@ class AttendanceController extends Controller
             $bill = $student->bills->where('student_id', $student->student_id)->first();
             if ($bill) $student->balance = $bill->totalBill();
             else $student->balance = "0.00";
+
+            $adv = AdvanceFeePayment::where([
+                'attendance_id' => $request->input('attendance_id', 0),
+                'student_id' => $student->student_id,
+            ])->first();
+
+            if($adv)  $student->advance = $adv->amount;
+            else $student->advance = "0.00";
 
             array_push($result, $student);
         }

@@ -471,10 +471,10 @@ class StudentController extends Controller
     public function student_balance_json(Request $request)
     {
         if ($request->json()) {
-            $student = Student::find($request->input('data.student_id',0));
+            $student = Student::find($request->input('data.student.id',0));
             if($student){
             $out = [
-                'data' => $student->getBalance(null,date('Y-m-d'),date('Y-m-d')),
+                'data' => $student->getBalanceByAttendance($request->input('data.attendance.id', 0)),
                 'status' => true,
             ];
         }else {

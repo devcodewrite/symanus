@@ -6,6 +6,7 @@ use App\Http\Controllers\BillController;
 use App\Http\Controllers\ClassesController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FeeController;
+use App\Http\Controllers\FeeTypeController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StaffController;
@@ -70,6 +71,7 @@ Route::middleware('auth:api')->prefix('/select2')->group(function(){
     Route::get('/classes', [ClassesController::class, 'select2']);
     Route::get('/courses', [CourseController::class, 'select2']);
     Route::get('/fees', [FeeController::class, 'select2']);
+    Route::get('/fee-types', [FeeTypeController::class, 'select2']);
     Route::get('/bills', [BillController::class, 'select2']);
     Route::get('/payments', [PaymentController::class, 'select2']);
     Route::get('/attendances', [AttendanceController::class, 'select2']);

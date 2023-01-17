@@ -15,7 +15,7 @@ class AdvanceFeePayment extends Model
      */
     protected $fillable = [
         'paid_at', 'student_id', 'amount', 'paid_by', 'user_id', 'attendance_id',
-        'create_at','updated_at'
+        'create_at','updated_at', 'fee_type_id'
     ];
 
      /**

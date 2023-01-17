@@ -22,9 +22,10 @@ class CreateAdvanceFeePaymentsTable extends Migration
             $table->id();
             $table->foreignIdFor(Student::class)->constrained();
             $table->decimal('amount');
-            $table->date('paid_for_date');
+            $table->date('paid_at');
             $table->foreignIdFor(Attendance::class)->nullable();
             $table->string('paid_by')->nullable();
+            $table->foreignIdFor(FeeType::class)->constrained();
             $table->foreignIdFor(User::class)->constrained();
             $table->timestamps();
         });

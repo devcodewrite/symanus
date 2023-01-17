@@ -5,7 +5,10 @@
       <div class="flex flex-col items-start content-start pt-1">
         <span class="font-semibold text-xs break-all">{{ checkitem.student.firstname }} {{ checkitem.student.surname }}</span>
         <span class="text-[9px] text-slate-600">{{ checkitem.student.studentid }} </span>
-        <span class="text-xs text-green-600 mt-1">GHS {{ checkitem.balance }} </span>
+        <span class="mt-1 flex gap-1">
+          <span class="text-[10px] text-green-600">BAL:GHS {{  Number.parseFloat(checkitem.balance).toFixed(2) }} </span>
+          <span class="text-[10px] text-red-600">ADV:GHS {{ Number.parseFloat(checkitem.advance).toFixed(2) }} </span>
+        </span>
       </div>
       <span class="text-[8px] text-gray-600 self-end flex items-start w-full">Last update: {{ checkitem.updated_at }} </span>
     </div>
@@ -20,8 +23,10 @@ export default {
   name: "AttendanceCard",
   components: {
     StatusButton,
+    
   },
   data(){
+   
     return {
       isLoading: false,
       doubleClicked: false,

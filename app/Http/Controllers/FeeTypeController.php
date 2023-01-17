@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FeeType;
 use DataTables;
+use DB;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
@@ -170,5 +171,32 @@ class FeeTypeController extends Controller
     public function destroy(FeeType $feeType)
     {
         //
+    }
+    /**
+     * Display a listing of the resource for select2.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function select2(Request $request)
+    {
+        //
+        if ($request->ajax()) {
+
+            $term = trim($request->get('term',''));
+
+            $feetype = FeeType::select(['id', DB::raw(" title as text")])
+                        ->where("title", 'LIKE',  "%$term%")
+                        ->orderBy('title', 'asc')
+                        ->get();
+            $out = [
+                'results' => $feetype,
+                'pagination' => [
+                   'more' => false,]
+            ];
+
+            return Response::json($out);
+        }
+
+       return Response::json(['message' => 'Invalid request data']);
     }
 }
