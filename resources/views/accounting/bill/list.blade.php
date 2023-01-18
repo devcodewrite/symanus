@@ -44,6 +44,7 @@
                             <th class="w-5">Date</th>
                             <th>Bill Amount</th>
                             <th>Student</th>
+                            <th>Status</th>
                             <th>Creator</th>
                             <th>Last Updated</th>
                             <th>Action</th>

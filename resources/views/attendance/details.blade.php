@@ -93,33 +93,45 @@
                                     </span>
                                 </div>
                             </div>
+                            @if ($attendance->bills->count() > 0)
+                                <div class="flex flex-col w-full divide-y divide-slate-300">
+                                    <div class="flex flex-row justify-between py-3">
+                                        <span class="w-full uppercase font-semibold text-black-600">Related Bills Summary</span>
+                                    </div>
+                                    <div class="flex flex-row justify-between py-3">
+                                        <span class="w-1/2 text-gray-600">Estimated Amount</span>
+                                        <span class="w-1/2 text-green-600 font-semibold">
+                                            GHS {{ number_format($attendance->totalBill(), 2) }}
+                                        </span>
+                                    </div>
+                                    <div class="flex flex-row justify-between py-3">
+                                        <span class="w-1/2 text-gray-600">Advance Amount</span>
+                                        <span class="w-1/2 text-sky-600 font-semibold">
+                                            GHS {{ number_format($attendance->totalAdvance(), 2) }}
+                                        </span>
+                                    </div>
+                                    <div class="flex flex-row justify-between py-3">
+                                        <span class="w-1/2 text-gray-600">Expected Amount</span>
+                                        <span class="w-1/2">
+                                            GHS {{ number_format($attendance->expectedPayments(), 2) }}
+                                        </span>
+                                    </div>
+                                    <div class="flex flex-row justify-between py-3">
+                                        <span class="w-1/2 text-black-600 font-semibold">Over Turn Amount</span>
+                                        <span class="w-1/2 text-green-600 font-semibold">
+                                            GHS
+                                            {{ number_format($attendance->totalAdvance() + $attendance->expectedPayments(), 2) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="flex flex-col w-full divide-y divide-slate-300">
+                                    <div class="flex flex-row justify-between py-3">
+                                        <span class="w-full text-gray-600">No related bills.</span>
+                                    </div>
+                                </div>
+                            @endif
 
-                            <div class="flex flex-col w-full divide-y divide-slate-300">
-                                <div class="flex flex-row justify-between py-3">
-                                    <span class="w-1/2 text-gray-600">Estimated Amount</span>
-                                    <span class="w-1/2 text-green-600 font-semibold">
-                                        GHS {{ $attendance->totalBill() }}
-                                    </span>
-                                </div>
-                                <div class="flex flex-row justify-between py-3">
-                                    <span class="w-1/2 text-gray-600">Advance Amount</span>
-                                    <span class="w-1/2 text-sky-600 font-semibold">
-                                       GHS {{ $attendance->totalAdvance() }}
-                                    </span>
-                                </div>
-                                <div class="flex flex-row justify-between py-3">
-                                    <span class="w-1/2 text-gray-600">Expected Amount</span>
-                                    <span class="w-1/2">
-                                        GHS {{ $attendance->expectedPayments() }}
-                                    </span>
-                                </div>
-                                <div class="flex flex-row justify-between py-3">
-                                    <span class="w-1/2 text-black-600 font-semibold">Over Turn Amount</span>
-                                    <span class="w-1/2 text-green-600 font-semibold">
-                                        GHS {{ number_format($attendance->totalAdvance() + $attendance->expectedPayments(),2)  }}
-                                    </span>
-                                </div>
-                            </div>
                         </div>
                         <div class="md:flex md:flex-row grid grid-cols-3 items-end gap-3 pt-5">
                             @if ($attendance->status === 'rejected' || $attendance->status === 'submitted')
@@ -135,7 +147,7 @@
                                 <x-a-button-p class="py-3.5 max-w-fit submit">
                                     {{ __('Submit for Approval') }}
                                 </x-a-button-p>
-                                <x-a-button-w class="py-3.5 max-w-fit" :href="route('attendances.show', ['attendance'=>$attendance->id])">
+                                <x-a-button-w class="py-3.5 max-w-fit" :href="route('attendances.show', ['attendance' => $attendance->id])">
                                     {{ __('Refresh') }}
                                 </x-a-button-w>
                             @endif
@@ -162,23 +174,23 @@
                             </div>
                         @endif
                     </div>
-                    @if ($attendance->status !== 'draft')
-                    <div id="basic-tabs-4" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-4">
-                        <div id="summary-report" class="bg-white w-full divide-y divide-slate-300">
-                            <div class="flex flex-col md:flex-row items-center justify-between mb-3">
-                                <div class="flex">
-                                    <x-svg.attendance
-                                        class="svg-icon-student flex-shrink-0 mx-3 overflow-visible h-5 w-5 text-gray-400 dark:text-gray-600" />
-                                    <h2 class="text-cyan-600 uppercase">Summary of Attendance and Bills</h2>
-                                    <h3 class="text-cyan-600 uppercase"> {{ $attendance->class->name; }} </h3>
-                                    <h6 class="text-cyan-600 uppercase">{{ ''; }} </h6>
+                    @if ($attendance->status !== 'draft' || $attendance->bills->count() > 0)
+                        <div id="basic-tabs-4" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-4">
+                            <div id="summary-report" class="bg-white w-full divide-y divide-slate-300">
+                                <div class="flex flex-col md:flex-row items-center justify-between mb-3">
+                                    <div class="flex">
+                                        <x-svg.attendance
+                                            class="svg-icon-student flex-shrink-0 mx-3 overflow-visible h-5 w-5 text-gray-400 dark:text-gray-600" />
+                                        <h2 class="text-cyan-600 uppercase">Summary of Attendance and Bills</h2>
+                                        <h3 class="text-cyan-600 uppercase"> {{ $attendance->class->name }} </h3>
+                                        <h6 class="text-cyan-600 uppercase">{{ '' }} </h6>
+                                    </div>
+                                </div>
+                                <div class="pt-5 md:w-3/4 divede-y divide-slate-300">
+
                                 </div>
                             </div>
-                            <div class="pt-5 md:w-3/4 divede-y divide-slate-300">
-                                
-                            </div>
                         </div>
-                    </div>
                     @endif
                     <div id="basic-tabs-3" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-3">
                         <div class="bg-white w-full divide-y divide-slate-300">

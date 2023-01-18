@@ -1,12 +1,23 @@
 
+$(".submit").on("click",function(e){
+    updateStatus("submitted", 'submit');
+});
+
 $(".approve").on("click",function(e){
     updateStatus("approved", 'approve');
 });
 
+$(".reject").on("click",function(e){
+    updateStatus("rejected", 'reject');
+});
+
+$(".draft").on("click",function(e){
+    updateStatus("draft", 'modify');
+});
 function updateStatus(status, action) {
     Swal.fire({
         title: "Are you sure ?",
-        text:  `You wan to ${action} this attendance!`,
+        text:  `You want to ${action} this attendance!`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: `Yes! ${action} it`,
@@ -46,6 +57,7 @@ function updateStatus(status, action) {
                         icon: "success",
                         text: d.message,
                     });
+                    location.reload();
                 } else {
                     Swal.fire({
                         icon: "error",

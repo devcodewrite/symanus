@@ -42,8 +42,7 @@ export default {
     async makePayment(item) {
       Swal.fire({
         title: `Make Adavance Payment`,
-        text: `Student: ${item.student.firstname} ${item.student.surname}`,
-        html:
+        html: `<p>Student: ${item.student.firstname} ${item.student.surname}</p>`+
           '<input id="amount" name="amount" placeholder="Enter Amount" class="mb-2 h-10 px-1 w-full border">' +
           '<select id="fee-type" name="fee_type_id" class="w-full"></select>',
         preConfirm: function () {
@@ -136,7 +135,6 @@ export default {
         });
     },
     async submit() {
-      console.log("submit");
       Swal.fire({
         title: "Are you sure ?",
         text: "You wouldn't be able to make any changes afterwards.",
@@ -173,9 +171,10 @@ export default {
               Swal.fire({
                 icon: "success",
                 text: "Attendance submitted successfully!",
-              }).then((val) => {
-                location.reload();
               });
+              setTimeout(() => {
+                 location.reload();
+              }, 500);
             } else {
               Swal.fire({
                 icon: "error",

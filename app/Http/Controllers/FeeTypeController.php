@@ -19,17 +19,7 @@ class FeeTypeController extends Controller
     {
         return DataTables::of(FeeType::all())->make(true);
     }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -57,6 +47,7 @@ class FeeTypeController extends Controller
             'bill_ex_st_affiliation' => 'nullable|in:staffed,non-staffed',
             'bill_ex_st_transit' => 'nullable|in:walk,bus',
             'bill_ex_st_attendance' => 'nullable|in:present,absent',
+            'for_attendance_bills' => 'nullable|boolean',
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";
@@ -92,28 +83,6 @@ class FeeTypeController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\FeeType  $feeType
-     * @return \Illuminate\Http\Response
-     */
-    public function show(FeeType $feeType)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\FeeType  $feeType
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(FeeType $feeType)
-    {
-
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -128,6 +97,7 @@ class FeeTypeController extends Controller
             'bill_ex_st_affiliation' => 'nullable|in:staffed,non-staffed',
             'bill_ex_st_transit' => 'nullable|in:walk,bus',
             'bill_ex_st_attendance' => 'nullable|in:present,absent',
+            'for_attendance_bills' => 'nullable|boolean',
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";
@@ -170,7 +140,18 @@ class FeeTypeController extends Controller
      */
     public function destroy(FeeType $feeType)
     {
-        //
+        if($feeType->delete()){
+            $out = [
+                'message' => 'Fee type deleted successfully!',
+                'status' => true,
+            ];
+        }else {
+            $out = [
+                'message' => "Record couldn't be deleted!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
     /**
      * Display a listing of the resource for select2.

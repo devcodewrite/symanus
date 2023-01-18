@@ -40,7 +40,8 @@
                     <div class="divide-y {{ isset($payment)? 'hidden':'' }} divide-slate-300" id="basic-tabs-1" role="tabpanel"
                         aria-labelledby="basic-tabs-item-1">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-5">
-                            <div class="flex flex-row row-start-1">
+                            <div class="flex flex-row row-start-1 justify-between col-span-2">
+                                <div class="flex flex-row">
                                 <span class="shadow-md p-1 flex items-center">
                                     <x-svg.payment
                                         class="flex-shrink-0 mx-3 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
@@ -50,6 +51,11 @@
                                     <p class="mt-2 font-semibold"> {{ __('GHS ') }}
                                         {{ $bill->totalBill()}} </p>
                                     <p class="uppercase text-gray-600">{{ $bill->bdate }} </p>
+                                </div>
+                                </div>
+                                <div class="item-end">
+                                    <span
+                                        class="uppercase py-2 px-4 rounded text-white font-semibold shadow-md {{ ['Paid' => 'bg-green-600', 'Unpaid' => 'bg-red-600'][$bill->status] }}">{{ $bill->status }}</span>
                                 </div>
                             </div>
                             <div class="row-start-2  w-full divide-y divide-slate-300">
@@ -211,6 +217,7 @@
                                     <tr class="border">
                                         <th class="w-5">#</th>
                                         <th class="border text-center">Amount</th>
+                                        <th class="border text-center">Paid By</th>
                                         <th class="border">Added Date</th>
                                         <th class="border">Action</th>
                                     </tr>
@@ -221,6 +228,7 @@
                                         <tr>
                                             <td class="border text-center">{{ $row->id }}</td>
                                             <td class="border text-center">{{ $row->amount }}</td>
+                                            <td class="border text-center">{{ $row->paid_by }}</td>
                                             <td class="border text-center">{{ $row->created_at }}</td>
                                             <td class="border text-center flex items-end gap-3">
                                                 <form

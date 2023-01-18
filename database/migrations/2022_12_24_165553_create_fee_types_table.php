@@ -20,6 +20,7 @@ class CreateFeeTypesTable extends Migration
             $table->enum('bill_ex_st_affiliation',['staffed', 'non-staffed'])->nullable();
             $table->enum('bill_ex_st_transit',['walk', 'bus'])->nullable();
             $table->enum('bill_ex_st_attendance',['present', 'absent'])->nullable();
+            $table->boolean('for_attendance_bills')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

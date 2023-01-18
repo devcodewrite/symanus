@@ -20,7 +20,8 @@ class FeeType extends Model
         'status',
         'bill_ex_st_affiliation',
         'bill_ex_st_transit',
-        'bill_ex_st_attendance'
+        'bill_ex_st_attendance',
+        'for_attendance_bills'
     ];
 
      /**
@@ -38,7 +39,8 @@ class FeeType extends Model
      */
     protected $casts = [
         'created_at' => 'datetime:d/m/y h:i a',
-        'updated_at' => 'datetime:d/m/y h:i a'
+        'updated_at' => 'datetime:d/m/y h:i a',
+        'for_attendance_bills' => 'boolean',
     ];
 
     /**

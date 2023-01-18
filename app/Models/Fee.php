@@ -52,6 +52,10 @@ class Fee extends Model
     {
         return $this->belongsTo(FeeType::class, 'fee_type_id');
     }
+    public function findBillFee($bill)
+    {
+        return $this->hasMany(BillFee::class)->where('bill_fees.bill_id', $bill)->first();
+    }
     /*
     * Get the students for the fee.
     */

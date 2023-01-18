@@ -85,9 +85,9 @@
                                 </div>
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">Fee Type</span>
-                                    <span class="w-1/2">
+                                    <a class="w-1/2 hover:text-sky-600" href="{{route('fee-types.create', ['id'=>$fee->feeType->id]) }}">
                                         {{ $fee->feeType->title }}
-                                    </span>
+                                    </a>
                                 </div>
 
                                 <div class="flex flex-row justify-between py-3">
