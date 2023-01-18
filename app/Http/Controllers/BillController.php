@@ -23,7 +23,7 @@ class BillController extends Controller
      */
     public function datatable()
     {
-        return DataTables::of(Bill::with(['user','student', 'fees'])
+        return DataTables::of(Bill::with(['user','student', 'billFees', 'payments'])
                 ->latest())
                 ->searchPane(
                 'user',Bill::select([
@@ -157,23 +157,25 @@ class BillController extends Controller
                   
                     foreach($students as $row){
                         $bill =  Bill::updateOrCreate(['user_id' => auth()->user()->id, 'student_id' => $row->id, 'bdate' =>$bdate['bdate']]);
+                        BillFee::where('bill_id',$bill->id)->delete();
                         $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id, 'amount' => $fee->amount]);
                     }
                 }
             }
         }else {
             foreach($dates as $bdate){
-                $fees = Fee::where('rstatus', 'open')->whereIn('fee_type_id',$request->input('feeTypes'));
+                $fees = Fee::where('rstatus', 'open')->whereIn('fee_type_id',$request->input('feeTypes'))->get();
+               
                 foreach($fees as $fee){
                     $students =  $fee->class->students
                     ->whereNotIn('affiliation', [$fee->feeType->bill_ex_st_affiliation])
                     ->whereNotIn('transit', [$fee->feeType->bill_ex_st_transit]);
-               
+                
                     foreach($students as $row){
                         $bill =  Bill::updateOrCreate(
                             array_merge(['user_id' => auth()->user()->id],['student_id' => $row->id], $bdate));
-                        
-                        $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id,'amount' => $fee->amount]);
+                        BillFee::where('bill_id',$bill->id)->delete();
+                        $billFee = BillFee::create(['bill_id'=>$bill->id, 'fee_id' => $fee->id,'amount' => $fee->amount]);
                     }
                 }
             }
@@ -185,7 +187,7 @@ class BillController extends Controller
                 'input' => $request->all()
             ];
         }else {
-                if(sizeof($fees) > 0)
+                if($fees->count() > 0)
                 $out = [
                     'message' => "Data couldn't be processed! Please try again!",
                     'status' => false,
@@ -258,6 +260,7 @@ class BillController extends Controller
             ];
             return Response::json($out);
         }
+        
         foreach($bill->fees as $fee)
          $bf = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id]);
         

@@ -126,10 +126,7 @@ class AdvanceFeePaymentController extends Controller
         $dvfeepay = AdvanceFeePayment::updateOrCreate($payment);
        if($dvfeepay) {
                $out = [
-                   'data' => AdvanceFeePayment::where([
-                    'student_id'=> $request->id, 
-                    'attendance_id' => $request->input('attendance.id')])
-                    ->sum('amount'),
+                   'data' =>  $dvfeepay,
                    'message' => 'Payment made successfully!',
                    'status' => true,
                    'input' => $request->all()

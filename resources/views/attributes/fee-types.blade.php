@@ -90,20 +90,26 @@
                                 </option>
                             </x-select>
                         </div>
-                                <div class="flex">
-                                    @if (isset($feetype))
+                          <!-- Use in Attendance -->
+                          <div class="w-full field">
+                            <x-label for="for_attendance_bills" :value="__('For attendance bills:')" />
+                            <x-input id="for_attendance_bills" class="mt-1" type="checkbox" :checked="isset($feetype)?$feetype->for_attendance_bills == true:true" name="for_attendance_bills"
+                            value="1" />
+                        </div>
+                            <div class="flex">
+                                @if (isset($feetype))
+                                <x-button-p class="ml-3 py-3.5 shadow-md ">
+                                    {{ __('Save') }}
+                                </x-button-p>
+                                    <x-a-button href="{{ route('fee-types.create') }}" class="ml-3 py-3.5 shadow-md">
+                                        {{ __('Cancel') }}
+                                    </x-a-button>
+                                @else
                                     <x-button-p class="ml-3 py-3.5 shadow-md ">
-                                        {{ __('Save') }}
+                                        {{ __('Add') }}
                                     </x-button-p>
-                                        <x-a-button href="{{ route('fee-types.index') }}" class="ml-3 py-3.5 shadow-md">
-                                            {{ __('Cancel') }}
-                                        </x-a-button>
-                                    @else
-                                        <x-button-p class="ml-3 py-3.5 shadow-md ">
-                                            {{ __('Add') }}
-                                        </x-button-p>
-                                    @endif
-                                </div>
+                                @endif
+                            </div>
                             </div>
                         </form>
                         <div class="p-5">
@@ -115,6 +121,7 @@
                                         <th class="border text-center">Exclude bills for transit</th>
                                         <th class="border text-center">Exclude bills for affiliation</th>
                                         <th class="border text-center">Exclude bills for attendance</th>
+                                        <th class="border text-center">For attendance bills</th>
                                         <th class="border ">Updated Date</th>
                                         <th class="border">Created Date</th>
                                         <th class="border">Action</th>
@@ -129,6 +136,7 @@
                                             <td class="border text-center">{{ $row->bill_ex_st_transit }}</td>
                                             <td class="border text-center">{{ $row->bill_ex_st_affiliation }}</td>
                                             <td class="border text-center">{{ $row->bill_ex_st_attendance }}</td>
+                                            <td class="border text-center"><span class="p-3 rounded text-white {{ ['bg-red-600','bg-green-600'][$row->for_attendance_bills] }}">{{ ['NO','YES'][$row->for_attendance_bills] }}</span></td>
                                             <td class="border text-center">{{ $row->updated_at }}</td>
                                             <td class="border text-center">{{ $row->created_at }}</td>
                                             <td class="border text-center flex items-end gap-3">

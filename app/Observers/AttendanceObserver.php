@@ -34,7 +34,11 @@ class AttendanceObserver
     public function updated(Attendance $attendance)
     {
         if($attendance->status === 'approved'){
+            $attendance->settleBills();
             Notification::send($attendance->absentStudents, new StudentAbsent($attendance));
+        }
+        else if($attendance->status === 'rejected'){
+            $attendance->removeBills();
         }
     }
 

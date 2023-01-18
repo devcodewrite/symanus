@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,6 +28,23 @@ class Bill extends Model
         'updated_at' => 'datetime:d/m/y h:i A'
     ];
 
+    protected $appends = ['balance', 'status'];
+
+    public function getBalanceAttribute()
+    {
+        return BillFee::join('bills', 'bills.id', '=', 'bill_fees.bill_id')
+            ->where('bills.id', $this->id)
+            ->leftJoin('payments', 'payments.bill_id', 'bills.id')
+            ->sum(DB::raw('bill_fees.amount - ifnull(payments.amount,0)'));
+    }
+
+    public function getStatusAttribute()
+    {
+        return BillFee::join('bills', 'bills.id', '=', 'bill_fees.bill_id')
+            ->where('bills.id', $this->id)
+            ->leftJoin('payments', 'payments.bill_id', 'bills.id')
+            ->sum(DB::raw('bill_fees.amount - ifnull(payments.amount,0)')) <= 0?'Paid':'Upaid';
+    }
     /**
      * Get the user that owns the fee.
      */
@@ -81,5 +99,14 @@ class Bill extends Model
      public function totalBill()
      {
         return $this->billFees()->sum('amount');
+     }
+
+      /**
+     * Get the total payment amount for bill
+     */
+
+     public function totalPayment()
+     {
+        return $this->payments()->sum('amount');
      }
 }

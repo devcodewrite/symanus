@@ -80,12 +80,13 @@ var billTable = $(".dt-bills").DataTable({
             data: null,name:'id',
             render: function (data, type, row) {
                 if (type === "display") {
-                    let amount = Number(0); 
-                    data.fees.forEach(fee => {
+                    let amount = 0;
+                    data.bill_fees.forEach(fee => {
                         amount += Number.parseFloat(fee.amount);
                     });
+                   
                     let icon = $(".svg-icon-class")[0].outerHTML;
-
+                    let ps =  data.balance <= 0 ?1:0;
                     let d =
                         '<div class="hs-tooltip inline-block [--trigger:hover] [--placement:right]">' +
                         '<a class="hs-tooltip-toggle inline text-left" href="/bills/' +
@@ -106,6 +107,7 @@ var billTable = $(".dt-bills").DataTable({
                         "<p><b>Bill Amount: </b>" +
                         amount.toFixed(2)+
                         "</p>" +
+                        `<p class="my-2"><b>Status: </b> <span class="${['bg-red-600','bg-green-600'][ps]} p-1  text-white rounded">${['Unpaid','Paid'][ps]}</span></p>` +
                         "</div> </a> </div>";
                     return d;
                 }
@@ -115,7 +117,7 @@ var billTable = $(".dt-bills").DataTable({
         },
         { data: "bdate" },
         {
-            data: "fees",name:'id',
+            data: "bill_fees",name:'id',
             render: function (data, type, row) {
 
                 let amount = Number(0); 
@@ -165,6 +167,17 @@ var billTable = $(".dt-bills").DataTable({
 
                 return null;
             },
+        },
+        {
+            data:'status',
+            render:function(data,type,row){
+
+                    if(type === 'display'){
+                        return `<span class="${({Upaid:'bg-red-600',Paid:'bg-green-600'})[data]} py-1 px-2  text-white rounded">${data}</span>`;
+                    }
+                   
+                return data;
+            }
         },
         {
             data: "user",
@@ -218,13 +231,21 @@ var billTable = $(".dt-bills").DataTable({
         },
     ],
     searchPanes: {
-        columns: [2,4,5],
+        columns: [2,4,6],
     },
     columnDefs: [
         {
             orderable: false,
             className: "select-checkbox",
             targets: [0],
+        },
+        {
+            orderable: false,
+            targets: [5],
+        },
+        { 
+            'searchable'    : false, 
+            'targets'       : [5] 
         },
     ],
     select: {

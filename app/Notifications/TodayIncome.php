@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Models\Setting;
+use Hash;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,14 +13,14 @@ class TodayIncome extends Notification
 {
     use Queueable;
 
-    /**
+     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Attendance $of)
     {
-        //
+        $this->attendance = $of;
     }
 
     /**
@@ -29,33 +31,38 @@ class TodayIncome extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['sms'];
+    }
+   
+    public function toSMS ($notifiable) 
+    {
+        if(!$notifiable->guardian) return false;
+        return (new SMSMessage())
+            ->message($this->makeMessage($notifiable))
+            ->destinations($notifiable->guardian->phone);
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
-    }
+    public function toArray ($notifiable) {
+        if(!$notifiable->guardian) return null;
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
         return [
-            //
-        ];
+            'id' => Hash::sha1(uniqid()),
+            'message' => $this->makeMessage($notifiable),
+            'destinations' => $notifiable->guardian->phone,
+        ]; // leave empty if you dont understand it
+    }
+
+    private function makeMessage($notifiable)
+    {
+        $school = Setting::find('school_name');
+        $school_name = $school?$school->value:'School';
+        $school = Setting::find('school_phone');
+        $school_phone = $school?$school->value:'0246092155';
+        $firstname =$notifiable->firstname;
+        $surname = $notifiable->surname;
+
+        return "$firstname $surname is absent from $school_name on "
+                .date('d/m/y',strtotime($this->attendance->adate))
+                .".Kindly call $school_name on: $school_phone to confirm this claim. Thank you.\n\nPowered by CODEWRITE | www.codewrite.org";
     }
 }
