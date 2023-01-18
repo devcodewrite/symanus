@@ -32,6 +32,7 @@
             </div>
             <div class="pt-5">
                 <p class="alert-processing">Processing...</p>
+                <div class="overflow-x-auto">
                 <table class="dt-classes hidden display w-full">
                     <thead class="uppercase">
                         <tr>
@@ -46,6 +47,7 @@
                         </tr>
                     </thead>
                 </table>
+                </div>
             </div>
         </div>
     </div>
