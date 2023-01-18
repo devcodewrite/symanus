@@ -173,7 +173,7 @@ var billTable = $(".dt-bills").DataTable({
             render:function(data,type,row){
 
                     if(type === 'display'){
-                        return `<span class="${({Upaid:'bg-red-600',Paid:'bg-green-600'})[data]} py-1 px-2  text-white rounded">${data}</span>`;
+                        return `<span class="${({Unpaid:'bg-red-600',Paid:'bg-green-600'})[data]} py-1 px-2  text-white rounded">${data}</span>`;
                     }
                    
                 return data;

@@ -43,7 +43,7 @@ class Bill extends Model
         return BillFee::join('bills', 'bills.id', '=', 'bill_fees.bill_id')
             ->where('bills.id', $this->id)
             ->leftJoin('payments', 'payments.bill_id', 'bills.id')
-            ->sum(DB::raw('bill_fees.amount - ifnull(payments.amount,0)')) <= 0?'Paid':'Upaid';
+            ->sum(DB::raw('bill_fees.amount - ifnull(payments.amount,0)')) <= 0?'Paid':'Unpaid';
     }
     /**
      * Get the user that owns the fee.
