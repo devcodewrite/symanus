@@ -238,8 +238,9 @@ $( window).on('scroll',function() {
     sessionStorage.setItem("scroll_position_y"+location.href, $(this).first().scrollTop());
 });
 
+let activeNavList = $("li.hs-accordion.active").first().offset();
 $('#application-sidebar').animate({
-    scrollTop: $("li.hs-accordion.active").first().offset().top
+    scrollTop: activeNavList?activeNavList.top:0
 }, 2000);
 
 let scrollPositionY = sessionStorage.getItem("scroll_position_y"+location.href);

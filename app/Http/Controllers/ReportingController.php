@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Bill;
 use App\Models\Classes;
+use App\Models\Expense;
+use App\Models\ExpenseType;
 use App\Models\FeeType;
 use App\Models\Student;
 use App\Models\User;
@@ -73,6 +75,66 @@ class ReportingController extends Controller
                             ->get();
         }
         return view('reporting.bills-by-user', $data);
+    }
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function expenseSummary(Request $request)
+    {
+        $data = [
+            'expenseTypes' => [],
+            'users' => [],
+        ];
+
+        if($request->input()){
+            $rules = [ 
+                'report_from' => 'required|date',
+                'report_to' => 'required|date',
+            ];
+            $validator = Validator::make($request->input(), $rules);
+            if ($validator->fails()) {
+
+            }
+            $data['expenseTypes']= ExpenseType::all();
+            $data['reportFrom'] =  $request->input('report_from');
+            $data['reportTo'] =  $request->input('report_to');
+            $data['users'] = User::with(['expenses:id'])
+            ->get();
+        }
+        return view('reporting.expense-summary', $data);
+    }
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function expenseByUser(Request $request)
+    {
+        $data = [
+            'feeTypes' => [],
+            'users' => [],
+        ];
+
+        if($request->input()){
+            $rules = [ 
+                'report_from' => 'required|date',
+                'report_to' => 'required|date',
+            ];
+            $validator = Validator::make($request->input(), $rules);
+            if ($validator->fails()) {
+
+            }
+            $data['feeTypes']= ExpenseType::all();
+            $data['reportFrom'] =  $request->input('report_from');
+            $data['reportTo'] =  $request->input('report_to');
+            $data['users'] = User::with(['expenses:id'])
+                            ->get();
+        }
+        return view('reporting.expense-by-user', $data);
     }
 
      /**

@@ -61,7 +61,6 @@
                                 @if(isset($attendance))
                                     <option value="{{ $attendance->class_id }} "  selected>
                                         {{ $attendance->class->name }} </option>
-
                                 @else
                                         @foreach(auth()->user()->classes as $key => $row)
                                         <option value="{{ $row->id }}">

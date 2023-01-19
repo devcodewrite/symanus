@@ -49,9 +49,9 @@
                         @endif
                         <div class="w-full" id="single-date">
                             <div class="w-1/2 field">
-                                <x-label for="bdate" :value="__('For Date')" />
-                                <x-input id="bdate" class="mt-1 block w-full" type="date" name="bdate"
-                                    :value="old('bdate', date('Y-m-d'))" required />
+                                <x-label for="edate" :value="__('For Date')" />
+                                <x-input id="edate" class="mt-1 block w-full" type="date" name="edate"
+                                    :value="old('edate', date('Y-m-d'))" required />
                             </div>
                         </div>
                         @if(isset($bill))

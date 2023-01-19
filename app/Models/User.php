@@ -40,7 +40,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'created_at' => 'datetime:d/m/y h:i a',
-        'updated_at' => 'datetime:d/m/y h:i a'
+        'updated_at' => 'datetime:d/m/y h:i a',
     ];
 
     /**
@@ -64,7 +64,7 @@ class User extends Authenticatable
      */
     public function userRole()
     {
-        return $this->belongsTo(UserRole::class);
+        return $this->belongsTo(UserRole::class,'user_role_id');
     }
 
     /**
@@ -114,6 +114,15 @@ class User extends Authenticatable
         return $this->hasMany(Bill::class);
     }
 
+     /**
+     * Get the expenses for the class.
+     */
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    
     public function billReport(FeeType $feeType = null, $from = null, $to = null)
     {
         $from = $from ? $from : Bill::orderBy('bdate', 'desc')->first()->bdate;
@@ -141,5 +150,23 @@ class User extends Authenticatable
                 ->sum('amount');
         }
         return $totalBills;
+    }
+
+    public function expenseReport(ExpenseType $expenseType = null, $from = null, $to = null)
+    {
+        $from = $from ? $from : Expense::orderBy('edate', 'desc')->first()->bdate;
+        $to = $to ? $to : Expense::orderBy('edate', 'asc')->first()->bdate;
+      //  $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
+
+        if ($expenseType) {
+            return $this->expenses()
+                    ->whereBetween('edate', [$from, $to])
+                    ->whereIn('expense_type_id',[$expenseType->id])
+                    ->sum('amount');
+        }
+
+      return $this->expenses()
+            ->whereBetween('edate', [$from, $to])
+            ->sum('amount');
     }
 }

@@ -15,7 +15,7 @@ use Validator;
 
 class FeeController extends Controller
 {
-  /**
+    /**
      * Display a listing of resource for tadatables
      * @return \Iluminate\Http\Response
      */

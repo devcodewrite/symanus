@@ -23,6 +23,18 @@ class ExpensePolicy
         ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
+      /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function report(User $user)
+    {
+        return  in_array('report',explode(',',$user->permission->expenses))
+        ?Response::allow():Response::deny("You don't have permission to view this model");
+    }
+
     /**
      * Determine whether the user can view the model.
      *

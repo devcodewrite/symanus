@@ -3,8 +3,8 @@
     @endsection
     @section('breadcrumb')
         <x-breadcrumb :items="[
-            ['title' => 'Fees', 'url' => route('bills.index')],
-            ['title' => 'Fee Details', 'url' => route('bills.show', ['bill' => $bill->id])],
+            ['title' => 'Bills', 'url' => route('bills.index')],
+            ['title' => 'Bill Details', 'url' => route('bills.show', ['bill' => $bill->id])],
         ]" />
         <a href="{{ route('bills.index') }}" class="flex items-center hover:text-sky-600">
             <x-svg.arrow-left-next
@@ -153,9 +153,9 @@
 
                             <div
                                 class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-6 items-end content-center justify-start">
-                                 <!-- Fee type -->
+                                 <!-- Bill type -->
                                  <div class="w-full field" id="bill-fee-types">
-                                    <x-label for="feetype" :value="__('Fee type')" />
+                                    <x-label for="feetype" :value="__('Bill type')" />
                                         <x-select id="feetype"
                                             class="mt-1 min-w-max select2-feetype shadow-md"
                                             name="fee_type_id">
@@ -169,7 +169,7 @@
                                         </x-select>
                                 </div>
 
-                                <!-- Fee Type amount -->
+                                <!-- Bill Type amount -->
                                 <div class="w-full">
                                     <x-label for="amount" :value="__('Amount')" />
                                     <x-input id="amount" class="mt-1 block w-full" type="number" name="amount"

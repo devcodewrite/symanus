@@ -12,7 +12,7 @@ class Expense extends Model
      * @var array
      */
     protected $fillable = [
-        'description', 'class_id', 'rstatus', 'expense_type_id'
+        'description','user_id', 'expense_report_id', 'expense_type_id','amount','edate'
     ];
 
      /**
@@ -37,6 +37,14 @@ class Expense extends Model
      */
     public function expenseType()
     {
-        return $this->belongsTo(FeeType::class, 'expense_type_id');
+        return $this->belongsTo(ExpenseType::class, 'expense_type_id');
+    }
+
+     /**
+     * Get the user that owns the fee.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

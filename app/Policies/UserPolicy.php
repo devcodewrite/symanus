@@ -22,6 +22,22 @@ class UserPolicy
                 ?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
+      /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function approveAnyExpense(User $user)
+    {
+        if($user->permission)
+            return  (in_array('approve expenses',explode(',',$user->permission->expenses))
+            ||$user->permission->is_admin)?Response::allow():Response::deny("You don't have permission to view this model");
+
+        return  (in_array('approve expenses',explode(',',$user->userRole->permission->expenses))
+                ||$user->userRole->permission->is_admin)?Response::allow():Response::deny("You don't have permission to view this model");
+    }
+
     /**
      * Determine whether the user can view the model.
      *

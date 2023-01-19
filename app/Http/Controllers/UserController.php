@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use DataTables;
 use DB;
+use Gate;
 use Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,7 +19,7 @@ use Validator;
 
 class UserController extends Controller
 {
-     /**
+    /**
      * Display a listing of resource for tadatables
      * @return \Iluminate\Http\Response
      */
@@ -100,8 +101,8 @@ class UserController extends Controller
 
         $validator = Validator::make($request->input(), $rules);
         $error = "";
-        foreach($validator->errors()->messages() as $message){
-            $error .= $message[0]."\n";
+        foreach ($validator->errors()->messages() as $message) {
+            $error .= $message[0] . "\n";
         }
 
         if ($validator->fails()) {
@@ -114,12 +115,12 @@ class UserController extends Controller
         }
 
         $file = $request->file('avatar');
-        if($file){
+        if ($file) {
             $file_name = $request->input('username');
             $extension = $file->getClientOriginalExtension();
-            $path = $request->file('avatar')->storeAs('avatars/users',"$file_name.$extension",'public');
-            $avatar= url("storage/$path");
-        }else {
+            $path = $request->file('avatar')->storeAs('avatars/users', "$file_name.$extension", 'public');
+            $avatar = url("storage/$path");
+        } else {
             $avatar = null;
         }
 
@@ -133,19 +134,19 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'avatar' => $avatar,
             'user_role_id' => $request->user_role_id,
-            'api_token' => Hash::sha1(uniqid()),
+            'api_token' => Hash::make(uniqid()),
         ]);
         event(new Registered($user));
-        if($user){
+        if ($user) {
             $user->sendEmailVerificationNotification();
-            
+
             $out = [
                 'data' => $user,
                 'message' => 'user created successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Data couldn't be processed! Please try again!",
                 'status' => false,
@@ -201,20 +202,20 @@ class UserController extends Controller
             'sex' => ['nullable', 'string', 'in:male,female,other'],
             'password' => ['nullable', Password::defaults()],
             'user_role_id' => ['nullable', 'integer', 'exists:user_roles,id'],
-            'avatar' =>['nullable','image']
+            'avatar' => ['nullable', 'image']
         ];
 
-        if($user->phone !== $request->input('phone')){
+        if ($user->phone !== $request->input('phone')) {
             $rules = array_merge($rules, ['phone' => ['nullable', 'string', 'max:255', 'unique:users']]);
         }
-        if($user->email !== $request->input('email')){
+        if ($user->email !== $request->input('email')) {
             $rules = array_merge($rules, ['email' => ['nullable', 'string', 'email', 'max:255', 'unique:users']]);
         }
 
         $validator = Validator::make($request->input(), $rules);
         $error = "";
-        foreach($validator->errors()->messages() as $message){
-            $error .= $message[0]."\n";
+        foreach ($validator->errors()->messages() as $message) {
+            $error .= $message[0] . "\n";
         }
 
         if ($validator->fails()) {
@@ -227,24 +228,24 @@ class UserController extends Controller
         }
 
         $file = $request->file('avatar');
-        if($file){
+        if ($file) {
             $file_name = $request->input('username');
             $extension = $file->getClientOriginalExtension();
-            $path = $request->file('avatar')->storeAs('avatars/users',"$file_name.$extension",'public');
-            $data = $validator->safe()->merge(['avatar'=> url("storage/$path")])->except(['stay']);
-        }else {
-            $data =  $validator->safe()->except(['avatar','stay']);
+            $path = $request->file('avatar')->storeAs('avatars/users', "$file_name.$extension", 'public');
+            $data = $validator->safe()->merge(['avatar' => url("storage/$path")])->except(['stay']);
+        } else {
+            $data =  $validator->safe()->except(['avatar', 'stay']);
         }
         $user->fill($data);
 
-        if($user->save()){
+        if ($user->save()) {
             $out = [
                 'data' => $user,
                 'message' => 'user updated successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Data couldn't be processed! Please try again!",
                 'status' => false,
@@ -256,15 +257,15 @@ class UserController extends Controller
 
     public function update_permission(Request $request, User $user)
     {
-       $perm = Permission::updateOrCreate(['id' => $user->permission_id],$request->input());
-        if($perm){
+        $perm = Permission::updateOrCreate(['id' => $user->permission_id], $request->input());
+        if ($perm) {
             $out = [
                 'data' => $perm,
                 'message' => 'permission updated successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Data couldn't be processed! Please try again!",
                 'status' => false,
@@ -295,32 +296,64 @@ class UserController extends Controller
         //
         if ($request->ajax()) {
 
-            $term = trim($request->get('term',''));
+            $term = trim($request->get('term', ''));
             $take = 10;
             $page = $request->get('page', 1);
-            $skip = ($page - 1 )*$take;
+            $skip = ($page - 1) * $take;
 
             $total = User::where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")->count();
-            
+
             $users = User::select(['id', DB::raw('concat(firstname ," ", surname) as text'), 'avatar', 'sex'])
-                        ->where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")
-                        ->orderBy('firstname', 'asc')
-                        ->skip($skip)
-                        ->take($take)
-                        ->get();
+                ->where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")
+                ->orderBy('firstname', 'asc')
+                ->skip($skip)
+                ->take($take)
+                ->get();
             $out = [
                 'results' => $users,
                 'pagination' => [
-                   'more' => ($skip + $take < $total),
-                   'page' => intval($page),
-                   'totalRows' => $total,
-                   'totalPages' => intval($total/$take + ($total%$take > 0?1:0))
+                    'more' => ($skip + $take < $total),
+                    'page' => intval($page),
+                    'totalRows' => $total,
+                    'totalPages' => intval($total / $take + ($total % $take > 0 ? 1 : 0))
                 ]
             ];
 
             return Response::json($out);
         }
 
-       return Response::json(['message' => 'Invalid request data']);
+        return Response::json(['message' => 'Invalid request data']);
+    }
+
+
+    /**
+     * Display a listing of the resource for select2.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function expense_select2(Request $request)
+    {
+        //
+        if ($request->ajax()) {
+
+            $term = trim($request->get('term', ''));
+
+            $users = User::select(['id','user_role_id','permission_id', DB::raw('concat(firstname ," ", surname) as text'), 'avatar', 'sex'])
+                ->where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")
+                ->get();
+            $users = $users->filter(function ($user) {
+                return Gate::forUser($user)->allows('approveAnyExpense',$user);
+             });
+            $out = [
+                'results' => $users,
+                'pagination' => [
+                    'more' => false,
+                ]
+            ];
+
+            return Response::json($out);
+        }
+
+        return Response::json(['message' => 'Invalid request data']);
     }
 }

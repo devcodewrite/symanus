@@ -37,10 +37,21 @@ class Module extends Model
     {
         if(!$label) return false;
 
-        $module = $this->where('group_label',$label)->where('status', 'enabled')->first();
+        $module = $this->where('group_label',$label)->where('status', 'enabled')->get();
         if(!$module) return false;
         return $module->count() > 0;
     }
+
+    public function hasAllModulGroup(string $label = null)
+    {
+        if(!$label) return false;
+
+        $total = $this->where('group_label',$label)->get()->count();
+        $module = $this->where('group_label',$label)->where('status', 'enabled')->get();
+        if(!$module) return false;
+        return $module->count() === $total;
+    }
+
 
     public function moduleGroup(string $label = null)
     {

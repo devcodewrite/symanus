@@ -36,7 +36,7 @@
         <div class="max-w-5xl px-4 sm:px-6 lg:px-8 lg:py-14 mx-auto">
             <!-- Grid -->
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
-                @if (Gate::inspect('view', $bill)->allowed())
+                @if (Gate::inspect('viewAny', $bill)->allowed())
                     <x-overview-card title="Billings" :items="[
                         ['label' => 'Generated Bills', 'num' => $bill->count(), 'url' => route('bills.index')],
                         ['label' => 'Awaiting Payments', 'num' => $bill->count() - $bill->paidCount()],
@@ -47,7 +47,7 @@
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('view', $fee)->allowed())
+                @if (Gate::inspect('viewAny', $fee)->allowed())
                     <x-overview-card title="Fees" :items="[
                         [
                             'label' => 'Open',
@@ -66,7 +66,7 @@
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('view', $attendance)->allowed())
+                @if (Gate::inspect('viewAny', $attendance)->allowed())
                 <x-overview-card title="Attendances" :items="[
                     [
                         'label' => 'Draft',
@@ -95,7 +95,7 @@
                     </x-slot>
                 </x-overview-card>
             @endif
-                @if (Gate::inspect('view', $user)->allowed())
+                @if (Gate::inspect('viewAny', $user)->allowed())
                     <x-overview-card title="Users" :items="[
                         [
                             'label' => 'Open',
@@ -115,7 +115,7 @@
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('view', $student)->allowed())
+                @if (Gate::inspect('viewAny', $student)->allowed())
                     <x-overview-card title="Students" :items="[
                         [
                             'label' => 'Open',
@@ -133,7 +133,7 @@
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('view', $guardian)->allowed())
+                @if (Gate::inspect('viewAny', $guardian)->allowed())
                     <x-overview-card title="Guardians" :items="[
                         [
                             'label' => 'Open',
@@ -152,14 +152,14 @@
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('view', $class)->allowed())
+                @if (Gate::inspect('viewAny', $class)->allowed())
                     <x-overview-card title="Classes" :items="[['label' => 'Total', 'num' => $class->count(), 'url' => route('classes.index')]]">
                         <x-slot name="icon">
                             <x-svg.class class="h-8 w-8" />
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('view', $sms)->allowed())
+                @if (Gate::inspect('viewAny', $sms)->allowed())
                 <x-overview-card title="SMS" :items="[['label' => 'Balance', 'num' => $setting->getValue('sms_units', 0)]]">
                     <x-slot name="icon">
                         <x-svg.sms class="h-8 w-8" />

@@ -7,6 +7,8 @@ use App\Http\Controllers\ClassesController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ExpenseReportController;
+use App\Http\Controllers\ExpenseTypeController;
 use App\Http\Controllers\FeeController;
 use App\Http\Controllers\FeeTypeController;
 use App\Http\Controllers\GuardianController;
@@ -46,6 +48,8 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/bills-by-user', [ReportingController::class,'billsByUser'])->name('reporting.bills-by-user');
         Route::get('/income-by-class', [ReportingController::class,'incomeByClass'])->name('reporting.income-by-class');
         Route::get('/income-by-user', [ReportingController::class,'incomeByUser'])->name('reporting.income-by-user');
+        Route::get('/expense-summary', [ReportingController::class,'expenseSummary'])->name('reporting.expense-summary');
+        Route::get('/expense-by-user', [ReportingController::class,'expenseByUser'])->name('reporting.expense-by-user');
        
     });
     
@@ -60,15 +64,13 @@ Route::middleware(['auth'])->group(function (){
         Route::resource('fees',FeeController::class);
         Route::resource('bills',BillController::class);
         Route::resource('payments', PaymentController::class);
-        Route::resource('expense-reports',PaymentController::class);
-        Route::resource('reportings',PaymentController::class);
+        Route::resource('expenses',ExpenseController::class);
+        Route::resource('expense-reports',ExpenseReportController::class);
         Route::resource('staffs',StaffController::class);
         Route::resource('leave',StaffController::class);
 
     // users and roles
         Route::resource('users',UserController::class);
-        Route::put('users/update-permission/{user}',[UserController::class, 'update_permission'])->name('users.update-permission');
-        Route::put('user-roles/update-permission/{user_role}',[UserController::class, 'update_permission'])->name('user-roles.update-permission');
         Route::resource('sms',UserRoleController::class);
 
      // logged in user account
@@ -83,7 +85,7 @@ Route::middleware(['auth'])->group(function (){
         Route::resource('settings',SettingController::class);
         Route::resource('permissions',PermissionController::class);
         Route::prefix('/attributes')->group(function (){
-            Route::resource('expense-types',E::class);
+            Route::resource('expense-types',ExpenseTypeController::class);
             Route::resource('fee-types',FeeTypeController::class);
             Route::resource('semesters',SemesterController::class);  
             Route::resource('user-roles',UserRoleController::class);  

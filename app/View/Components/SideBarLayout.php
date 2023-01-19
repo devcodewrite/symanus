@@ -9,6 +9,7 @@ use App\Models\AttendanceStudent;
 use App\Models\Bill;
 use App\Models\Classes;
 use App\Models\Course;
+use App\Models\Expense;
 use App\Models\Fee;
 use App\Models\FeeType;
 use App\Models\Guardian;
@@ -57,6 +58,8 @@ class SideBarLayout extends Component
             'feeType' => new FeeType(),
             'userRole' => new UserRole(),
             'semester' => new Semester(),
+            'expense' => new Expense(),
+            'staff' => new Staff(),
         ];
         return view('layouts.sidebar', $data);
     }
