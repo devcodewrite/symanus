@@ -103,6 +103,9 @@
                             <x-a-button href="{{route('classes.index') }} " class="ml-3 py-3.5 shadow-md">
                                 {{ __('Cancel') }}
                             </x-a-button>
+                            <x-a-button-r class="ml-3 py-3.5 shadow-md rdelete">
+                                {{ __('Delete') }}
+                            </x-a-button-r>
                         </div>
                     </div>
                     <div id="basic-tabs-2" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-2">
@@ -118,7 +121,9 @@
                             </div>
                             <p class="alert-processing">Processing...</p>
 
-                            <table class="dt-related-students display w-full" data-class-id="{{ $class->id }} ">
+                            <table class="dt-related-students display w-full" data-class-id="{{ $class->id }}"
+                                data-title="{{ Str::of("List of students table")->headline() }}"
+                                data-subtitle="{{ 'Generated on '.date('d/m/y')." for ".$class->name }}">
                                 <thead class="uppercase">
                                     <tr>
                                         <th class="w-5"></th>

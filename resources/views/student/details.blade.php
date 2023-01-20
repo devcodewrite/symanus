@@ -172,6 +172,10 @@
                                 {{ __('Open') }}
                             </x-a-button>
                             @endif
+
+                            <x-a-button-r class="ml-3 py-3.5 shadow-md rdelete">
+                                {{ __('Delete') }}
+                            </x-a-button-r>
                            
                         </div>
                     </div>

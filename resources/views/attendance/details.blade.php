@@ -160,7 +160,7 @@
                             <x-a-button-p class="py-3.5 max-w-fit" :href="route('attendances.edit', ['attendance' => $attendance->id])">
                                 {{ __('Modify') }}
                             </x-a-button-p>
-                            <x-a-button class="py-3.5 max-w-fit delete">
+                            <x-a-button class="py-3.5 max-w-fit rdelete">
                                 {{ __('Delete') }}
                             </x-a-button>
                         </div>

@@ -37,10 +37,10 @@ class BillObserver
                     $advance->save();
                 }
             }
-
-            if(Payment::updateOrCreate($payments)){
-                AdvanceFeePayment::where('amount','<=', 0)->delete();
-            }
+            if(sizeof($payments) > 0 )
+                if(Payment::updateOrCreate($payments)){
+                    AdvanceFeePayment::where('amount','<=', 0)->delete();
+                }
         }
     }
 

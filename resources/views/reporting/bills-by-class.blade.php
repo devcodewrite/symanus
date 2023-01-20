@@ -57,7 +57,9 @@
                             </div>
                         </form>
                         <main class="p-5">
-                            <table class="dt-report-bills-by-class display w-full">
+                            <table class="dt-report-bills-by-class display w-full" 
+                            data-title="{{ isset($class)?Str::of("Bills Reporting for $class->name")->headline():'' }}"
+                            data-subtitle="{{ isset($class)?($reportFrom.' to '.$reportTo):'' }}">
                                 <thead class="uppercase">
                                     <tr>
                                         <th>Class</th>

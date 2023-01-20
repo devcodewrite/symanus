@@ -17,6 +17,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | This value is the version of your application. This value is used when the
+    | framework needs to place the application's version in the application or its packages.
+    |
+    */
+
+    'version' => env('APP_VERSION', 'v1.0'),
+
+     /*
+    |--------------------------------------------------------------------------
+    | Application Version Year
+    |--------------------------------------------------------------------------
+    |
+    | This value is the version of your application. This value is used when the
+    | framework needs to place the application's version in the application or its packages.
+    |
+    */
+
+    'vyear' => env('APP_VERSION_YEAR', '2023'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

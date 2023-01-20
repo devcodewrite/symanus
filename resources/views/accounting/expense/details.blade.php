@@ -55,8 +55,8 @@
                                         <p class="text-sky-600 font-semibold">{{ $expenseReport->id }} </p>
                                         <p class="mt-2 font-semibold"> {{ $expenseReport->user->firstname }}
                                             {{ $expenseReport->user->surname }} </p>
-                                        <p class="uppercase text-gray-600">From:
-                                            {{ Carbon::parse($expenseReport->from_date)->format('d/m/y') }} To:
+                                        <p class="text-gray-600">
+                                            {{ Carbon::parse($expenseReport->from_date)->format('d/m/y') }} to
                                             {{ Carbon::parse($expenseReport->to_date)->format('d/m/y') }} </p>
                                     </div>
                                 </div>
@@ -135,11 +135,31 @@
                         </div>
 
                         <div class="py-5 flex flex-row gap-3 shadow-md items-end">
-                            <x-a-button-p class="ml-3 py-3.5" :href="route('expense-reports.edit', ['expense_report' => $expenseReport->id])">
+                            @if ($expenseReport->status === 'rejected' || $expenseReport->status === 'submitted')
+                                <x-a-button-w class="py-3.5 max-w-fit approve">
+                                    {{ __('Approve') }}
+                                </x-a-button-w>
+                                <x-a-button-p class="py-3.5 max-w-fit draft">
+                                    {{ __('Move to Draft') }}
+                                </x-a-button-p>
+                            @endif
+
+                            @if ($expenseReport->status === 'draft')
+                                <x-a-button-p class="py-3.5 max-w-fit submit">
+                                    {{ __('Submit for Approval') }}
+                                </x-a-button-p>
+                            @endif
+
+                            @if ($expenseReport->status === 'approved' || $expenseReport->status === 'submitted')
+                                <x-a-button-r class="ml-3 py-3.5 max-w-fit reject">
+                                    {{ __('Reject') }}
+                                </x-a-button-r>
+                            @endif
+                            <x-a-button-w class="py-3.5 max-w-fit" :href="route('expense-reports.edit', ['expense_report' => $expenseReport->id])">
                                 {{ __('Modify') }}
-                            </x-a-button-p>
-                            <x-a-button class="ml-3 py-3.5 shadow-md" :href="route('expense-reports.index')">
-                                {{ __('Close') }}
+                            </x-a-button-w>
+                            <x-a-button class="py-3.5 max-w-fit rdelete">
+                                {{ __('Delete') }}
                             </x-a-button>
                         </div>
                     </div>
@@ -219,7 +239,9 @@
                             </div>
                         </form>
                         <div class="p-5">
-                            <table class="dt-expenses display w-full">
+                            <table class="dt-expenses display w-full" 
+                            data-title="{{ Str::of("List of expenses table")->headline() }}"
+                            data-subtitle="{{ 'Generated on '.date('d/m/y') }}">
                                 <thead class="uppercase">
                                     <tr class="border">
                                         <th class="w-5">#</th>

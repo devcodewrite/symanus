@@ -327,6 +327,38 @@ class FeeController extends Controller
                         ->join('fee_types', 'fee_types.id', '=', 'fees.fee_type_id')
                         ->join('classes', 'classes.id', '=', 'fees.class_id')
                         ->where(DB::raw("concat(classes.name,' ',fee_types.title,'@',amount)"), 'LIKE',  "%$term%")
+                        //->where('fee_types.for_attendance_bills', 1)
+                        ->orderBy('name', 'asc')
+                        ->get();
+            $out = [
+                'results' => $fees,
+                'pagination' => [
+                   'more' => false,]
+            ];
+
+            return Response::json($out);
+        }
+
+       return Response::json(['message' => 'Invalid request data']);
+    }
+
+     /**
+     * Display a listing of the resource for select2.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function attendance_select2(Request $request)
+    {
+        //
+        if ($request->ajax()) {
+
+            $term = trim($request->get('term',''));
+
+            $fees = Fee::select(['fees.id', DB::raw("concat(classes.name,' ',fee_types.title,'@',amount)  as text")])
+                        ->join('fee_types', 'fee_types.id', '=', 'fees.fee_type_id')
+                        ->join('classes', 'classes.id', '=', 'fees.class_id')
+                        ->where(DB::raw("concat(classes.name,' ',fee_types.title,'@',amount)"), 'LIKE',  "%$term%")
+                        ->where('fee_types.for_attendance_bills', 1)
                         ->orderBy('name', 'asc')
                         ->get();
             $out = [

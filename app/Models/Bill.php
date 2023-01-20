@@ -62,12 +62,31 @@ class Bill extends Model
         return $this->belongsTo(Student::class);
     }
 
+     /**
+     * Get the student that owns the fee.
+     */
+    public function guardian()
+    {
+        return $this->hasOneThrough(Guardian::class,Student::class);
+    }
+
     /**
     * The fees that belong to the bill.
     */
     public function fees()
     {
         return $this->belongsToMany(Fee::class, 'bill_fees');
+    }
+
+     /**
+    * The fees that belong to the bill for attendance only.
+    */
+    public function attendanceFees()
+    {
+        return $this->belongsToMany(Fee::class, 'bill_fees')
+                ->join('fee_types', 'fee_types.id','=', 'fees.fee_type_id')
+                ->where('fee_types.for_attendance_bills', 1)
+                ->get();
     }
 
     public function billFees()

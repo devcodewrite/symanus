@@ -469,6 +469,9 @@ class AttendanceController extends Controller
      */
     public function destroy(Attendance $attendance)
     {
+        //Bill::where('attendance_id', $attendance->id)->delete();
+        AttendanceStudent::where('attendance_id',$attendance->id)->delete();
+
         if ($attendance->delete()) {
             $out = [
                 'message' => 'Attendance deleted successfully!',

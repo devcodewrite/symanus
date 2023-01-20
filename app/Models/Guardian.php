@@ -16,7 +16,7 @@ class Guardian extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'firstname', 'surname', 'sex', 'address', 'rstatus',
+        'title', 'firstname', 'surname', 'sex', 'address', 'rstate',
         'phone', 'mobile', 'email', 'linked_files', 'occupation', 'dateofbirth', 'avatar',
     ];
 
@@ -52,6 +52,14 @@ class Guardian extends Model
     public function students()
     {
         return $this->hasMany(Student::class);
+    }
+
+ /**
+     * Get the bills that belong the guardian.
+     */
+    public function bills()
+    {
+        return $this->hasManyThrough(Bill::class,Student::class);
     }
 
     /**

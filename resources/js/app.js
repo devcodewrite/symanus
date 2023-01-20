@@ -34,6 +34,9 @@ require("datatables.net-searchpanes-dt");
 require("datatables.net-select-dt");
 require("select2");
 
+window.APP_VERSION =  'v1.0';
+window.APP_VERSION_YEAR = '2023';
+
 $(".select2").select2({
     allowClear: true,
     placeholder: "Select an option",
@@ -251,64 +254,68 @@ setTimeout(function(){
 },1000);
 
 
-/* 
-window.testTable = $('table').DataTable({
-    dom: 'PlBftip',
-    buttons:[
-        'print','copy', 'csv', 'pdf', 'excel'
-    ],
-    ajax:{
-        url: '/api/test',
-        dataType: 'json',
-        contentType:'application/json',
-        data: function(param){
-            param.api_token = $('meta[name="api-token"]').attr('content');
-        }
-    },
-    processing: true,
-    serverSide: true,
-    search:true,
-    stateSave: true,
-    drawCallback:function(){
-        $('.dataTables_paginate .paginate_button')
-        .css('background','#fff')
-        .css('border-radius','.3em')
-        .css('border-color','transparent')
-        .css('box-shadow', '3px 3px #eee')
-        .mouseover(function(){
-            $(this).hasClass('disabled')?null:$(this).css('background', '#0101f0').children().css('color', 'white');
-        }).mouseout(function(){
-            $(this).hasClass('disabled')
-            ?null:($(this).hasClass('active')
-            ?$(this).css('background', '#0101f0').children().css('color', 'white')
-            :$(this).css('background', '#fff').children().css('color', 'black'));
-        });
-        $('.dataTables_paginate .paginate_button').each(function(i,e){
-            $(e).hasClass('active')?$(e).css('background', '#0101f0').children().css('color', 'white')
-            :$(e).css('background', '#fff').children().css('color', 'black');
-        });
-    },
-    columns:[
-        { data: 'firstname', name:'firstname' },
-        { data: 'surname', name: 'lastname' },
-        { data: 'studentid', name: 'studentid'},
-        { data: 'sex', name: 'sex'},
-        { 
-            data: 'class', 
-            name: 'class',
-            render: function(data, type, row){
-                return data.name;
-            }
-        },
-    ],
-    searchPanes:{
-        columns:[3,4],
-    },
-});
-$('.dataTables_wrapper .dataTables_length select').css('padding', '6px 30px 6px 20px');
-$('.dt-buttons').css('margin','auto 10px auto 10px');
-$('.dataTables_paginate').css('margin-top', '5px').css('background-color','#f8f8f8').css('border-radius','.3em').css('background','#f8f8f8').css('box-shadow', '3px 3px #eee');
+$('.rdelete').on('click',function(e){
+    let targetUrl = location.href;
+    if($(this).attr('href') && $(this).attr('href') !== 'javascript:;') targetUrl = $(this).attr('href');
+    
+    Swal.fire({
+        title: "Are you sure ?",
+        text:  `You want to delete this record! You wouldn't be able to recover it!`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: `Yes! delete it`,
+    }).then((result) => {
+        if (!result.isConfirmed) return Swal.fire("Record is safe!");
 
-$('button.dt-button').css('background-color','#fff').css('border-radius','.3em').css('background','#fff').css('box-shadow', '3px 3px #eee');
-$('.dataTables_wrapper table').wrap('<div class="overflow-x-auto w-full"></div>');
- */
+        $.ajax({
+            method: "DELETE",
+            url: targetUrl,
+            data: {
+                _token: $('meta[name="csrf-token"]').attr("content")
+            },
+            dataType: "json",
+            cache: false,
+            success: function (d, r) {
+                if (!d || r === "nocontent") {
+                    Swal.fire({
+                        icon: "error",
+                        text: "Malformed form data sumbitted! Please try agian.",
+                    });
+                    return;
+                }
+                if (
+                    typeof d.status !== "boolean" ||
+                    typeof d.message !== "string"
+                ) {
+                    Swal.fire({
+                        icon: "error",
+                        text: "Malformed data response! Please try agian.",
+                    });
+                    return;
+                }
+
+                if (d.status === true) {
+                    Swal.fire({
+                        icon: "success",
+                        text: d.message,
+                    });
+                    setTimeout(() => {
+                        let segments = location.href.toString().split('/').pop();
+                        location.assign(segments.join('/'));
+                    }, 600);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        text: d.message,
+                    });
+                }
+            },
+            error: function (r) {
+                Swal.fire({
+                    icon: "error",
+                    text: "Unable to submit form! Please try agian.",
+                });
+            },
+        });
+    });
+});

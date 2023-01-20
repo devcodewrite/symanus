@@ -912,6 +912,9 @@ select {
 .row-start-4 {
   grid-row-start: 4;
 }
+.float-right {
+  float: right;
+}
 .float-left {
   float: left;
 }

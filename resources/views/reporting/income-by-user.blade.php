@@ -57,7 +57,9 @@
                             </div>
                         </form>
                         <main class="p-5">
-                            <table class="dt-report-income-by-user display w-full">
+                            <table class="dt-report-income-by-user display w-full"
+                            data-title="{{ isset($reportFrom)?Str::of("Income Reporting for Users")->headline():'' }}"
+                            data-subtitle="{{ isset($reportFrom)?($reportFrom.' to '.$reportTo):'' }}">
                                 <thead class="uppercase">
                                     <tr>
                                         <th>User</th>

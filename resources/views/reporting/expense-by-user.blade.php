@@ -35,93 +35,71 @@
                                 <span class="text-gray-400">Reporting name </span>
                                 <span class="">Expense by User Report</span>
                             </div>
+                            <div class="flex flex-row gap-5">
+                                <span class="text-gray-400">Reporting for user </span>
+                                <div class="w-full">
+                                    <x-select class="mt-1 w-full md:w-1/2 select2-user" name="user_id" required>
+                                        @if (isset($user))
+                                            <option value="{{ $user->id }}" selected>
+                                                {{ $user->firstname }} {{ $user->surname }} </option>
+                                        @endif
+                                    </x-select>
+                                </div>
+                            </div>
                             <div class="md:flex md:flex-row grid grid-cols-2 gap-5">
                                 <span class="text-gray-400">Reporting period </span>
                                 <div class="flex flex-col md:flex-row gap-3">
                                     <div>
                                         <x-label for="report-from">From:</x-label>
                                         <x-input id="report-from" type="date" name="report_from"
-                                            value="{{ isset($reportFrom)?$reportFrom: now()->toDateString() }}" />
+                                            value="{{ isset($reportFrom) ? $reportFrom : now()->toDateString() }}" />
                                     </div>
                                     <div>
                                         <x-label for="report-to">To: </x-label>
                                         <x-input id="report-to" type="date" name="report_to"
-                                            value="{{ isset($reportTo)?$reportTo: now()->toDateString() }}" />
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-1 row-start-2 md:grid-cols-3 items-center">
-                                    <span class="text-gray-400 col-span-1">Reporting for user </span>
-                                    <div class="col-span-2">
-                                        <x-select class="mt-1 block w-full select2-user" name="user_id"
-                                            required>
-                                            @if (isset($user))
-                                                <option value="{{ $user->id }}" selected>
-                                                    {{ $user->firstname }} {{ $user->surname }} </option>
-                                            @endif
-                                        </x-select>
+                                            value="{{ isset($reportTo) ? $reportTo : now()->toDateString() }}" />
                                     </div>
                                 </div>
 
                                 <div class="self-end item-start">
-                                <x-button-p class="ml-3 py-3.5">
-                                    {{ __('Generate') }}
-                                </x-button-p>
+                                    <x-button-p class="ml-3 py-3.5">
+                                        {{ __('Generate') }}
+                                    </x-button-p>
+                                </div>
                             </div>
-                            </div>
+
                         </form>
                         <main class="p-5">
-                            <table class="dt-report-expense-by-user display w-full">
+                            <table class="dt-report-expense-by-user display w-full" 
+                            data-title="{{ isset($user)?Str::of("Expense Reporting by $user->firstname $user->surname")->headline():'' }}"
+                            data-subtitle="{{ isset($user)?($reportFrom.' to '.$reportTo):'' }}">
                                 <thead class="uppercase">
                                     <tr>
-                                        <th>User</th>
-                                        @php
-                                            $totalCols = [];
-                                            $grandTotal = 0;
-                                        @endphp
-
-                                        @foreach ($expenseTypes as $key => $row)
-                                            @php
-                                                $totalCols[$key] = 0;
-                                            @endphp
-                                            <th>{{ $row->title }} </th>
-                                        @endforeach
-                                        <th class="text-center">Row Total</th>
+                                        <th>Expense Type</th>
+                                        <th class="text-center">Amount</th>
                                     </tr>
                                 </thead>
-                            <tbody>
-                                @foreach ($useres as $key => $rRow)
-                                    <tr>
-                                        <th class="text-left">
-                                            {{ $rRow->name }}
-                                        </th>
+                                <tbody>
+                                    @php
+                                    $totalCols = 0;
+                                    @endphp
+                                    @foreach ($expenseTypes as $key => $row)
                                         @php
-                                            $totalRow = 0;
+                                            $totalCols +=$user->expenseReport()
                                         @endphp
-                                        @foreach ($expenseTypes as $key => $row)
-                                            @php
-                                                $colVal = $rRow->expenseReport($row, $reportFrom, $reportTo);
-                                                $totalCols[$key] += $colVal;
-                                                $totalRow += $colVal;
-                                                $grandTotal += $colVal;
-                                            @endphp
-                                            <td>{{ number_format($colVal,2) }} </td>
-                                        @endforeach
-                                        <td>
-                                            {{ __('GHS') }} {{ number_format($totalRow,2) }}
-                                        </td>
+                                        <tr>
+                                            <th class="text-left">{{ $row->title }} </th>
+                                            <td>{{ number_format($user->expenseReport($row,$reportFrom,$reportTo),2); }} </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr class="uppercase text-center">
+                                        <th>Total</th>
+                                        <th>{{__('GHS')}} {{ number_format($totalCols, 2) }} </th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr class="uppercase text-center">
-                                    <th> Total</th>
-                                @foreach ($totalCols as $key => $val)
-                                    <th>{{ number_format($val,2) }} </th>
-                                @endforeach
-                                <th>{{ __('GHS') }} {{  number_format($grandTotal,2) }} </th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </tfoot>
+                            </table>
                         </main>
                     </div>
                 </div>

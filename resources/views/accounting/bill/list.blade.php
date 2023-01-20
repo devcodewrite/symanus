@@ -36,7 +36,9 @@
                     class="svg-icon-student flex-shrink-0 mx-3 overflow-visible h-5 w-5 text-gray-400 dark:text-gray-600" />
                 </div>
                 <p class="alert-processing">Processing...</p>
-                <table class="dt-bills hidden display w-full">
+                <table class="dt-bills hidden display w-full"
+                data-title="{{ Str::of("List of student bills table")->headline() }}"
+                data-subtitle="{{ 'Generated on '.date('d/m/y') }}">
                     <thead class="uppercase">
                         <tr>
                             <th class="w-5"></th>

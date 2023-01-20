@@ -4,7 +4,24 @@ var table = $('.dt-report-income-by-user').DataTable({
     pageLength: 50,
     dom: 'lBftip',
     buttons:[
-        'print', 'pdf', 'excel',
+        {
+            extend: 'excel',
+            footer: true,
+            title: $('.dt-report-income-by-user').data('title')+"\n"+$('.dt-report-income-by-user').data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+        },
+        {
+            extend: 'pdf',
+            title: $('.dt-report-income-by-user').data('title')+"\n"+$('.dt-report-income-by-user').data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+            footer: true,
+        },
+        {
+            extend: 'print',
+            footer: true,
+            title: $('.dt-report-income-by-user').data('title')+"\n"+$('.dt-report-income-by-user').data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+        }
     ],
     drawCallback:function(){
         $('.dataTables_paginate .paginate_button')

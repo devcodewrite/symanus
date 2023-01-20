@@ -53,7 +53,7 @@ export default {
         willOpen: function () {
           $("#swal-input1").focus();
           $.ajax({ 
-              url: "/api/select2/fee-types",
+              url: "/api/select2/attendance-fee-types",
               dataType: "json",
               data: {api_token : $('meta[name="api-token"]').attr("content") },
               success: function(d, s){
@@ -69,7 +69,6 @@ export default {
       })
         .then((result) => {
           if (!result.isConfirmed) return null;
-          console.log(result);
           
           return fetch(`../api/json/student-advance-payment`, {
             method: "PUT",
@@ -141,6 +140,10 @@ export default {
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes! sumbit",
+         allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
       }).then((result) => {
         if (!result.isConfirmed) return;
         const id = $("#vue-attendance-marking").data("attendance-id");
@@ -172,9 +175,11 @@ export default {
                 icon: "success",
                 text: "Attendance submitted successfully!",
               });
+
               setTimeout(() => {
                  location.reload();
               }, 500);
+               Swal.close();
             } else {
               Swal.fire({
                 icon: "error",

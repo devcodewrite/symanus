@@ -212,7 +212,9 @@
                         @endif
 
                         <div class="p-5">
-                            <table class="dt-bill-payments display w-full">
+                            <table class="dt-bill-payments display w-full"
+                            data-title="{{ Str::of("List of payments table")->headline() }}"
+                            data-subtitle="{{ 'Generated on '.date('d/m/y') }}">
                                 <thead class="uppercase">
                                     <tr class="border">
                                         <th class="w-5">#</th>

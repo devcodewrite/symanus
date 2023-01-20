@@ -70,7 +70,9 @@
                             </div>
                         </form>
                         <main class="p-5">
-                            <table class="dt-report-student-balances display w-full">
+                            <table class="dt-report-student-balances display w-full"
+                            data-title="{{ isset($students)?Str::of("Reporting for Student Balances")->headline():'' }}"
+                            data-subtitle=`{{ isset($students)?"$reportFrom to $reportTo":'' }}`>
                                 <thead class="uppercase">
                                     <tr>
                                         <th>Student</th>
@@ -78,17 +80,19 @@
                                             $totalCols = [];
                                             $grandTotal = 0;
                                         @endphp
-
+                                        @if(isset($feeTypes))
                                         @foreach ($feeTypes as $key => $row)
                                             @php
                                                 $totalCols[$key] = 0;
                                             @endphp
                                             <th>{{ $row->title }} </th>
                                         @endforeach
+                                        @endif
                                         <th class="text-center">Row Total</th>
                                     </tr>
                                 </thead>
                             <tbody>
+                                @if(isset($students))
                                 @foreach ($students as $key => $rRow)
                                     <tr>
                                         <th>
@@ -112,6 +116,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                @endif
                             </tbody>
                             <tfoot>
                                 <tr class="uppercase text-center">

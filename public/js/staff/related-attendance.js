@@ -7,9 +7,24 @@ var attendanceTable = $(".dt-related-attendances").DataTable({
                 dt.ajax.reload();
             },
         },
-        "print",
-        "pdf",
-        "excel",
+        {
+            extend: 'excel',
+            footer: true,
+            title: $(".dt-related-attendances").data('title')+"\n"+$(".dt-related-attendances").data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+        },
+        {
+            extend: 'pdf',
+            title: $(".dt-related-attendances").data('title')+"\n"+$(".dt-related-attendances").data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+            footer: true,
+        },
+        {
+            extend: 'print',
+            footer: true,
+            title: $(".dt-related-attendances").data('title')+"\n"+$(".dt-related-attendances").data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+        },
         "selectAll",
         "selectNone",
     ],

@@ -33,7 +33,9 @@
             <div class="pt-5">
                 <p class="alert-processing">Processing...</p>
                 <div class="overflow-x-auto">
-                <table class="dt-classes hidden display w-full">
+                <table class="dt-classes hidden display w-full"
+                data-title="{{ Str::of("List of classes table")->headline() }}"
+                data-subtitle="{{ 'Generated on '.date('d/m/y') }}">
                     <thead class="uppercase">
                         <tr>
                             <th class="w-5"></th>

@@ -107,6 +107,7 @@
                         <!-- Student Guardian -->
                         <div class="w-full field">
                             <x-label for="guardian" :value="__('Assigned Guardain:')" />
+                            <div class="flex flex-row gap-2">
                             <x-select id="guardian" class="mt-1 block w-full select2-guardian" name="guardian_id"
                                 placeholder="Select the guardian">
                                 @if (isset($student->gaurdian))
@@ -115,6 +116,11 @@
                                     </option>
                                 @endif
                             </x-select>
+                            <a href="{{ route('guardians.create', ['backtourl' => route('students.create')]) }}"
+                                class="bg-white rounded outline outline-offset-1 outline-blue-500 text-center flex items-center px-5">
+                                <i class="fa fa-plus text-gray-600"></i>
+                            </a>
+                            </div>
                         </div>
                         <!-- Transit -->
                         <div class="w-full field">

@@ -180,4 +180,33 @@ class FeeTypeController extends Controller
 
        return Response::json(['message' => 'Invalid request data']);
     }
+
+      /**
+     * Display a listing of the resource for select2.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function attendance_select2(Request $request)
+    {
+        //
+        if ($request->ajax()) {
+
+            $term = trim($request->get('term',''));
+
+            $feetype = FeeType::select(['id', DB::raw(" title as text")])
+                        ->where("title", 'LIKE',  "%$term%")
+                        ->where('for_attendance_bills', 1)
+                        ->orderBy('title', 'asc')
+                        ->get();
+            $out = [
+                'results' => $feetype,
+                'pagination' => [
+                   'more' => false,]
+            ];
+
+            return Response::json($out);
+        }
+
+       return Response::json(['message' => 'Invalid request data']);
+    }
 }

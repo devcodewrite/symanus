@@ -86,7 +86,6 @@ class ReportingController extends Controller
     {
         $data = [
             'expenseTypes' => [],
-            'users' => [],
         ];
 
         if($request->input()){
@@ -115,24 +114,24 @@ class ReportingController extends Controller
     public function expenseByUser(Request $request)
     {
         $data = [
-            'feeTypes' => [],
-            'users' => [],
+            'expenseTypes' => [],
         ];
 
         if($request->input()){
             $rules = [ 
                 'report_from' => 'required|date',
                 'report_to' => 'required|date',
+                'user_id' => 'required|integer|exists:users,id'
             ];
             $validator = Validator::make($request->input(), $rules);
             if ($validator->fails()) {
-
+                return;
             }
-            $data['feeTypes']= ExpenseType::all();
+            $data['expenseTypes']= ExpenseType::all();
             $data['reportFrom'] =  $request->input('report_from');
             $data['reportTo'] =  $request->input('report_to');
-            $data['users'] = User::with(['expenses:id'])
-                            ->get();
+            $data['user'] = User::with(['expenses:id'])
+                            ->find($request->user_id);
         }
         return view('reporting.expense-by-user', $data);
     }
@@ -204,7 +203,6 @@ class ReportingController extends Controller
     {
         $data = [
             'feeTypes' => [],
-            'students' => [],
             'class' => null,
         ];
 
@@ -215,17 +213,16 @@ class ReportingController extends Controller
                 'class_id' => 'required|integer|exists:classes,id',
             ];
             $validator = Validator::make($request->input(), $rules);
-            if ($validator->fails()) {
-
+            if (!$validator->fails()) {
+                $classId = $request->input('class_id');
+                $data['feeTypes']= FeeType::all();
+                $data['class'] = Classes::find($classId);
+                $data['reportFrom'] =  $request->input('report_from');
+                $data['reportTo'] =  $request->input('report_to');
+                $data['students'] = Student::with(['payments:id', 'bills:id'])
+                                ->where('class_id', $classId)
+                                ->get();
             }
-            $classId = $request->input('class_id');
-            $data['feeTypes']= FeeType::all();
-            $data['class'] = Classes::find($classId);
-            $data['reportFrom'] =  $request->input('report_from');
-            $data['reportTo'] =  $request->input('report_to');
-            $data['students'] = Student::with(['payments:id', 'bills:id'])
-                            ->where('class_id', $classId)
-                            ->get();
         }
         return view('reporting.student-balances', $data);
     }

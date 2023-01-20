@@ -1,7 +1,7 @@
 
-$(".select2-class").select2({
+$(".select2-user").select2({
     ajax: {
-        url: "/api/select2/classes",
+        url: "/api/select2/users",
         dataType: "json",
         data: function (params) {
             params.api_token = $('meta[name="api-token"]').attr("content");
@@ -9,15 +9,56 @@ $(".select2-class").select2({
         },
     },
     allowClear: true,
-    placeholder: "Select a class",
+    placeholder: "Select a user",
+    templateResult: formatResult,
 });
-
+function formatResult(data) {
+    if (data.loading) {
+        return data.text;
+    }
+    data.getAvatar = function () {
+        let imgs = {
+            male: "/img/man.png",
+            female: "/img/woman.png",
+            other: "/img/user.png",
+        };
+        return imgs[this.sex];
+    };
+    var $container = $(
+        '<div class="select2-result-user flex py-3">' +
+            '<img class="select2-result-user__avatar h-6 mr-2" src="' +
+            data.getAvatar() +
+            '">' +
+            '<span class="select2-result-user__text uppercase">' +
+            data.text +
+            "</span>" +
+            "</div>"
+    );
+    return $container;
+}
 var table = $('.dt-report-expense-by-user').DataTable({
     order: [[ 0, 'asc' ]],
     pageLength: 50,
     dom: 'lBftip',
     buttons:[
-        'print', 'pdf', 'excel',
+        {
+            extend: 'excel',
+            footer: true,
+            title: $('.dt-report-expense-by-user').data('title')+"\n"+$('.dt-report-expense-by-user').data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+        },
+        {
+            extend: 'pdf',
+            title: $('.dt-report-expense-by-user').data('title')+"\n"+$('.dt-report-expense-by-user').data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+            footer: true,
+        },
+        {
+            extend: 'print',
+            footer: true,
+            title: $('.dt-report-expense-by-user').data('title')+"\n"+$('.dt-report-expense-by-user').data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+        }
     ],
     drawCallback:function(){
         $('.dataTables_paginate .paginate_button')

@@ -44,7 +44,9 @@ Route::middleware('auth:api')->prefix('/datatables')->group(function(){
     Route::get('/attendances', [AttendanceController::class, 'datatable']);
     Route::get('/attendance-related-students', [AttendanceController::class, 'related_students_datatable']);
     Route::get('/class-related-students', [ClassesController::class, 'related_students_datatable']);
+    Route::get('/guardian-related-students', [GuardianController::class, 'related_students_datatable']);
     Route::get('/student-related-bills', [StudentController::class, 'related_bills_datatable']);
+    Route::get('/guardian-related-bills', [GuardianController::class, 'related_bills_datatable']);
 });
 
 Route::middleware('auth:api')->prefix('/json')->group(function(){
@@ -76,9 +78,11 @@ Route::middleware('auth:api')->prefix('/select2')->group(function(){
     Route::get('/classes', [ClassesController::class, 'select2']);
     Route::get('/courses', [CourseController::class, 'select2']);
     Route::get('/fees', [FeeController::class, 'select2']);
+    Route::get('/attendance-fees', [FeeController::class, 'attendance_select2']);
     Route::get('/expense-reports', [ExpenseReportController::class, 'select2']);
     Route::get('/expenses', [ExpenseReportController::class, 'select2']);
     Route::get('/fee-types', [FeeTypeController::class, 'select2']);
+    Route::get('/attendance-fee-types', [FeeTypeController::class, 'attendance_select2']);
     Route::get('/bills', [BillController::class, 'select2']);
     Route::get('/payments', [PaymentController::class, 'select2']);
     Route::get('/attendances', [AttendanceController::class, 'select2']);

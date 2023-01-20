@@ -7,9 +7,25 @@ var billTable = $(".dt-bills").DataTable({
                 dt.ajax.reload();
             },
         },
-        "print",
-        "pdf",
-        "excel",
+
+        {
+            extend: 'excel',
+            footer: true,
+            title: $(".dt-bills").data('title')+"\n"+$(".dt-bills").data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+        },
+        {
+            extend: 'pdf',
+            title: $(".dt-bills").data('title')+"\n"+$(".dt-bills").data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+            footer: true,
+        },
+        {
+            extend: 'print',
+            footer: true,
+            title: $(".dt-bills").data('title')+"\n"+$(".dt-bills").data('subtitle'),
+            messageTop: `Generate with SYMANUS ${APP_VERSION} © ${APP_VERSION_YEAR}.` ,
+        },
         "selectAll",
         "selectNone",
     ],

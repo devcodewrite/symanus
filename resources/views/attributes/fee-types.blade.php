@@ -113,7 +113,9 @@
                             </div>
                         </form>
                         <div class="p-5">
-                            <table class="dt-fee-types display w-full">
+                            <table class="dt-fee-types display w-full"
+                            data-title="{{ Str::of("List of fee types table")->headline() }}"
+                            data-subtitle="{{ 'Generated on '.date('d/m/y') }}">
                                 <thead class="uppercase">
                                     <tr class="border">
                                         <th class="w-5">#</th>

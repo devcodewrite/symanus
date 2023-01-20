@@ -36,22 +36,12 @@
                 </div>
                 <div class="w-full">
                     <div aria-label="formbody" class="mt-6 px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 overflow-hidden">
-                        @if(!isset($bill))
-                        <div class="w-full">
-                            <x-label for="date-type" :value="__('Billing function 1')" />
-                            <x-select
-                                onchange="$(this).val()==='single'?$('#single-date, #range-date').toggleClass('hidden'):$('#range-date, #single-date').toggleClass('hidden')"
-                                id="date-type" class="mt-1 block w-full shadow-md" name="function1" required>
-                                <option value="single">Bill by single date</option>
-                                <option value="range">Bill by date range</option>
-                            </x-select>
-                        </div>
-                        @endif
+                       
                         <div class="w-full" id="single-date">
-                            <div class="w-1/2 field">
-                                <x-label for="edate" :value="__('For Date')" />
-                                <x-input id="edate" class="mt-1 block w-full" type="date" name="edate"
-                                    :value="old('edate', date('Y-m-d'))" required />
+                            <div class="w-full field">
+                                <x-label for="bdate" :value="__('For Date')" />
+                                <x-input id="bdate" class="mt-1 block w-full" type="date" name="bdate"
+                                    :value="old('bdate', date('Y-m-d'))" required />
                             </div>
                         </div>
                         @if(isset($bill))
@@ -64,24 +54,8 @@
                         </div>
                         @endif
                         @if(!isset($bill))
-                        <div class="w-full flex gap-3 hidden" id="range-date">
-                            <!-- Bill date -->
-                            <div class="w-1/2 field">
-                                <x-label for="bill_from" :value="__('From Date')" />
-                                <x-input id="bill_from" class="mt-1 block w-full" type="date" name="bill_from"
-                                    :value="old('bill_from', date('Y-m-d'))" required />
-                            </div>
-                            <div class="w-1/2 field">
-                                <x-label for="bill_to" :value="__('To Date')" />
-                                <x-input id="bill_to" class="mt-1 block w-full" type="date" name="bill_to"
-                                    :value="old('bill_to', date('Y-m-d'))" required />
-                            </div>
-                        </div>
-                        @endif
-
-                        @if(!isset($bill))
-                        <div class="w-full md:row-start-2">
-                            <x-label for="date-type" :value="__('Billing function 2')" />
+                        <div class="w-full">
+                            <x-label for="date-type" :value="__('Billing function')" />
                             <x-select
                                 onchange="$(this).val()==='single'?$('#bill-fees, #bill-fee-types').toggleClass('hidden'):$('#bill-fees, #bill-fee-types').toggleClass('hidden')"
                                 id="date-type" class="mt-1 block w-full shadow-md" name="function2" required>

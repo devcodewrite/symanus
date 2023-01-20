@@ -21,6 +21,9 @@ function updateStatus(status, action) {
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: `Yes! ${action} it`,
+        didOpen: () => {
+            Swal.showLoading();
+          },
     }).then((result) => {
         if (!result.isConfirmed) return Swal.fire("Record is safe!");
 
@@ -57,6 +60,7 @@ function updateStatus(status, action) {
                         icon: "success",
                         text: d.message,
                     });
+                    Swal.close();
                     location.reload();
                 } else {
                     Swal.fire({

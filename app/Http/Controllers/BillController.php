@@ -109,11 +109,8 @@ class BillController extends Controller
      */
     public function store(Request $request)
     {
-       
         $rules = [ 
-            'bdate' => 'required_if:function1,single|date',
-            'bill_from' => 'required_if:function1,range|date',
-            'bill_to' => 'required_if:function1,range|date',
+            'bdate' => 'date',
             'fees' => 'required_if:function2,fees|array',
             'feeTypes' => 'required_if:function2,feeTypes|array',
         ];
@@ -132,53 +129,42 @@ class BillController extends Controller
             ];
             return Response::json($out);
         }
-        $from = Carbon::parse($request->input('bill_from'));
-        $to = Carbon::parse($request->input('bill_to'));
-        $dates = [];
-
-        if($request->input('function1') === 'range'){
-            $days = $from->diffInDays($to);
-            for ($i=0; $i <= $days; $i++) { 
-                    array_push($dates,['bdate' => $from->format('Y-m-d')]);
-                $from = $from->addDay();
-            }
-        }else {
-            array_push($dates,['bdate' => $request->input('bdate')]);
-        }
+        $bdate = $request->bdate;
         $billFee = null;
         if($request->input('function2') === 'fees'){
-            foreach($dates as $bdate){
                 $fees = [];
-                foreach(Fee::where('rstatus', 'open')->whereIn('id', $request->input('fees'))->get() as $fee){
+                foreach(
+                    Fee::where('rstatus', 'open')
+                    ->whereIn('id', $request->input('fees'))
+                    ->get() as $fee){
                     $students =  $fee->class->students
+                    ->where('rstate', 'open')
                     ->whereNotIn('affiliation', [$fee->feeType->bill_ex_st_affiliation])
                     ->whereNotIn('transit', [$fee->feeType->bill_ex_st_transit]);
                     if($fee) array_push($fees, $fee);
                   
                     foreach($students as $row){
-                        $bill =  Bill::updateOrCreate(['user_id' => auth()->user()->id, 'student_id' => $row->id, 'bdate' =>$bdate['bdate']]);
+                        $bill =  Bill::updateOrCreate(['user_id' => auth()->user()->id, 'student_id' => $row->id, 'bdate' =>$bdate]);
                         BillFee::where('bill_id',$bill->id)->delete();
                         $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id, 'amount' => $fee->amount]);
                     }
                 }
-            }
         }else {
-            foreach($dates as $bdate){
-                $fees = Fee::where('rstatus', 'open')->whereIn('fee_type_id',$request->input('feeTypes'))->get();
-               
+                $fees = Fee::where('rstatus', 'open') 
+                        ->whereIn('fee_type_id',$request->input('feeTypes'))
+                        ->get();
                 foreach($fees as $fee){
                     $students =  $fee->class->students
+                    ->where('rstate', 'open')
                     ->whereNotIn('affiliation', [$fee->feeType->bill_ex_st_affiliation])
                     ->whereNotIn('transit', [$fee->feeType->bill_ex_st_transit]);
-                
+                    array_push($feeList, $fee->id);
                     foreach($students as $row){
                         $bill =  Bill::updateOrCreate(
                             array_merge(['user_id' => auth()->user()->id],['student_id' => $row->id], $bdate));
-                        BillFee::where('bill_id',$bill->id)->delete();
-                        $billFee = BillFee::create(['bill_id'=>$bill->id, 'fee_id' => $fee->id,'amount' => $fee->amount]);
+                        $billFee = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id,'amount' => $fee->amount]);
                     }
                 }
-            }
         }
         if($billFee){
             $out = [

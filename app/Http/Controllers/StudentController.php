@@ -340,7 +340,18 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        //
+        if($student->delete()){
+            $out = [
+                'message' => 'Student deleted successfully!',
+                'status' => true,
+            ];
+        }else {
+            $out = [
+                'message' => "Nothing done!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 
       /**

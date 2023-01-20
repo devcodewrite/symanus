@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Expense;
 use App\Models\ExpenseReport;
+use Carbon\Carbon;
 use DataTables;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Response;
 use Validator;
 
@@ -93,16 +95,29 @@ class ExpenseReportController extends Controller
         $rules = [ 
             'user_id' => 'required|integer|exists:users,id',
             'approval_user_id' => 'required|integer|exists:users,id',
-            'from_date' => 'required|date',
-            'to_date' => 'required|date'
+            'to_date' => 'required|date',
+            'from_date' => [
+                'required',
+                'date',
+                Rule::unique('expense_reports')
+                    ->where('user_id', $request->input('user_id'))
+                    ->where('approval_user_id', $request->input('approval_user_id'))
+                    ->where('from_date',$request->input('from_date')),
+            ],
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";
         foreach($validator->errors()->messages() as $message){
             $error .= $message[0]."\n";
         }
+        $invalidDate = false;
 
-        if ($validator->fails()) {
+        if(!Carbon::parse($request->from_date)->lessThanOrEqualTo(Carbon::parse($request->to_date))){
+            $invalidDate = true;
+            $error .= " Invalid date range!";
+        }
+
+        if ($validator->fails() || $invalidDate) {
             $out = [
                 'message' => trim($error),
                 'status' => false,
@@ -156,7 +171,7 @@ class ExpenseReportController extends Controller
         $data = [
             'expenseReport' => $expenseReport,
         ];
-        return view('accounting.expense.edit',$data);
+        return view('accounting.expense.edit', $data);
     }
 
     /**
@@ -213,7 +228,19 @@ class ExpenseReportController extends Controller
      */
     public function destroy(ExpenseReport $expenseReport)
     {
-        $expenseReport->delete();
+        if($expenseReport->delete()){
+            $out = [
+                'message' => 'Expense Report deleted successfully!',
+                'status' => true,
+            ];
+        }
+        else {
+            $out = [
+                'message' => "Nothing done!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 
      /**
