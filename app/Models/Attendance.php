@@ -17,7 +17,7 @@ class Attendance extends Model
      * @var array
      */
     protected $fillable = [
-        'adate', 'class_id', 'user_id', 'status'
+        'adate', 'class_id', 'user_id','approval_user_id', 'status'
     ];
 
     /**
@@ -51,6 +51,14 @@ class Attendance extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the approval user that owns the attendance.
+     */
+    public function approvalUser()
+    {
+        return $this->belongsTo(User::class, 'approval_user_id');
     }
 
     /**

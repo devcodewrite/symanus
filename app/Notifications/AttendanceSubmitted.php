@@ -8,7 +8,7 @@ use Hash;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class AttendanceApproved extends Notification
+class AttendanceSubmitted extends Notification
 {
     use Queueable;
     public $attendance;
@@ -42,7 +42,7 @@ class AttendanceApproved extends Notification
     }
 
     public function toArray ($notifiable) {
-        if(!$notifiable->user) return null;
+        if(!$notifiable->phone) return null;
 
         return [
             'id' => Hash::make(uniqid()),
@@ -56,11 +56,11 @@ class AttendanceApproved extends Notification
         $setting = new Setting();
         $school_name = $setting->getValue('school_name', 'School');
   
-        $firstname =$this->attendance->approvalUser->firstname;
-        $surname = $this->attendance->approvalUser->surname;
-        $phone = $this->attendance->approvalUser->phone;
-        return "$firstname $surname has approved your attendance  of "
+        $firstname =$this->attendance->user->firstname;
+        $surname = $this->attendance->user->surname;
+        $phone = $this->attendance->user->phone;
+        return "$firstname $surname has submitted attendance of "
                 .date('d/m/y',strtotime($this->attendance->adate))
-                ." at $school_name.\nContact: $phone. Thank you.\n\nPowered by CODEWRITE | www.codewrite.org";
+                ." for Approval at $school_name.\nContact: $phone.\nKindly validate and approve it. Thank you.\n\nPowered by CODEWRITE | www.codewrite.org";
     }
 }

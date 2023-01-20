@@ -1,6 +1,7 @@
 @php
     use App\Models\Classes;
     use App\Models\Attendance;
+    use App\Models\User;
 @endphp
 <x-app-layout>
     @section('style')
@@ -73,7 +74,7 @@
                         @endif
 
                         <!-- User -->
-                        @if(Gate::inspect('viewAny', auth()->user()->all())->allowed())
+                        @if(Gate::inspect('viewAny', new User())->allowed())
                         <div class="w-full field">
                             <x-label for="user" :value="__('Assign To:')" />
                             <x-select id="user" class="mt-1 block w-full select2-users" required name="user_id"
@@ -81,12 +82,8 @@
                                 @if(isset($attendance->user))
                                     <option value="{{ $attendance->user_id }}"  selected>
                                         {{ $attendance->user->firstname }} 
-                                        {{ $attendance->user->surname }} </option>
-                                    @else
-                                        @foreach(auth()->user()->classes as $key => $row)
-                                        <option value="{{ $row->id }}">
-                                            {{ $row->name }} </option>
-                                        @endforeach
+                                        {{ $attendance->user->surname }} 
+                                    </option>
                                 @endif
                             </x-select>
                         </div>
@@ -99,6 +96,27 @@
                             </x-select>
                         </div>
                         @endif
+                         <!-- Attendance approval user -->
+                         <div class="w-full field">
+                            <x-label for="approval_user_id" :value="__('User responsible for approval:')" />
+                            <div class="flex gap-1">
+                                <x-select id="approval_user_id"
+                                    class="mt-1 block w-full select2-approval-users overfllow-y-auto shadow-md"
+                                    name="approval_user_id" placeholder="Select the user" required>
+                                    @if (isset($attendance))
+                                        <option value="{{ $attendance->approval_user_id }}" selected>
+                                            {{ $attendance->approvalUser->firstname }}
+                                            {{ $attendance->approvalUser->surname }}
+                                        </option>
+                                    @endif
+                                </x-select>
+                                <a href="{{ route('users.create', ['backtourl' => route('attendances.create')]) }}"
+                                    class="bg-white rounded outline outline-offset-1 outline-blue-500 text-center flex items-center px-5">
+                                    <i class="fa fa-plus text-gray-600"></i>
+                                </a>
+                            </div>
+                        </div>
+
                         <div class="field w-full flex items-end gap-2">
                             <x-label for="generate-bill" :value="__('Auto Bill Students')" />
                             <x-input id="generate-bill" class="mt-1" type="checkbox" checked name="bill_students"

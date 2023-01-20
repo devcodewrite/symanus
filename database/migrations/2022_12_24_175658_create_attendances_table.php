@@ -20,6 +20,7 @@ class CreateAttendancesTable extends Migration
             $table->date('adate')->index('adate');
             $table->foreignIdFor(Classes::class, 'class_id')->constrained();
             $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(User::class, 'approval_user_id');
             $table->enum('status', ['draft', 'submitted', 'approved', 'rejected'])->default('draft');
             $table->softDeletes();
             $table->timestamps();

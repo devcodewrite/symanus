@@ -25,6 +25,22 @@ $(".select2-users").select2({
     templateResult: formatResult,
 });
 
+$(".select2-approval-users").select2({
+    ajax: {
+        url: "/api/select2/approval-users",
+        dataType: "json",
+        data: function (params) {
+            params.api_token = $('meta[name="api-token"]').attr("content");
+            return params;
+        },
+    },
+    allowClear: true,
+    placeholder: "Select a user",
+    templateResult: formatResult,
+});
+
+
+
 function formatResult(data) {
     if (data.loading) {
         return data.text;

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Response;
+use stdClass;
 use Validator;
 
 class AttendanceController extends Controller
@@ -301,6 +302,7 @@ class AttendanceController extends Controller
             ],
             'class_id' => 'required|integer|exists:classes,id',
             'user_id' => 'nullable|integer|exists:users,id',
+            'approval_user_id' => 'nullable|integer|exists:users,id',
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";
@@ -427,6 +429,7 @@ class AttendanceController extends Controller
                     ->where('adate', '<>', $request->input('adate'))
             ],
             'user_id' => 'nullable|integer|exists:users,id',
+            'approval_user_id' => 'nullable|integer|exists:users,id',
             'status' => 'nullable|string|in:approved,draft,rejected,submitted'
         ];
         $validator = Validator::make($request->input(), $rules);
