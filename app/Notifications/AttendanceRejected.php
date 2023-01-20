@@ -8,7 +8,7 @@ use Hash;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class AttendanceApproved extends Notification
+class AttendanceRejected extends Notification
 {
     use Queueable;
     public $attendance;

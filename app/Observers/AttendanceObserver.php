@@ -9,6 +9,7 @@ use App\Models\Fee;
 use App\Models\FeeType;
 use App\Models\Guardian;
 use App\Notifications\AttendanceApproved;
+use App\Notifications\AttendanceRejected;
 use App\Notifications\AttendanceSubmitted;
 use App\Notifications\StudentAbsent;
 use Illuminate\Http\Request;
@@ -41,7 +42,7 @@ class AttendanceObserver
             $attendance->user->notify(new AttendanceApproved($attendance));
         }
         else if($attendance->status === 'rejected'){
-            $attendance->user->notify(new AttendanceApproved($attendance));
+            $attendance->user->notify(new AttendanceRejected($attendance));
         }
         else if($attendance->status === 'submitted'){
             //dd($attendance->approvalUser);
