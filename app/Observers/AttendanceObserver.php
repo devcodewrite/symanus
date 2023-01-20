@@ -41,8 +41,7 @@ class AttendanceObserver
             $attendance->user->notify(new AttendanceApproved($attendance));
         }
         else if($attendance->status === 'rejected'){
-            $attendance->removeBills();
-           // Notification::send($attendance->approvalUser, new AttendanceRejected($attendance));
+            $attendance->user->notify(new AttendanceApproved($attendance));
         }
         else if($attendance->status === 'submitted'){
             //dd($attendance->approvalUser);
