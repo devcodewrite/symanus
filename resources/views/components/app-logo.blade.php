@@ -1,6 +1,9 @@
 
 @props(['imgSize' => 'ms', 'appName' => '', 'textAlign' => 'items-end'])
-
+@php
+    use App\Models\Setting;
+    $setting = new Setting();
+@endphp
 @php
     switch ($imgSize) {
         case 'xs':
@@ -22,6 +25,6 @@
     }
 @endphp
 <a class="flex {{ $textAlign }} text-xl font-semibold dark:text-white" href="{{url('dashboard')}} " aria-label="Logo">
-    <img src="{{ asset('img/logo.png') }}" alt="logo" class="{{ $imgClass }}">
+    <img src="{{ $setting->getValue('school_logo_url',asset('img/logo.png')) }}" alt="logo" class="{{ $imgClass }}">
     <span class="uppercase sm:hidden lg:inline"> {{ $appName }} </span>
 </a>

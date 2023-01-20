@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use App\Models\Setting;
 use Illuminate\View\Component;
 
 class GuestLayout extends Component

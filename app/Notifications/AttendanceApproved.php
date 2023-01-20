@@ -2,23 +2,24 @@
 
 namespace App\Notifications;
 
+use App\Models\Attendance;
+use App\Models\Setting;
+use Hash;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class AttendanceApproved extends Notification
 {
     use Queueable;
-
+    public $attendance;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Attendance $of)
     {
-        //
+        $this->attendance = $of;
     }
 
     /**
@@ -29,33 +30,37 @@ class AttendanceApproved extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['sms'];
+    }
+   
+    public function toSMS ($notifiable) 
+    {
+        if(!$notifiable->user) return false;
+        return (new SMSMessage())
+            ->message($this->makeMessage($notifiable))
+            ->destinations($notifiable->user->phone);
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
-    }
+    public function toArray ($notifiable) {
+        if(!$notifiable->user) return null;
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
         return [
-            //
-        ];
+            'id' => Hash::make(uniqid()),
+            'message' => $this->makeMessage($notifiable),
+            'destinations' => $notifiable->user->phone,
+        ]; // leave empty if you dont understand it
+    }
+
+    private function makeMessage($notifiable)
+    {
+        $setting = new Setting();
+        $school_name = $setting->getValue('school_name', 'School');
+  
+        $firstname =$this->attendance->user->firstname;
+        $surname = $this->attendance->user->surname;
+        $phone = $this->attendance->user->phone;
+        return "$firstname $surname has submitted attendance for "
+                .date('d/m/y',strtotime($this->attendance->adate))
+                .".School: $school_name, contact: $phone.Kindly validate and approve. Thank you.\n\nPowered by CODEWRITE | www.codewrite.org";
     }
 }

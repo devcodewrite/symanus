@@ -8,6 +8,7 @@ use App\Models\BillFee;
 use App\Models\Fee;
 use App\Models\FeeType;
 use App\Models\Guardian;
+use App\Notifications\AttendanceApproved;
 use App\Notifications\StudentAbsent;
 use Illuminate\Http\Request;
 use Notification;
@@ -36,10 +37,12 @@ class AttendanceObserver
         if($attendance->status === 'approved'){
             $attendance->settleBills();
             Notification::send($attendance->absentStudents, new StudentAbsent($attendance));
+            Notification::send($attendance->approvalUser, new AttendanceApproved($attendance));
         }
         else if($attendance->status === 'rejected'){
             $attendance->removeBills();
         }
+       
     }
 
     /**

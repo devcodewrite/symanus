@@ -23,6 +23,12 @@ function updateStatus(status, action) {
         confirmButtonText: `Yes! ${action} it`,
     }).then((result) => {
         if (!result.isConfirmed) return Swal.fire("Record is safe!");
+        Swal.fire({
+            title:"Please wait!",
+            didOpen:()=>{
+                Swal.showLoading();
+            }  
+        });
 
         $.ajax({
             method: "PUT",
@@ -74,6 +80,6 @@ function updateStatus(status, action) {
             },
         });
 
-        Swal.showLoading();
+       
     });
 }

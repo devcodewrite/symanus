@@ -1,8 +1,12 @@
+@php
+    use App\Models\Setting;
+    $setting = new Setting();
+@endphp
 <x-guest-layout>
     <x-auth-card>
         <x-slot name="logo">
             <a href="/">
-                <x-app-logo imgSize="ls" appName="SYMANUS" textAlign="flex-col items-center" />
+                <x-app-logo imgSize="ls" appName="{{ $setting->getValue('school_name', 'SYMANUS'); }}" textAlign="flex-col items-center" />
             </a>
         </x-slot>
 
