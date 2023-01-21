@@ -34,13 +34,6 @@ require("datatables.net-searchpanes-dt");
 require("datatables.net-select-dt");
 require("select2");
 
-window.APP_VERSION =  'v1.0';
-window.APP_VERSION_YEAR = '2023';
-window.MIX_PAYSTACK_BASE_URL = process.env.MIX_PAYSTACK_BASE_URL;
-window.MIX_PAYSTACK_PUBLIC_KEY = process.env.MIX_PAYSTACK_PUBLIC_KEY;
-window.MIX_PAYSTACK_SECRET_KEY = process.env.MIX_PAYSTACK_SECRET_KEY;
-window.MIX_PAYSTACK_CURRENCY = process.env.MIX_PAYSTACK_CURRENCY;
-
 $(".select2").select2({
     allowClear: true,
     placeholder: "Select an option",

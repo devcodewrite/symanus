@@ -50,5 +50,12 @@
         @include('layouts.footer')
     </div>
 </body>
-
+<script>
+ window.APP_VERSION =  'v1.0';
+window.APP_VERSION_YEAR = '2023';
+window.MIX_PAYSTACK_BASE_URL ="{{ env('MIX_PAYSTACK_BASE_URL') }}";
+window.MIX_PAYSTACK_PUBLIC_KEY ="{{ env('MIX_PAYSTACK_PUBLIC_KEY') }}";
+window.MIX_PAYSTACK_SECRET_KEY ="{{ env('MIX_PAYSTACK_SECRET_KEY') }}";
+window.MIX_PAYSTACK_CURRENCY ="{{ env('MIX_PAYSTACK_CURRENCY') }}";
+</script>
 </html>
