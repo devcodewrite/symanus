@@ -89,7 +89,7 @@
                                             @endphp
                                             @foreach ($feeTypes as $key => $row)
                                                 @php
-                                                    $colVal = $rRow->advancePaymentReport($row, $reportFrom, $reportTo);
+                                                    $colVal = $rRow->advanceReport($row, $reportFrom, $reportTo);
                                                     $totalCols[$key] += $colVal;
                                                     $totalRow += $colVal;
                                                     $grandTotal += $colVal;
