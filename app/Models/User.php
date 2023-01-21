@@ -177,4 +177,22 @@ class User extends Authenticatable
             ->whereBetween('edate', [$from, $to])
             ->sum('amount');
     }
+
+    public function advanceReport(FeeType $feeType = null, $from = null, $to = null)
+    {
+        $from = $from ? $from : Expense::orderBy('paid_at', 'desc')->first()->bdate;
+        $to = $to ? $to : Expense::orderBy('paid_at', 'asc')->first()->bdate;
+      //  $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
+
+        if ($feeType) {
+            return $this->advancePayments()
+                    ->whereBetween('paid_at', [$from, $to])
+                    ->whereIn('fee_type_id',[$feeType->id])
+                    ->sum('amount');
+        }
+
+      return $this->advancePayments()
+            ->whereBetween('paid_at', [$from, $to])
+            ->sum('amount');
+    }
 }

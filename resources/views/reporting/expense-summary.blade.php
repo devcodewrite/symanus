@@ -78,6 +78,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (isset($user))
                                     @foreach ($users as $key => $rRow)
                                         <tr>
                                             <th class="text-left">
@@ -102,6 +103,7 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    @endif
                                 </tbody>
                                 <tfoot>
                                     <tr class="uppercase text-center">

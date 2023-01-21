@@ -134,22 +134,25 @@ export default {
         });
     },
     async submit() {
-      Swal.fire({
+      Swal.fire({ 
         title: "Are you sure ?",
         text: "You wouldn't be able to make any changes afterwards.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes! sumbit",
-         allowOutsideClick: false,
+         allowOutsideClick: false, 
       }).then((result) => {
         if (!result.isConfirmed) return;
         const id = $("#vue-attendance-marking").data("attendance-id");
-
         Swal.fire({
-          title: "Please wait!",
+          title: "Loading...",
+          text: "Please wait!",
+          allowEscapeKey: false,
+          allowOutsideClick: false,
            didOpen: () => {
           Swal.showLoading();},
         });
+
         const res = fetch(`../attendances/${id}`, {
           method: "PUT",
           headers: {
