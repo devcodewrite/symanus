@@ -39,7 +39,7 @@ if($uri){
 @else
     <li>
         <a
-            {{ $attributes->merge(['href' => $url, 'class' => "flex items-center gap-x-3.5 py-2 px-2.5". ($active ? 'bg-gray-100' : '') . ' text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white']) }}>
+            {{ $attributes->merge(['href' => $url, 'class' => 'flex items-center gap-x-3.5 py-2 px-2.5 ' . ($active ? 'bg-gray-100' : '') . ' text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white']) }}>
             {{ $icon }}
             {{ $title }}
         </a>
