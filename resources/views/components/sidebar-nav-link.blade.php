@@ -31,7 +31,7 @@ if($uri){
 
         <div id="users-accordion-child"
             class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300  {{$matches ?'block':'hidden'}}">
-            <ul class="hs-accordion-group pl-3 pt-2 {{$class}}" data-hs-accordion-always-open>
+            <ul class="hs-accordion-group pl-3 pt-2" data-hs-accordion-always-open>
                 {{ $slot }}
             </ul>
         </div>
