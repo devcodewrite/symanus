@@ -1,4 +1,4 @@
-@props(['icon' => '', 'url' => 'javascript:;', 'title', 'uri' => null, 'class' => ''])
+@props(['icon' => '', 'url' => 'javascript:;', 'title', 'uri' => null,])
 @php
 $active = false;
 $matches = false;
