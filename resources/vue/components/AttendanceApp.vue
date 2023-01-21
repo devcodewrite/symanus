@@ -141,12 +141,15 @@ export default {
         showCancelButton: true,
         confirmButtonText: "Yes! sumbit",
          allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
       }).then((result) => {
         if (!result.isConfirmed) return;
         const id = $("#vue-attendance-marking").data("attendance-id");
+
+        Swal.fire({
+          title: "Please wait!",
+           didOpen: () => {
+          Swal.showLoading();},
+        });
         const res = fetch(`../attendances/${id}`, {
           method: "PUT",
           headers: {
@@ -171,15 +174,15 @@ export default {
             }
             if (result.status === true) {
               this.checklist = this.fetchChecklist();
+              Swal.close();
+
               Swal.fire({
                 icon: "success",
                 text: "Attendance submitted successfully!",
               });
-
               setTimeout(() => {
                  location.reload();
               }, 500);
-               Swal.close();
             } else {
               Swal.fire({
                 icon: "error",
