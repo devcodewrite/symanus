@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+require('laravel-mix-compress');
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -17,3 +18,4 @@ mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'pub
     require('tailwindcss'),
     require('@tailwindcss/forms'),
 ]).vue();
+mix.compress();
