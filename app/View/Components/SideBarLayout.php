@@ -18,6 +18,7 @@ use App\Models\Payment;
 use App\Models\Permission;
 use App\Models\Semester;
 use App\Models\Setting;
+use App\Models\SMS;
 use App\Models\Staff;
 use App\Models\Student;
 use App\Models\User;
@@ -60,6 +61,7 @@ class SideBarLayout extends Component
             'semester' => new Semester(),
             'expense' => new Expense(),
             'staff' => new Staff(),
+            'sms' => new SMS(),
         ];
         return view('layouts.sidebar', $data);
     }

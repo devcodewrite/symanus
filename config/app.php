@@ -27,7 +27,7 @@ return [
 
     'version' => env('APP_VERSION', 'v1.0'),
 
-     /*
+    /*
     |--------------------------------------------------------------------------
     | Application Version Year
     |--------------------------------------------------------------------------
@@ -39,6 +39,18 @@ return [
 
     'vyear' => env('APP_VERSION_YEAR', '2023'),
 
+
+     /*
+    |--------------------------------------------------------------------------
+    | Application Sms Units Charge
+    |--------------------------------------------------------------------------
+    |
+    | This value is the version of your application. This value is used when the
+    | framework needs to place the application's version in the application or its packages.
+    |
+    */
+
+    'sms_charge' => floatval(env('SMS_TOPUP_CHARGE', .030)),
     /*
     |--------------------------------------------------------------------------
     | Application Environment

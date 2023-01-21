@@ -18,6 +18,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ReportingController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SMSController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
@@ -48,6 +49,8 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/bills-by-user', [ReportingController::class,'billsByUser'])->name('reporting.bills-by-user');
         Route::get('/income-by-class', [ReportingController::class,'incomeByClass'])->name('reporting.income-by-class');
         Route::get('/income-by-user', [ReportingController::class,'incomeByUser'])->name('reporting.income-by-user');
+        Route::get('/advance-by-class', [ReportingController::class,'advanceByClass'])->name('reporting.advance-by-class');
+        Route::get('/advance-by-user', [ReportingController::class,'advanceByUser'])->name('reporting.advance-by-user');
         Route::get('/expense-summary', [ReportingController::class,'expenseSummary'])->name('reporting.expense-summary');
         Route::get('/expense-by-user', [ReportingController::class,'expenseByUser'])->name('reporting.expense-by-user');
        
@@ -71,7 +74,8 @@ Route::middleware(['auth'])->group(function (){
 
     // users and roles
         Route::resource('users',UserController::class);
-        Route::resource('sms',UserRoleController::class);
+        Route::get('/sms/topup', [SMSController::class, 'topup'])->name('sms-topup');
+        Route::resource('sms',SMSController::class);
 
      // logged in user account
      Route::prefix('/account')->group(function (){

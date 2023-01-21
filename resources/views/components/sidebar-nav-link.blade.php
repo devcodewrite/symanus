@@ -1,4 +1,4 @@
-@props(['icon' => '', 'url' => 'javascript:;', 'title', 'uri' => null])
+@props(['icon' => '', 'url' => 'javascript:;', 'title', 'uri' => null, 'class' => ''])
 @php
 $active = false;
 $matches = false;
@@ -31,7 +31,7 @@ if($uri){
 
         <div id="users-accordion-child"
             class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300  {{$matches ?'block':'hidden'}}">
-            <ul class="hs-accordion-group pl-3 pt-2" data-hs-accordion-always-open>
+            <ul class="hs-accordion-group pl-3 pt-2 {{$class}}" data-hs-accordion-always-open>
                 {{ $slot }}
             </ul>
         </div>
@@ -39,7 +39,7 @@ if($uri){
 @else
     <li>
         <a
-            {{ $attributes->merge(['href' => $url, 'class' => 'flex items-center gap-x-3.5 py-2 px-2.5 ' . ($active ? 'bg-gray-100' : '') . ' text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white']) }}>
+            {{ $attributes->merge(['href' => $url, 'class' => "flex items-center gap-x-3.5 py-2 px-2.5". ($active ? 'bg-gray-100' : '') . ' text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white']) }}>
             {{ $icon }}
             {{ $title }}
         </a>

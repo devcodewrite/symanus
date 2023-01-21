@@ -69,7 +69,7 @@
                         <!-- User Email -->
                         <div class="w-full field">
                             <x-label for="email" :value="__('User Email')" />
-                            <x-input id="email" class="mt-1 block w-full" type="text" name="email"
+                            <x-input id="email" class="mt-1 block w-full" type="email" name="email"
                                 :value="old('email', isset($user) ? $user->email : '')" placeholder="Enter the {{ __('Email') }}" />
                         </div>
                         <!-- User Phone -->

@@ -47,4 +47,21 @@ class Setting extends Model
         $data = $this->find($key);
         return $data?$data->value:$default;
     }
+
+    public function setValue($key = null, $value='')
+    {
+        if(!$key) return;
+
+        $data = $this->find($key);
+        if($data){
+            $data->value = $value;
+            $data->save();
+            return $data->value;
+        }else {
+            $this->key = $key;
+            $this->value = $value;
+            $this->save();
+            return $this->value;
+        }
+    }
 }

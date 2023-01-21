@@ -75,6 +75,18 @@
                                     </span>
                                 </div>
                                 <div class="flex flex-row justify-between py-3">
+                                    <span class="w-1/2 text-gray-600">User</span>
+                                    <span class="w-1/2">
+                                        {{ $attendance->user->firstname }} {{ $attendance->user->surname }}
+                                    </span>
+                                </div>
+                                <div class="flex flex-row justify-between py-3">
+                                    <span class="w-1/2 text-gray-600">Approval by</span>
+                                    <span class="w-1/2">
+                                        {{ $attendance->approvalUser->firstname }} {{ $attendance->approvalUser->surname }}
+                                    </span>
+                                </div>
+                                <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">Total students</span>
                                     <span class="w-1/2">
                                         {{ $attendance->students->count() }}
@@ -116,13 +128,25 @@
                                             GHS {{ number_format($attendance->expectedPayments(), 2) }}
                                         </span>
                                     </div>
-                                    <div class="flex flex-row justify-between py-3">
-                                        <span class="w-1/2 text-black-600 font-semibold">Over Turn Amount</span>
-                                        <span class="w-1/2 text-green-600 font-semibold">
-                                            GHS
-                                            {{ number_format($attendance->totalAdvance() + $attendance->expectedPayments(), 2) }}
-                                        </span>
-                                    </div>
+                                    @if($attendance->status !== 'approved')
+                                        <div class="flex flex-row justify-between py-3">
+                                            <span class="w-1/2 text-black-600 font-semibold">Over Turn Amount</span>
+                                            <span class="w-1/2 text-green-600 font-semibold">
+                                                GHS
+                                                {{ number_format($attendance->totalAdvance() + $attendance->expectedPayments(), 2) }}
+                                            </span>
+                                        </div>
+                                        @else
+                                        <div class="flex flex-row justify-between py-3">
+                                            <span class="w-1/2 text-black-600 font-semibold">Over Turn Amount</span>
+                                            <span class="w-1/2 text-green-600 font-semibold">
+                                               Turned In
+                                            </span>
+                                        </div>
+
+                                    @endif
+
+                                   
                                 </div>
                             @else
                                 <div class="flex flex-col w-full divide-y divide-slate-300">
@@ -223,9 +247,11 @@
                             </div>
                             <div class="pt-5">
                                 <p class="alert-processing">Processing...</p>
-                                <div class="overflow-x-auto p-1">
-                                    <table class="dt-related-students display w-full"
-                                        data-attendance-id="{{ $attendance->id }}">
+                               
+                                    <table class="dt-related-students overflow-x-auto display w-full"
+                                        data-attendance-id="{{ $attendance->id }}"
+                                        data-title="{{ Str::of("List of students table")->headline() }}"
+                                data-subtitle="{{ 'Generated on '.date('d/m/y')." for attendance." }}">
                                         <thead class="uppercase">
                                             <tr>
                                                 <th class="w-5"></th>
@@ -241,7 +267,7 @@
                                             </tr>
                                         </thead>
                                     </table>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>

@@ -61,7 +61,7 @@ var studentTable = $('.dt-related-students').DataTable({
         });
     },
     initComplete:function(settings){
-        $('.dt-related-students.dataTables_wrapper table').wrap('<div style="overflow-x:auto;" class="w-full"></div>'); 
+        $('.dataTables_wrapper table').wrap('<div style="overflow-x:auto;" class="w-full"></div>'); 
     },
     columns:[
         {

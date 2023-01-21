@@ -33,7 +33,8 @@ class Classes extends Model
      */
     protected $casts = [
         'created_at' => 'datetime:d/m/y h:i A',
-        'updated_at' => 'datetime:d/m/y h:i A'
+        'updated_at' => 'datetime:d/m/y h:i A',
+        'level' => 'integer'
     ];
 
     /**
@@ -66,6 +67,14 @@ class Classes extends Model
     public function payments()
     {
         return $this->hasManyThrough(Payment::class, Student::class, 'class_id');
+    }
+
+    /**
+     * Get the advance payments for the class.
+     */
+    public function advancePayments()
+    {
+        return $this->hasManyThrough(AdvanceFeePayment::class, Student::class, 'class_id');
     }
 
      /**
@@ -126,6 +135,26 @@ class Classes extends Model
         return $totalPayment;
        }
        $totalPayment = $this->payments()
+                ->whereBetween('paid_at', [$from, $to])
+                ->sum('amount');
+
+       return $totalPayment;
+    }
+
+    public function advanceReport(FeeType $feeType = null, $from = null, $to = null)
+    {
+        $from = $from?$from:AdvanceFeePayment::orderBy('paid_at', 'desc')->first()->created_at;
+        $to = $to?$to:AdvanceFeePayment::orderBy('paid_at', 'asc')->first()->created_at;
+       // $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
+
+       if($feeType){
+        $totalPayment = $this->advancePayments()
+                ->where('fee_type_id', $feeType->id)
+                ->whereBetween('paid_at', [$from, $to])
+                ->sum('amount');
+        return $totalPayment;
+       }
+       $totalPayment = $this->advancePayments()
                 ->whereBetween('paid_at', [$from, $to])
                 ->sum('amount');
 

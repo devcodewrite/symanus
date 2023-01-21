@@ -199,6 +199,64 @@ class ReportingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function advanceByClass(Request $request)
+    {
+        $data = [
+            'feeTypes' => [],
+            'classes' => [],
+        ];
+
+        if($request->input()){
+            $rules = [ 
+                'report_from' => 'required|date',
+                'report_to' => 'required|date',
+            ];
+            $validator = Validator::make($request->input(), $rules);
+            if ($validator->fails()) {
+
+            }
+            $data['feeTypes']= FeeType::all();
+            $data['reportFrom'] =  $request->input('report_from');
+            $data['reportTo'] =  $request->input('report_to');
+            $data['classes'] = Classes::with(['payments'])->get();
+        }
+        return view('reporting.advance-by-class', $data);
+    }
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function advanceByUser(Request $request)
+    {
+        $data = [
+            'feeTypes' => [],
+            'users' => [],
+        ];
+
+        if($request->input()){
+            $rules = [ 
+                'report_from' => 'required|date',
+                'report_to' => 'required|date',
+            ];
+            $validator = Validator::make($request->input(), $rules);
+            if ($validator->fails()) {
+
+            }
+            $data['feeTypes']= FeeType::all();
+            $data['reportFrom'] =  $request->input('report_from');
+            $data['reportTo'] =  $request->input('report_to');
+            $data['users'] = User::with(['payments'])->get();
+        }
+        return view('reporting.advance-by-user', $data);
+    }
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function studentBalances(Request $request)
     {
         $data = [

@@ -89,7 +89,7 @@
 
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">Email</span>
-                                    <span class="w-1/2">
+                                    <span class="w-1/2 break-all">
                                         {{ $user->email }}
                                     </span>
                                 </div>
@@ -133,12 +133,7 @@
                                         </span>
                                     </div>
                                 @endif
-                                <div class="flex flex-row justify-between py-3">
-                                    <span class="w-1/2 text-gray-600">User Affiliation</span>
-                                    <span class="w-1/2 uppercase">
-
-                                    </span>
-                                </div>
+                                
                             </div>
                         </div>
 

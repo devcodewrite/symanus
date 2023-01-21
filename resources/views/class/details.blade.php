@@ -121,7 +121,7 @@
                             </div>
                             <p class="alert-processing">Processing...</p>
 
-                            <table class="dt-related-students display w-full" data-class-id="{{ $class->id }}"
+                            <table class="dt-related-students overflow-x-auto display w-full" data-class-id="{{ $class->id }}"
                                 data-title="{{ Str::of("List of students table")->headline() }}"
                                 data-subtitle="{{ 'Generated on '.date('d/m/y')." for ".$class->name }}">
                                 <thead class="uppercase">

@@ -106,6 +106,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class);
     }
+
+     /**
+     * Get the advance payments for the user.
+     */
+    public function advancePayments()
+    {
+        return $this->hasMany(AdvanceFeePayment::class);
+    }
     /**
      * Get the bills for the class.
      */

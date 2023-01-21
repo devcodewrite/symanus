@@ -3,7 +3,7 @@
 <div id="application-sidebar"
     class="hs-overlay hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform hidden fixed top-0 left-0 bottom-0 z-[60] w-64 bg-white border-r border-gray-200 pt-7 pb-10 overflow-y-auto scrollbar-y lg:block lg:translate-x-0 lg:right-auto lg:bottom-0 dark:scrollbar-y dark:bg-gray-800 dark:border-gray-700">
     <div class="px-6">
-        <x-app-logo appName=" {{ $setting->getValue('app_name', 'Symanus') }} " />
+        <x-app-logo appName="" />
     </div>
 
     <x-sidebar-nav>
@@ -143,7 +143,7 @@
                 </x-sidebar-nav-link>
             @endif
             @if ($module->hasModule('Reporting Management'))
-                <x-sidebar-nav-link title="Reporting" uri="reporting">
+                <x-sidebar-nav-link title="Reporting" uri="reporting" class="divide-y divide-slate-300">
                     <x-slot name="icon">
                         <x-svg.attendance />
                     </x-slot>
@@ -164,6 +164,10 @@
                                 <x-sidebar-nav-link title="Expense by expense user"
                                     url="{{ route('reporting.expense-by-user') }}" uri="reporting/expense-by-user"  />
                             @endif
+                            <x-sidebar-nav-link title="Advance payment by class"
+                            url="{{ route('reporting.advance-by-class') }}" uri="reporting/advance-by-class" />
+                        <x-sidebar-nav-link title="Advance payment by user"
+                            url="{{ route('reporting.advance-by-user') }}" uri="reporting/advance-by-user" />
                         @endif
                     @endif
                     @if ($module->hasModule('Bank Account Management'))
@@ -229,14 +233,14 @@
                 <x-slot name="icon">
                     <x-svg.sms />
                 </x-slot>
-                @if(Gate::inspect('viewAny', auth()->user())->allowed())
+                @if(Gate::inspect('viewAny', $sms)->allowed() && false)
                 <x-sidebar-nav-sublink title="List SMS" />
                 @endif
-                @if(Gate::inspect('viewAny', auth()->user())->allowed())
+                @if(Gate::inspect('viewAny', $sms)->allowed()&& false)
                 <x-sidebar-nav-sublink title="Send SMS" />
                 @endif
-               @if(Gate::inspect('viewAny', auth()->user())->allowed())
-                <x-sidebar-nav-sublink title="Top-up SMS Units" />
+               @if(Gate::inspect('viewAny', $sms)->allowed())
+                <x-sidebar-nav-sublink title="Top-up SMS Units" uri="sms/create" url="{{ route('sms-topup') }}" />
                @endif
                
             </x-sidebar-nav-link>
