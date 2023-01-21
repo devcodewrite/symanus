@@ -86,7 +86,7 @@
                                 required placeholder="Select the role">
                               @foreach($roles as $key => $row)
                                 <option value=""></option>
-                                <option value="{{ $row->id }}" {{ isset($user)?($row->id===$user->user_role_id?'selected':''):''}}>
+                                <option value="{{ $row->id }}" {{ isset($user)?($row->id==$user->user_role_id?'selected':''):''}}>
                                     {{ $row->title }} </option>
                               @endforeach
                             </x-select>
