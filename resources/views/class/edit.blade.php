@@ -45,7 +45,7 @@
                             <x-select id="level" class="mt-1 w-full select2-level" name="level" required>
                                 <option value=""></option>
                                 @for ($i = 0; $i < 10; $i++)
-                                    <option value="{{$i}}" selected="{{ isset($class)?$class->level===$i:false}}">
+                                    <option value="{{$i}}" {{ isset($class)?($class->level===$i?'selected':''):''}}>
                                     level {{ $i }} </option>
                                 @endfor
                             </x-select>
