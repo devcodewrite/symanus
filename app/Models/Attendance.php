@@ -17,7 +17,7 @@ class Attendance extends Model
      * @var array
      */
     protected $fillable = [
-        'adate', 'class_id', 'user_id','approval_user_id', 'status'
+        'adate', 'class_id', 'user_id', 'approval_user_id', 'status'
     ];
 
     /**
@@ -167,22 +167,31 @@ class Attendance extends Model
                 'student_id' => $student->id,
                 'attendance_id'  => $this->id,
             ])->first()->billFees;
-            foreach($bfs as $bf)
-                array_push($payments, 
-                [
-                    'student_id' => $student->id,
-                    'amount' => $bf->amount,
-                    'paid_at' => Carbon::now('Africa/Accra')->format('Y-m-d'),
-                    'paid_by' => $student->firstname . ' ' . $student->surname,
-                    'bill_id' => $bf->bill_id,
-                    'fee_type_id' => $bf->fee->fee_type_id,
-                    'user_id' => auth()->user()->id,
-                    'created_at' => Carbon::now('Africa/Accra'),
-                    'updated_at' => Carbon::now('Africa/Accra'),
-                ]);
+            foreach ($bfs as $bf)
+                array_push(
+                    $payments,
+                    [
+                        'student_id' => $student->id,
+                        'amount' => $bf->amount,
+                        'paid_at' => Carbon::now('Africa/Accra')->format('Y-m-d'),
+                        'paid_by' => $student->firstname . ' ' . $student->surname,
+                        'bill_id' => $bf->bill_id,
+                        'fee_type_id' => $bf->fee->fee_type_id,
+                        'user_id' => auth()->user()->id,
+                        'created_at' => Carbon::now('Africa/Accra'),
+                        'updated_at' => Carbon::now('Africa/Accra'),
+                    ]
+                );
         }
 
-     return DB::table('payments')->insert($payments);
+        if (DB::table('payments')->insert($payments)) {
+            foreach ($payments as $payment) {
+                BillFee::where('bill_id', $payment['bill_id'])->delete();
+                Bill::where('id', $payment['bill_id'])->delete();
+            }
+            return true;
+        }
+        return false;
     }
 
     public function removeBills()
@@ -192,8 +201,7 @@ class Attendance extends Model
                 'student_id' => $student->id,
                 'attendance_id'  => $this->id,
             ])->first();
-            Payment::where(['bill_id'=> $b->id])->delete();
+            Payment::where(['bill_id' => $b->id])->delete();
         }
-        
     }
 }

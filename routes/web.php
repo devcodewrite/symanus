@@ -42,6 +42,7 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function (){
 
     Route::get('/dashboard', [DashboardController::class, 'show' ])->name('dashboard');
+    Route::get('/accounting-overview', [DashboardController::class, 'overview' ])->name('overview');
 
     Route::prefix('/reporting')->group(function(){ 
         Route::get('/student-balances', [ReportingController::class,'studentBalances'])->name('reporting.student-balances');

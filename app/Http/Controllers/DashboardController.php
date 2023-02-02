@@ -51,4 +51,32 @@ class DashboardController extends Controller
 
         return view('dashboard', $data);
     }
+
+     /**
+     * Display the dashboard request view.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function overview()
+    {
+      
+        $data = [
+            'setting' => new Setting(),
+            'user' => new User(),
+            'student' => new Student(),
+            'attendance' => new Attendance(),
+            'course' => new Course(),
+            'fee' => new Fee(),
+            'guardian' => new Guardian(),
+            'staff' => new Staff(),
+            'class' => new Classes(),
+            'payment' => new Payment(),
+            'advancePayment' => new AdvanceFeePayment(),
+            'bill' => new Bill(),
+            'module' => new Module(),
+            'sms' => new SMS(),
+        ];
+
+        return view('accounting.overview', $data);
+    }
 }

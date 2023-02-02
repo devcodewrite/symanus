@@ -37,6 +37,7 @@ var billTable = $(".dt-bills").DataTable({
             param.api_token = $('meta[name="api-token"]').attr("content");
         },
     },
+    responsive:true,
     processing: true,
     serverSide: true,
     search: true,
@@ -79,11 +80,6 @@ var billTable = $(".dt-bills").DataTable({
                       .children()
                       .css("color", "black");
         });
-    },
-    initComplete: function (settings) {
-        $(".dataTables_wrapper table").wrap(
-            '<div style="overflow-x:auto;" class="w-full"></div>'
-        );
     },
     columns: [
         {

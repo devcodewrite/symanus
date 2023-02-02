@@ -1,5 +1,3 @@
-require("./bootstrap");
-
 import "preline";
 import Alpine from "alpinejs";
 
@@ -23,8 +21,6 @@ require("datatables.net");
 require("datatables.net-bs5");
 require("datatables.net-buttons");
 require("datatables.net-responsive");
-require("datatables.net-responsive-dt");
-require("datatables.net-buttons/js/buttons.colVis.js");
 require("datatables.net-buttons/js/buttons.html5.js");
 require("datatables.net-buttons/js/buttons.print.js");
 require("datatables.net-buttons/js/buttons.flash");

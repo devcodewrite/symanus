@@ -111,6 +111,15 @@ class Bill extends Model
         return $count;
     }
 
+    public function paidCountByDate(string $date){
+        $count = 0;
+        foreach(Bill::where('bdate', $date)->get() as $bill ){
+            if($bill->billFees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
+                $count++;
+        }
+        return $count;
+    }
+
     /**
      * Get the total bill amount for bill
      */

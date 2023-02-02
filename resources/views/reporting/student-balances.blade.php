@@ -29,8 +29,8 @@
                 <div class="mt-3 p-5">
                     <div class="divide-y divide-slate-300 flex flex-col gap-8" id="basic-tabs-1" role="tabpanel"
                         aria-labelledby="basic-tabs-item-1">
-                        <form class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full" action="{{ route('reporting.student-balances') }}"
-                            method="GET">
+                        <form class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full"
+                            action="{{ route('reporting.student-balances') }}" method="GET">
                             <div class="grid grid-cols-2 md:grid-cols-3 items-center w-full">
                                 <span class="text-gray-400 md:col-span-1 w-full">Reporting name </span>
                                 <span class="md:col-span-2 w-full">Student Balances Report</span>
@@ -54,12 +54,12 @@
                                     <div class="md:w-1/2">
                                         <x-label for="report-from">From:</x-label>
                                         <x-input id="report-from" type="date" name="report_from"
-                                            value="{{ isset($reportFrom)?$reportFrom: now()->toDateString() }}" />
+                                            value="{{ isset($reportFrom) ? $reportFrom : now()->toDateString() }}" />
                                     </div>
                                     <div class="md:w-1/2">
                                         <x-label for="report-to">To: </x-label>
                                         <x-input id="report-to" type="date" name="report_to"
-                                            value="{{ isset($reportTo)?$reportTo: now()->toDateString() }}" />
+                                            value="{{ isset($reportTo) ? $reportTo : now()->toDateString() }}" />
                                     </div>
                                 </div>
                             </div>
@@ -71,66 +71,67 @@
                         </form>
                         <main class="p-5">
                             <table class="dt-report-student-balances display w-full"
-                            data-title="{{ isset($students)?Str::of("Reporting for Student Balances")->headline():'' }}"
-                            data-subtitle=`{{ isset($students)?"$reportFrom to $reportTo":'' }}`>
+                                data-title="{{ isset($students) ? Str::of('Reporting for Student Balances')->headline() : '' }}"
+                                data-subtitle=`{{ isset($students) ? "$reportFrom to $reportTo" : '' }}`>
                                 <thead class="uppercase">
                                     <tr>
-                                        <th>Student</th>
+                                        <th class="text-left">Student</th>
                                         @php
                                             $totalCols = [];
                                             $grandTotal = 0;
                                         @endphp
-                                        @if(isset($feeTypes))
-                                        @foreach ($feeTypes as $key => $row)
-                                            @php
-                                                $totalCols[$key] = 0;
-                                            @endphp
-                                            <th>{{ $row->title }} </th>
-                                        @endforeach
+                                        @if (isset($feeTypes))
+                                            @foreach ($feeTypes as $key => $row)
+                                                @php
+                                                    $totalCols[$key] = 0;
+                                                @endphp
+                                                <th>{{ $row->title }} </th>
+                                            @endforeach
                                         @endif
                                         <th class="text-center">Row Total</th>
                                     </tr>
                                 </thead>
-                            <tbody>
-                                @if(isset($students))
-                                @foreach ($students as $key => $rRow)
-                                    <tr>
-                                        <th>
-                                            {{ $rRow->firstname }}
-                                            {{ $rRow->surname }}
-                                        </th>
-                                        @php
-                                            $totalRow = 0;
-                                        @endphp
-                                        @foreach ($feeTypes as $key => $row)
-                                            @php
-                                                $colVal = $rRow->getBalance($row, $reportFrom, $reportTo);
-                                                $totalCols[$key] += $colVal;
-                                                $totalRow += $colVal;
-                                                $grandTotal += $colVal;
-                                            @endphp
-                                            <td>{{ number_format($colVal,2) }} </td>
+                                <tbody>
+                                    @if (isset($students))
+                                        @foreach ($students as $key => $rRow)
+                                            @continue($rRow->getBalance() <= 0)
+                                            <tr>
+                                                <th class="text-left">
+                                                    {{ $rRow->firstname }}
+                                                    {{ $rRow->surname }}
+                                                </th>
+                                                @php
+                                                    $totalRow = 0;
+                                                @endphp
+                                                @foreach ($feeTypes as $key => $row)
+                                                    @php
+                                                        $colVal = $rRow->getBalance($row, $reportFrom, $reportTo);
+                                                        $totalCols[$key] += $colVal;
+                                                        $totalRow += $colVal;
+                                                        $grandTotal += $colVal;
+                                                    @endphp
+                                                    <td>{{ number_format($colVal, 2) }} </td>
+                                                @endforeach
+                                                <td>
+                                                    {{ __('GHS') }} {{ number_format($totalRow, 2) }}
+                                                </td>
+                                            </tr>
                                         @endforeach
-                                        <td>
-                                            {{ __('GHS') }} {{ number_format($totalRow,2) }}
-                                        </td>
+                                    @endif
+                                </tbody>
+                                <tfoot>
+                                    <tr class="uppercase text-center">
+                                        <th> Total</th>
+                                        @foreach ($totalCols as $key => $val)
+                                            <th>{{ number_format($val, 2) }} </th>
+                                        @endforeach
+                                        <th>{{ __('GHS') }} {{ number_format($grandTotal, 2) }} </th>
                                     </tr>
-                                @endforeach
-                                @endif
-                            </tbody>
-                            <tfoot>
-                                <tr class="uppercase text-center">
-                                    <th> Total</th>
-                                @foreach ($totalCols as $key => $val)
-                                    <th>{{ number_format($val,2) }} </th>
-                                @endforeach
-                                <th>{{ __('GHS') }} {{  number_format($grandTotal,2) }} </th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </tfoot>
+                            </table>
                         </main>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

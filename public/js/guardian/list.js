@@ -37,6 +37,7 @@ var guardianTable = $('.dt-guardians').DataTable({
         }
     },
     processing: true,
+    responsive:true,
     serverSide: true,
     search:true,
     stateSave: true,
@@ -58,9 +59,6 @@ var guardianTable = $('.dt-guardians').DataTable({
             $(e).hasClass('active')?$(e).css('background', '#0101f0').children().css('color', 'white')
             :$(e).css('background', '#fff').children().css('color', 'black');
         });
-    },
-    initComplete:function(settings){
-        $('.dataTables_wrapper table').wrap('<div style="overflow-x:auto;" class="w-full"></div>'); 
     },
     columns:[
         {

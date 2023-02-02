@@ -37,6 +37,7 @@ var attendanceTable = $(".dt-related-attendances").DataTable({
             param.staff_id = $('.dt-related-attendances').data('staff-id');
         },
     },
+    responsive:true,
     processing: true,
     serverSide: true,
     search: true,
@@ -79,11 +80,6 @@ var attendanceTable = $(".dt-related-attendances").DataTable({
                       .children()
                       .css("color", "black");
         });
-    },
-    initComplete: function (settings) {
-        $(".dataTables_wrapper table").wrap(
-            '<div style="overflow-x:auto;" class="w-full"></div>'
-        );
     },
     columns: [
         {

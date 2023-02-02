@@ -95,7 +95,7 @@
         @if ($module->hasModuleGroup('Finance & Accounting Management'))
             <p class="text-sm font-bold">Accounting</p>
             @if(Gate::inspect('report', $bill)->allowed())
-                <x-sidebar-nav-link title="Accounting Overview" uri="accouting-overview">
+                <x-sidebar-nav-link title="Accounting Overview" uri="accouting-overview" url="{{ route('overview') }}">
                     <x-slot name="icon">
                         <x-svg.dashboard />
                     </x-slot>

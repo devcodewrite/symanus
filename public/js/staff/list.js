@@ -36,6 +36,7 @@ var staffTable = $('.dt-staffs').DataTable({
             param.api_token = $('meta[name="api-token"]').attr('content');
         }
     },
+    responsive: true,
     processing: true,
     serverSide: true,
     search:true,
@@ -58,9 +59,6 @@ var staffTable = $('.dt-staffs').DataTable({
             $(e).hasClass('active')?$(e).css('background', '#0101f0').children().css('color', 'white')
             :$(e).css('background', '#fff').children().css('color', 'black');
         });
-    },
-    initComplete:function(settings){
-        $('.dataTables_wrapper table').wrap('<div style="overflow-x:auto;" class="w-full"></div>'); 
     },
     columns:[
         {

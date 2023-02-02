@@ -131,6 +131,7 @@ deleteButton.on("click", function (e) {
 
 var expenseItemTable = $('.dt-expenses').DataTable({
     order: [[ 3, 'desc' ]],
+    responsive:true,
 });
 
 $('.dataTables_wrapper .dataTables_length select').css('padding', '6px 30px 6px 20px');
@@ -141,5 +142,3 @@ $('button.dt-button').css('background-color','#fff').css('border-radius','.3em')
 
 
 dtRowSelectAction(expenseItemTable);
-
-$('.dataTables_wrapper table').wrap('<div style="overflow-x:auto;" class="w-full"></div>'); 

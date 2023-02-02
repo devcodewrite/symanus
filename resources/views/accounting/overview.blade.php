@@ -1,6 +1,9 @@
+@php
+    use Illuminate\Support\Carbon;
+@endphp
 <x-app-layout>
     @section('breadcrumb')
-        <x-breadcrumb :items="[['title' => 'Dashboard', 'url' => route('dashboard')]]" />
+        <x-breadcrumb :items="[['title' => 'Accounting Overview', 'url' => route('overview')]]" />
     @endsection
     <!-- Content -->
     <div class="w-full px-4 sm:px-6 md:px-8 lg:pl-72">
@@ -36,10 +39,29 @@
         <div class="max-w-5xl px-4 sm:px-6 lg:px-8 lg:py-14 mx-auto">
             <!-- Grid -->
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+                @php
+                    $totalBillPayments = 0;
+                    $totalBillExpected = 0;
+                    foreach ($bill->where('bdate', date('Y-m-d'))->get() as $bill) {
+                        $totalBillPayments += $bill->totalPayment();
+                        $totalBillExpected += $bill->totalBill();
+                    }
+                    
+                @endphp
                 @if (Gate::inspect('viewAny', $bill)->allowed())
-                    <x-overview-card title="Billings" :items="[
-                        ['label' => 'Generated Bills', 'num' => $bill->count(), 'url' => route('bills.index')],
-                        ['label' => 'Awaiting Payments', 'num' => $bill->count() - $bill->paidCount()],
+                    <x-overview-card title="Today's Income" :items="[
+                        [
+                            'label' => 'Total Expected',
+                            'num' => number_format($totalBillExpected,2),
+                        ],
+                        [
+                            'label' => 'Total Payments',
+                            'num' => number_format($totalBillPayments,2),
+                        ],
+                        [
+                            'label' => 'Overall Amount',
+                            'num' => number_format($payment->where('paid_at', date('Y-m-d'))->sum('amount'),2),
+                        ],
                     ]">
                         <x-slot name="icon">
                             <x-svg.reporting
@@ -47,125 +69,92 @@
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('viewAny', $fee)->allowed())
-                    <x-overview-card title="Fees" :items="[
+
+                @if (Gate::inspect('viewAny', $bill)->allowed())
+                    <x-overview-card title="Today's Advances" :items="[
                         [
-                            'label' => 'Open',
-                            'num' => $fee->where(['rstatus' => 'open'])->count(),
-                            'url' => route('fees.index'),
-                        ],
-                        [
-                            'label' => 'Close',
-                            'num' => $fee->where(['rstatus' => 'close'])->count(),
-                            'url' => route('fees.index'),
+                            'label' => 'Total Amount',
+                            'num' => number_format($advancePayment->where('paid_at', date('Y-m-d'))->sum('amount'),2),
                         ],
                     ]">
                         <x-slot name="icon">
-                            <x-svg.payment
+                            <x-svg.reporting
                                 class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('viewAny', $attendance)->allowed())
-                <x-overview-card title="Attendances" :items="[
+
+                @if (Gate::inspect('viewAny', $bill)->allowed())
+                <x-overview-card title="Today's Expenses" :items="[
                     [
-                        'label' => 'Draft',
-                        'num' => $attendance->where(['status' => 'draft'])->count(),
-                        'url' => route('attendances.index'),
-                    ],
-                    [
-                        'label' => 'Awaiting Approval',
-                        'num' => $attendance->where(['status' => 'submitted'])->count(),
-                        'url' => route('attendances.index'),
-                    ],
-                    [
-                        'label' => 'Approved',
-                        'num' => $attendance->where(['status' => 'approved'])->count(),
-                        'url' => route('attendances.index'),
-                    ],
-                    [
-                        'label' => 'Rejected',
-                        'num' => $attendance->where(['status' => 'rejected'])->count(),
-                        'url' => route('attendances.index'),
+                        'label' => 'Total Amount',
+                        'num' => '0.00',
+                        'url' => route('expense-reports.index'),
                     ],
                 ]">
                     <x-slot name="icon">
-                        <x-svg.attendance
+                        <x-svg.reporting
                             class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
                     </x-slot>
                 </x-overview-card>
             @endif
-                @if (Gate::inspect('viewAny', $user)->allowed())
-                    <x-overview-card title="Users" :items="[
+
+                @if (Gate::inspect('viewAny', $bill)->allowed())
+                    <x-overview-card title="Today's Billings" :items="[
                         [
-                            'label' => 'Open',
-                            'num' => $user->where(['rstate' => 'open'])->count(),
-                            'url' => route('users.index'),
-                            'tooltip' => 'Users opened',
+                            'label' => 'Generated Bills',
+                            'num' => $bill->where('bdate', date('Y-m-d'))->count(),
+                            'url' => route('bills.index'),
                         ],
                         [
-                            'label' => 'Closed',
-                            'num' => $user->where(['rstate' => 'close'])->count(),
-                            'url' => route('users.index'),
-                            'tooltip' => 'Users closed',
-                        ],
-                    ]">
-                        <x-slot name="icon">
-                            <x-svg.user class="h-8 w-8" />
-                        </x-slot>
-                    </x-overview-card>
-                @endif
-                @if (Gate::inspect('viewAny', $student)->allowed())
-                    <x-overview-card title="Students" :items="[
-                        [
-                            'label' => 'Open',
-                            'num' => $student->where(['rstate' => 'open'])->count(),
-                            'url' => route('students.index'),
-                        ],
-                        [
-                            'label' => 'Close',
-                            'num' => $student->where(['rstate' => 'close'])->count(),
-                            'url' => route('students.index'),
+                            'label' => 'Awaiting Payments',
+                            'num' =>
+                                $bill->where('bdate', date('Y-m-d'))->count() - $bill->paidCountByDate(date('Y-m-d')),
                         ],
                     ]">
                         <x-slot name="icon">
-                            <x-svg.student class="h-8 w-8" />
-                        </x-slot>
-                    </x-overview-card>
-                @endif
-                @if (Gate::inspect('viewAny', $guardian)->allowed())
-                    <x-overview-card title="Guardians" :items="[
-                        [
-                            'label' => 'Open',
-                            'num' => $guardian->where(['rstate' => 'open'])->count(),
-                            'url' => route('guardians.index'),
-                        ],
-                        [
-                            'label' => 'Close',
-                            'num' => $guardian->where(['rstate' => 'close'])->count(),
-                            'url' => route('guardians.index'),
-                        ],
-                    ]">
-                        <x-slot name="icon">
-                            <x-svg.guardian
+                            <x-svg.reporting
                                 class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('viewAny', $class)->allowed())
-                    <x-overview-card title="Classes" :items="[['label' => 'Total', 'num' => $class->count(), 'url' => route('classes.index')]]">
+
+                @if (Gate::inspect('viewAny', $attendance)->allowed())
+                    <x-overview-card title="Today's Attendances" :items="[
+                        [
+                            'label' => 'Draft',
+                            'num' => $attendance->where(['status' => 'draft', 'adate' => date('Y-m-d')])->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                        [
+                            'label' => 'Awaiting Approval',
+                            'num' => $attendance->where(['status' => 'submitted', 'adate' => date('Y-m-d')])->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                        [
+                            'label' => 'Approved',
+                            'num' => $attendance->where(['status' => 'approved', 'adate' => date('Y-m-d')])->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                        [
+                            'label' => 'Rejected',
+                            'num' => $attendance->where(['status' => 'rejected', 'adate' => date('Y-m-d')])->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                    ]">
                         <x-slot name="icon">
-                            <x-svg.class class="h-8 w-8" />
+                            <x-svg.attendance
+                                class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
                         </x-slot>
                     </x-overview-card>
                 @endif
                 @if (Gate::inspect('viewAny', $sms)->allowed())
-                <x-overview-card title="SMS" :items="[['label' => 'Balance', 'num' => $setting->getValue('sms_units', 0)]]">
-                    <x-slot name="icon">
-                        <x-svg.sms class="h-8 w-8" />
-                    </x-slot>
-                </x-overview-card>
-            @endif
+                    <x-overview-card title="Today's SMS" :items="[['label' => 'Sent', 'num' => 0]]">
+                        <x-slot name="icon">
+                            <x-svg.sms class="h-8 w-8" />
+                        </x-slot>
+                    </x-overview-card>
+                @endif
             </div>
             <!-- End Grid -->
         </div>

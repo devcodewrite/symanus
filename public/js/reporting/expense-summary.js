@@ -15,6 +15,7 @@ $(".select2-class").select2({
 var table = $('.dt-report-expense-summary').DataTable({
     order: [[ 0, 'asc' ]],
     pageLength: 50,
+    responsive: true,
     dom: 'lBftip',
     buttons:[
         {
@@ -65,5 +66,3 @@ $('button.dt-button').css('background-color','#fff').css('border-radius','.3em')
 
 
 dtRowSelectAction(table);
-
-$('.dataTables_wrapper table').wrap('<div style="overflow-x:auto;" class="w-full"></div>'); 

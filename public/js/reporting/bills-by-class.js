@@ -16,6 +16,7 @@ var table = $('.dt-report-bills-by-class').DataTable({
     order: [[ 0, 'asc' ]],
     pageLength: 50,
     dom: 'lBftip',
+    responsive:true,
     buttons:[
         {
             extend: 'excel',
@@ -65,5 +66,3 @@ $('button.dt-button').css('background-color','#fff').css('border-radius','.3em')
 
 
 dtRowSelectAction(table);
-
-$('.dataTables_wrapper table').wrap('<div style="overflow-x:auto;" class="w-full"></div>'); 

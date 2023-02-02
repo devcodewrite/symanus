@@ -130,6 +130,26 @@ class User extends Authenticatable
         return $this->hasMany(Expense::class);
     }
 
+
+    public function incomeReport(FeeType $feeType = null, $from = null, $to = null)
+    {
+        $from = $from?$from:Payment::orderBy('paid_at', 'desc')->first()->created_at;
+        $to = $to?$to:Payment::orderBy('paid_at', 'asc')->first()->created_at;
+       // $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
+
+       if($feeType){
+        $totalPayment = $this->payments()
+                ->where('fee_type_id', $feeType->id)
+                ->whereBetween('paid_at', [$from, $to])
+                ->sum('amount');
+        return $totalPayment;
+       }
+       $totalPayment = $this->payments()
+                ->whereBetween('paid_at', [$from, $to])
+                ->sum('amount');
+
+       return $totalPayment;
+    }
     
     public function billReport(FeeType $feeType = null, $from = null, $to = null)
     {

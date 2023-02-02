@@ -36,6 +36,7 @@ var classTable = $('.dt-classes').DataTable({
             param.api_token = $('meta[name="api-token"]').attr('content');
         }
     },
+    responsive:true,
     processing: true,
     serverSide: true,
     search:true,

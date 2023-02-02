@@ -42,7 +42,7 @@ var studentTable = $('.dt-related-students').DataTable({
     search:true,
     stateSave: true,
     drawCallback:function(){
-        $('.dt-related-students.dataTables_paginate .paginate_button')
+        $('.dataTables_paginate .paginate_button')
         .css('background','#fff')
         .css('border-radius','.3em')
         .css('border-color','transparent')
@@ -55,7 +55,7 @@ var studentTable = $('.dt-related-students').DataTable({
             ?$(this).css('background', '#0101f0').children().css('color', 'white')
             :$(this).css('background', '#fff').children().css('color', 'black'));
         });
-        $('.dt-related-students.dataTables_paginate .paginate_button').each(function(i,e){
+        $('.dataTables_paginate .paginate_button').each(function(i,e){
             $(e).hasClass('active')?$(e).css('background', '#0101f0').children().css('color', 'white')
             :$(e).css('background', '#fff').children().css('color', 'black');
         });
@@ -192,5 +192,6 @@ $('.dataTables_paginate').css('margin-top', '5px').css('background-color','#f8f8
 
 $('button.dt-button').css('background-color','#fff').css('border-radius','.3em').css('background','#fff').css('box-shadow', '3px 3px #eee');
 $('.alert-processing').hide();
+$('.dt-related-students').removeClass('hidden');
 
 dtRowSelectAction(studentTable);
