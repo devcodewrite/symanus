@@ -74,7 +74,7 @@ Route::middleware('auth:api')->prefix('/select2')->group(function(){
     Route::get('/staffs', [StaffController::class, 'select2']);
     Route::get('/guardians', [GuardianController::class, 'select2']);
     Route::get('/users', [UserController::class, 'select2']);
-    Route::get('/approval-users', [UserController::class, 'select2']);
+    Route::get('/approval-users', [UserController::class, 'approval_select2']);
     Route::get('/classes', [ClassesController::class, 'select2']);
     Route::get('/courses', [CourseController::class, 'select2']);
     Route::get('/fees', [FeeController::class, 'select2']);

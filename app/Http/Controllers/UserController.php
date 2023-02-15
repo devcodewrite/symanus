@@ -331,7 +331,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function expense_select2(Request $request)
+    public function approval_select2(Request $request)
     {
         //
         if ($request->ajax()) {
