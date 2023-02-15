@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 require (__DIR__.'../../../lib/Zenoph/Notify/AutoLoader.php');
 
+use App\Models\Setting;
 use Zenoph\Notify\Enums\AuthModel;
 use Zenoph\Notify\Request\NotifyRequest;
 use Zenoph\Notify\Request\SMSRequest;
@@ -48,6 +49,13 @@ class SMSChannel
         $result = new stdClass();
         $sms = $notification->toSMS($notifiable);
         if(!$sms) return false;
+
+        if((new Setting())->getValue('sms_units', 0) < 1){
+            $result->status = false;
+            $result->message =  "Insufficient sms units!";
+            return $result;
+        }
+        
         try {
             NotifyRequest::setHost(env('SMSONLINE_API_HOST', 'api.smsonlinegh.com'));
 
@@ -88,5 +96,7 @@ class SMSChannel
             $result->status = false;
             $result->message =  $ex->getMessage();
         }
+
+        return $result;
     }
 }
