@@ -168,7 +168,7 @@ class StudentController extends Controller
         $st = Student::orderBy('id', 'desc')->first();
         $st = $st?$st:(object)['id' => 0];
         $data = [
-            'new_studentid' => date('ym').Str::padLeft(strval($st->id + 1),6, 0),
+            'new_studentid' => date('ym').Str::padLeft(random_int($st->id+1,999999),6, 0),
         ];
         return view('student.edit', $data);
     }
