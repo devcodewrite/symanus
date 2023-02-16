@@ -1,3 +1,6 @@
+@php
+use App\Models\Setting;
+@endphp
 <x-app-layout>
     @section('style')
         <link rel="stylesheet" href="{{asset('plugins/validator/fv.css')}}">
@@ -44,7 +47,7 @@
                             <x-label for="level" :value="__('Calss level')" />
                             <x-select id="level" class="mt-1 w-full select2-level" name="level" required>
                                 <option value=""></option>
-                                @for ($i = 0; $i < 10; $i++)
+                                @for ($i = 0; $i < (new Setting())->getValue('max_level',10); $i++)
                                     <option value="{{$i}}" {{ isset($class)?($class->level===$i?'selected':''):''}}>
                                     level {{ $i }} </option>
                                 @endfor
