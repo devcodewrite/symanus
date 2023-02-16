@@ -25,7 +25,6 @@ use App\Models\Setting;
             @else
                 @method('post')
             @endif
-            
 
             <x-input id="id" type="hidden" name="id" :value="old('id', isset($class)?$class->id:'')" />
 

@@ -200,7 +200,7 @@ class ClassesController extends Controller
         $rules =[ 'name' => 'required|string|max:45'];
 
         if($class->level === $request->input('level')) {
-            array_merge($rules, [ 'level' => 'required|integer|in:classes,level']);
+            array_merge($rules, [ 'level' => 'required|integer']);
         }
         if($class->user_id === $request->input('user_id')){
             array_merge($rules, ['user_id' => 'nullable|integer|in:classes,user_id|in:users,id']);
