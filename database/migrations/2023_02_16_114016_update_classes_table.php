@@ -13,7 +13,10 @@ class UpdateClassesTable extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('classes', function (Blueprint $table) {
+            $table->dropUnique('level');
+            $table->dropIndex('level');
+        });
     }
 
     /**
