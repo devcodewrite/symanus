@@ -60,7 +60,7 @@ use App\Models\Setting;
                                 placeholder="Select the User">
                                 @if(isset($class))
                                     <option value="{{ $class->user_id }} "  selected>
-                                        {{ $class->user->firstname }} {{ $class->user->surname }} </option>
+                                        {{ $class->user?$class->user->firstname:'' }} {{ $class->user?$class->user->surname:'' }} </option>
                                 @endif
                             </x-select>
                         </div>
