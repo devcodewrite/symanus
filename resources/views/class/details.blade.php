@@ -79,6 +79,12 @@
                                     {{ $class->level }}
                                 </span>
                             </div>
+                            <div class="flex flex-row justify-between py-3">
+                                <span class="w-1/2 text-gray-600">Class Teacher</span>
+                                <span class="w-1/2">
+                                    {{ $class->user?"{$class->user->firstname} {$class->user->lastname}":'None Assigned' }}
+                                </span>
+                            </div>
                         </div>
 
                         <div class="w-full divide-y divide-slate-300">
