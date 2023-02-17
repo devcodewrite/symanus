@@ -307,7 +307,7 @@ class StudentController extends Controller
         if($file){
             $file_name = $request->input('studentid');
             $extension = $file->getClientOriginalExtension();
-            $path = $request->file('avatar')->storeAs('avatars/students',"$file_name.$extension",'public');
+            $path = $request->file('avatar')->storeAs('avatars/students',"$file_name.$extension?v=".random_int(0,99),'public');
             $data = $validator->safe()->merge(['avatar'=> url("storage/$path")])->except(['stay']);
         }else {
             $data =  $validator->safe()->except(['avatar','stay']);
