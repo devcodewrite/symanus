@@ -82,7 +82,7 @@
                             <div class="flex flex-row justify-between py-3">
                                 <span class="w-1/2 text-gray-600">Class Teacher</span>
                                 <span class="w-1/2">
-                                    {{ $class->user?"{$class->user->firstname} {$class->user->lastname}":'None Assigned' }}
+                                    {{ $class->user?"{$class->user->firstname} {$class->user->surname}":'None Assigned' }}
                                 </span>
                             </div>
                         </div>
