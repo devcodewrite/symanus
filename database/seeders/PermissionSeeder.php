@@ -36,6 +36,7 @@ class PermissionSeeder extends Seeder
            'sms' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),
            'locked' => 1,
            'is_admin' => 1,
+           'is_super_admin' => 1,
         ],[
             'id' => 2,
            'settings' =>implode(",",['view','create','update', 'delete', 'force-delete','report']),

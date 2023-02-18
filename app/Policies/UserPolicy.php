@@ -18,11 +18,11 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return  in_array('view',explode(',',$user->permission->users))
-                ?Response::allow():Response::deny("You don't have permission to view this model");
+        return  in_array('view', explode(',', $user->permission->users))
+            ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
-      /**
+    /**
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\User  $user
@@ -30,12 +30,12 @@ class UserPolicy
      */
     public function approveAnyExpense(User $user)
     {
-        if($user->permission)
-            return  (in_array('approve expenses',explode(',',$user->permission->expenses))
-            ||$user->permission->is_admin)?Response::allow():Response::deny("You don't have permission to view this model");
+        if ($user->permission)
+            return (in_array('approve expenses', explode(',', $user->permission->expenses))
+                || $user->permission->is_admin) ? Response::allow() : Response::deny("You don't have permission to view this model");
 
-        return  (in_array('approve expenses',explode(',',$user->userRole->permission->expenses))
-                ||$user->userRole->permission->is_admin)?Response::allow():Response::deny("You don't have permission to view this model");
+        return (in_array('approve expenses', explode(',', $user->userRole->permission->expenses))
+            || $user->userRole->permission->is_admin) ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -47,8 +47,8 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return  in_array('view',explode(',',$user->permission->users))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        return  in_array('view', explode(',', $user->permission->users))
+            ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -59,8 +59,8 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return in_array('create',explode(',',$user->permission->users))
-                ?Response::allow():Response::deny("You don't have permission create a user.");
+        return in_array('create', explode(',', $user->permission->users))
+            ? Response::allow() : Response::deny("You don't have permission create a user.");
     }
 
     /**
@@ -72,8 +72,8 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return in_array('update',explode(',',$user->permission->users))
-                ?Response::allow():Response::deny("You don't have permission update a user.");
+        return in_array('update', explode(',', $user->permission->users))
+            ? Response::allow() : Response::deny("You don't have permission update a user.");
     }
 
     /**
@@ -85,8 +85,11 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        return in_array('delete',explode(',',$user->permission->users))
-                ?Response::allow():Response::deny("You don't have permission to delete this user.");
+        if ($model->permission->is_super_admin)
+            return Response::deny("You don't have permission to delete this user.");
+
+        return in_array('delete', explode(',', $user->permission->users))
+            ? Response::allow() : Response::deny("You don't have permission to delete this user.");
     }
 
     /**
@@ -98,8 +101,8 @@ class UserPolicy
      */
     public function restore(User $user, User $model)
     {
-        return in_array('delete',explode(',',$user->permission->users))
-                ?Response::allow():Response::deny("You don't have permission restore this user.");
+        return in_array('delete', explode(',', $user->permission->users))
+            ? Response::allow() : Response::deny("You don't have permission restore this user.");
     }
 
     /**
@@ -111,7 +114,7 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model)
     {
-        return in_array('force-delete',explode(',',$user->permission->users))
-                ?Response::allow():Response::deny("You don't have permission to delete this user.");
+        return in_array('force-delete', explode(',', $user->permission->users))
+            ? Response::allow() : Response::deny("You don't have permission to delete this user.");
     }
 }

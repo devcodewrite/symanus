@@ -283,6 +283,15 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $response = Gate::inspect('delete', $user);
+        if(!$response->allowed()) {
+            $out = [
+                'message' => $response->message(),
+                'status' => false,
+            ];
+            return Response::json($out);
+        }
+
         if($user->delete()){
             $out = [
                 'message' => 'User deleted successfully!',

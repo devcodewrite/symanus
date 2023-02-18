@@ -142,9 +142,12 @@
                             <x-a-button-p class="ml-3 py-3.5 item-end" :href="route('users.edit', ['user' => $user->id])">
                                 {{ __('Modify') }}
                             </x-a-button-p>
-                            <x-a-button class="ml-3 py-3.5 shadow-md .close">
+                            <x-a-button class="ml-3 py-3.5 shadow-md close">
                                 {{ __('Close') }}
                             </x-a-button>
+                            <x-a-button-r class="ml-3 py-3.5 shadow-md rdelete">
+                                {{ __('Delete') }}
+                            </x-a-button-r>
                         </div>
                     </div>
                     <div id="basic-tabs-2" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-2">
