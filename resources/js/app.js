@@ -296,7 +296,7 @@ $('.rdelete').on('click',function(e){
                     setTimeout(() => {
                         let segments = location.href.toString().split('/').pop();
                         location.assign(segments.join('/'));
-                    }, 600);
+                    }, 500);
                 } else {
                     Swal.fire({
                         icon: "error",
