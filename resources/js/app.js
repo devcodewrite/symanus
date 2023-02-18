@@ -29,6 +29,7 @@ require("datatables.net-searchbuilder-dt");
 require("datatables.net-searchpanes-dt");
 require("datatables.net-select-dt");
 require("select2");
+require("print-this");
 
 $(".select2").select2({
     allowClear: true,

@@ -45,6 +45,7 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/accounting-overview', [DashboardController::class, 'overview' ])->name('overview');
 
     Route::prefix('/reporting')->group(function(){ 
+        Route::get('/student-list', [ReportingController::class,'studentList'])->name('reporting.student-list');
         Route::get('/student-balances', [ReportingController::class,'studentBalances'])->name('reporting.student-balances');
         Route::get('/bills-by-class', [ReportingController::class,'billsByClass'])->name('reporting.bills-by-class');
         Route::get('/bills-by-user', [ReportingController::class,'billsByUser'])->name('reporting.bills-by-user');

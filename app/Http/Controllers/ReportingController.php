@@ -7,6 +7,7 @@ use App\Models\Classes;
 use App\Models\Expense;
 use App\Models\ExpenseType;
 use App\Models\FeeType;
+use App\Models\Setting;
 use App\Models\Student;
 use App\Models\User;
 use DB;
@@ -282,5 +283,56 @@ class ReportingController extends Controller
             }
         }
         return view('reporting.student-balances', $data);
+    }
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function studentList(Request $request)
+    {
+        $data = [
+            'class' => null,
+            'setting' => new Setting(),
+        ];
+
+        if($request->input()){
+            $rules = [ 
+                'report_from' => 'nullable|date',
+                'report_to' => 'nullable|date',
+                'class_id' => 'required|integer|exists:classes,id',
+            ];
+            $validator = Validator::make($request->input(), $rules);
+            if (!$validator->fails()) {
+                $classId = $request->input('class_id');
+                $where = ['class_id' => $classId];
+                $data['class'] = Classes::find($classId);
+                $data['reportFrom'] =  $request->input('report_from');
+                $data['reportTo'] =  $request->input('report_to');
+
+                if($request->input('sex')){
+                    $where = array_merge($where, ['sex' => $request->input('sex')]);
+                    $data['sex'] =  $request->input('sex');
+                }
+                if($request->input('affiliation')){
+                    $where = array_merge($where, ['affiliation' => $request->input('affiliation')]);
+                    $data['affiliation'] =  $request->input('affiliation');
+                }
+                if($request->input('transit')){
+                    $where = array_merge($where, ['transit' => $request->input('transit')]);
+                    $data['transit'] =  $request->input('transit');
+                }
+                $query = Student::with('guardian')->where($where);
+                if($request->input('report_from') && $request->input('report_to')){
+                    $from = $request->input('report_from');
+                    $to = $request->input('report_to');
+                    $query->whereBetween('admitted_at', [$from, $to]);
+                }
+                
+                $data['students'] = $query->get();
+            }
+        }
+        return view('reporting.student-list', $data);
     }
 }
