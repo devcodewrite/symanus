@@ -172,7 +172,7 @@
                                                <p>
                                                 <span class="font-semibold">Reporting for :</span>
                                                     <span>
-                                                        {{ $class->name }}
+                                                        {{ isset($class)?$class->name:'' }}
                                                     </span>
                                                </p>
                                                <p>
