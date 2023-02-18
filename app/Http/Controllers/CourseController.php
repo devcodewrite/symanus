@@ -128,6 +128,17 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        //
+        if($course->delete()){
+            $out = [
+                'message' => 'Course deleted successfully!',
+                'status' => true,
+            ];
+        }else {
+            $out = [
+                'message' => "Nothing done!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 }

@@ -250,7 +250,18 @@ class ClassesController extends Controller
      */
     public function destroy(Classes $class)
     {
-        //
+        if($class->delete()){
+            $out = [
+                'message' => 'Class deleted successfully!',
+                'status' => true,
+            ];
+        }else {
+            $out = [
+                'message' => "Nothing done!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 
      /**

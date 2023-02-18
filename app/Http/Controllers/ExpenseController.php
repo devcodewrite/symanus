@@ -179,7 +179,18 @@ class ExpenseController extends Controller
      */
     public function destroy(Expense $expense)
     {
-        $expense->delete();
+        if($expense->delete()){
+            $out = [
+                'message' => 'Expense deleted successfully!',
+                'status' => true,
+            ];
+        }else {
+            $out = [
+                'message' => "Nothing done!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 
      /**

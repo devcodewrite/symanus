@@ -290,7 +290,18 @@ class StaffController extends Controller
      */
     public function destroy(Staff $staff)
     {
-        //
+        if($staff->delete()){
+            $out = [
+                'message' => 'Staff deleted successfully!',
+                'status' => true,
+            ];
+        }else {
+            $out = [
+                'message' => "Nothing done!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 
       /**

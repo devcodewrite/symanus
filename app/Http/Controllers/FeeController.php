@@ -227,7 +227,18 @@ class FeeController extends Controller
      */
     public function destroy(Fee $fee)
     {
-        //
+        if($fee->delete()){
+            $out = [
+                'message' => 'Fee deleted successfully!',
+                'status' => true,
+            ];
+        }else {
+            $out = [
+                'message' => "Nothing done!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 
      /**
