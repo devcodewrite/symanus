@@ -64,7 +64,7 @@
                                 <div class="flex flex-row">
                                     <span class="shadow-md p-1">
                                         @if ($student->avatar)
-                                            <a href="{{ $student->getAvatar() }}" download><i
+                                            <a href="{{ $student->getAvatar() }}" download class="absolute hover:text-blue-600"><i
                                                     class="fa fa-download"></i></a>
                                         @endif
                                         <img class="h-24" src="{{ $student->getAvatar() }}" alt="Student Photo">
