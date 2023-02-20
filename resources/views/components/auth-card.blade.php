@@ -7,6 +7,6 @@
         {{ $slot }}
     </div>
     <div>
-        <p class="mt-5">{{ config('app.name') }} {{ config('app.version') }} &copy; {{ config('app.vyear') }} </p>
+        <p class="mt-5">{{ config('app.name') }} {{ config('app.version') }} &copy; {{ config('app.vyear') }} <a href="https://codewrite.org">Codewrite Technology Ltd</a>.</p>
     </div>
 </div>
