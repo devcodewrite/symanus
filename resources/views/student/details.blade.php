@@ -63,6 +63,10 @@
                             <div class="flex flex-row justify-between w-full md:col-span-2">
                                 <div class="flex flex-row">
                                     <span class="shadow-md p-1">
+                                        @if ($student->avatar)
+                                            <a href="{{ $student->getAvatar() }}" download><i
+                                                    class="fa fa-download"></i></a>
+                                        @endif
                                         <img class="h-24" src="{{ $student->getAvatar() }}" alt="Student Photo">
                                     </span>
                                     <div class="mx-3">
@@ -86,7 +90,7 @@
                                         {{ date('d/m/y', strtotime($student->admitted_at)) }}
                                     </span>
                                 </div>
-                                
+
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">Student Class</span>
                                     <span class="w-1/2">
@@ -122,7 +126,7 @@
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">Born On</span>
                                     <span class="w-1/2">
-                                        {{ $student->dateofbirth?date('d/m/y', strtotime($student->dateofbirth)):'Not set' }}
+                                        {{ $student->dateofbirth ? date('d/m/y', strtotime($student->dateofbirth)) : 'Not set' }}
                                     </span>
                                 </div>
                             </div>
@@ -159,24 +163,24 @@
                         </div>
 
                         <div class="py-5">
-                          
+
                             <x-a-button-p class="ml-3 py-3.5 item-end" :href="route('students.edit', ['student' => $student->id])">
                                 {{ __('Modify') }}
                             </x-a-button-p>
-                            @if($student->rstate === 'open')
-                            <x-a-button class="ml-3 py-3.5 shadow-md close">
-                                {{ __('Close') }}
-                            </x-a-button>
+                            @if ($student->rstate === 'open')
+                                <x-a-button class="ml-3 py-3.5 shadow-md close">
+                                    {{ __('Close') }}
+                                </x-a-button>
                             @else
-                            <x-a-button class="ml-3 py-3.5 shadow-md open">
-                                {{ __('Open') }}
-                            </x-a-button>
+                                <x-a-button class="ml-3 py-3.5 shadow-md open">
+                                    {{ __('Open') }}
+                                </x-a-button>
                             @endif
 
                             <x-a-button-r class="ml-3 py-3.5 shadow-md rdelete">
                                 {{ __('Delete') }}
                             </x-a-button-r>
-                           
+
                         </div>
                     </div>
                     <div class="hidden" id="basic-tabs-2" role="tabpanel" aria-labelledby="basic-tabs-item-2">
@@ -186,20 +190,21 @@
                                 class="svg-icon-payment flex-shrink-0 mx-3 overflow-visible h-5 w-5 text-gray-400 dark:text-gray-600" />
                         </div>
                         <div>
-                        <table class="dt-related-bills hidden display w-full" data-student-id="{{ $student->id }}">
-                            <thead class="uppercase">
-                                <tr>
-                                    <th class="w-5"></th>
-                                    <th class="w-5">#</th>
-                                    <th class="w-5">Date</th>
-                                    <th>Bill Amount</th>
-                                    <th>Creator</th>
-                                    <th>Last Updated</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+                            <table class="dt-related-bills hidden display w-full"
+                                data-student-id="{{ $student->id }}">
+                                <thead class="uppercase">
+                                    <tr>
+                                        <th class="w-5"></th>
+                                        <th class="w-5">#</th>
+                                        <th class="w-5">Date</th>
+                                        <th>Bill Amount</th>
+                                        <th>Creator</th>
+                                        <th>Last Updated</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
