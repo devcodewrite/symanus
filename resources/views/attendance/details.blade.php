@@ -4,8 +4,8 @@
     @endsection
     @section('breadcrumb')
         <x-breadcrumb :items="[
-            ['title' => 'Classes', 'url' => route('attendances.index')],
-            ['title' => 'Class Details', 'url' => route('attendances.show', ['attendance' => $attendance->id])],
+            ['title' => 'Attendances', 'url' => route('attendances.index')],
+            ['title' => 'Attendance Details', 'url' => route('attendances.show', ['attendance' => $attendance->id])],
         ]" />
         <a href="{{ route('attendances.index') }}" class="flex items-center hover:text-sky-600">
             <x-svg.arrow-left-next
@@ -83,7 +83,8 @@
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">Approval by</span>
                                     <span class="w-1/2">
-                                        {{ $attendance->approvalUser->firstname }} {{ $attendance->approvalUser->surname }}
+                                        {{ $attendance->approvalUser->firstname }}
+                                        {{ $attendance->approvalUser->surname }}
                                     </span>
                                 </div>
                                 <div class="flex flex-row justify-between py-3">
@@ -108,7 +109,8 @@
                             @if ($attendance->bills->count() > 0)
                                 <div class="flex flex-col w-full divide-y divide-slate-300">
                                     <div class="flex flex-row justify-between py-3">
-                                        <span class="w-full uppercase font-semibold text-black-600">Related Bills Summary</span>
+                                        <span class="w-full uppercase font-semibold text-black-600">Related Bills
+                                            Summary</span>
                                     </div>
                                     <div class="flex flex-row justify-between py-3">
                                         <span class="w-1/2 text-gray-600">Estimated Amount</span>
@@ -128,7 +130,7 @@
                                             GHS {{ number_format($attendance->expectedPayments(), 2) }}
                                         </span>
                                     </div>
-                                    @if($attendance->status !== 'approved')
+                                    @if ($attendance->status !== 'approved')
                                         <div class="flex flex-row justify-between py-3">
                                             <span class="w-1/2 text-black-600 font-semibold">Over Turn Amount</span>
                                             <span class="w-1/2 text-green-600 font-semibold">
@@ -136,17 +138,14 @@
                                                 {{ number_format($attendance->totalAdvance() + $attendance->expectedPayments(), 2) }}
                                             </span>
                                         </div>
-                                        @else
+                                    @else
                                         <div class="flex flex-row justify-between py-3">
                                             <span class="w-1/2 text-black-600 font-semibold">Over Turn Amount</span>
                                             <span class="w-1/2 text-green-600 font-semibold">
-                                               Turned In
+                                                Turned In
                                             </span>
                                         </div>
-
                                     @endif
-
-                                   
                                 </div>
                             @else
                                 <div class="flex flex-col w-full divide-y divide-slate-300">
@@ -155,13 +154,14 @@
                                     </div>
                                 </div>
                             @endif
-
                         </div>
                         <div class="md:flex md:flex-row grid grid-cols-3 items-end gap-3 pt-5">
                             @if ($attendance->status === 'rejected' || $attendance->status === 'submitted')
-                                <x-a-button-w class="py-3.5 max-w-fit approve">
-                                    {{ __('Approve') }}
-                                </x-a-button-w>
+                                @if (Gate::inspect('approve', $attendance)->allowed())
+                                    <x-a-button-w class="py-3.5 max-w-fit approve">
+                                        {{ __('Approve') }}
+                                    </x-a-button-w>
+                                @endif
                                 <x-a-button-p class="py-3.5 max-w-fit draft">
                                     {{ __('Move to Draft') }}
                                 </x-a-button-p>
@@ -177,16 +177,21 @@
                             @endif
 
                             @if ($attendance->status === 'approved' || $attendance->status === 'submitted')
-                                <x-a-button-r class="ml-3 py-3.5 max-w-fit reject">
-                                    {{ __('Reject') }}
-                                </x-a-button-r>
+                                @if (Gate::inspect('approve', $attendance)->allowed())
+                                    <x-a-button-r class="ml-3 py-3.5 max-w-fit reject">
+                                        {{ __('Reject') }}
+                                    </x-a-button-r>
+                                @endif
                             @endif
-                            <x-a-button-p class="py-3.5 max-w-fit" :href="route('attendances.edit', ['attendance' => $attendance->id])">
-                                {{ __('Modify') }}
-                            </x-a-button-p>
-                            <x-a-button class="py-3.5 max-w-fit rdelete">
-                                {{ __('Delete') }}
-                            </x-a-button>
+                            @if ($attendance->status === 'rejected' || $attendance->status === 'submitted' || $attendance->status === 'draft')
+                                <x-a-button-p class="py-3.5 max-w-fit" :href="route('attendances.edit', ['attendance' => $attendance->id])">
+                                    {{ __('Modify') }}
+                                </x-a-button-p>
+                                <x-button class="py-3.5 max-w-fit rdelete" :data-target-url="route('attendances.destroy', ['attendance' => $attendance->id])"
+                                    data-redirect-url="{{ route('attendances.index') }}">
+                                    {{ __('Delete') }}
+                                </x-button>
+                            @endif
                         </div>
                     </div>
                     <div id="basic-tabs-2" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-2">
@@ -247,27 +252,27 @@
                             </div>
                             <div class="pt-5">
                                 <p class="alert-processing">Processing...</p>
-                               
-                                    <table class="dt-related-students overflow-x-auto display w-full"
-                                        data-attendance-id="{{ $attendance->id }}"
-                                        data-title="{{ Str::of("List of students table")->headline() }}"
-                                data-subtitle="{{ 'Generated on '.date('d/m/y')." for attendance." }}">
-                                        <thead class="uppercase">
-                                            <tr>
-                                                <th class="w-5"></th>
-                                                <th class="w-5">Ref#</th>
-                                                <th>Student Name</th>
-                                                <th>Sex</th>
-                                                <th>Transit</th>
-                                                <th>Affiliation</th>
-                                                <th>Guardian</th>
-                                                <th>Status</th>
-                                                <th>Last Updated</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                               
+
+                                <table class="dt-related-students overflow-x-auto display w-full"
+                                    data-attendance-id="{{ $attendance->id }}"
+                                    data-title="{{ Str::of('List of students table')->headline() }}"
+                                    data-subtitle="{{ 'Generated on ' . date('d/m/y') . ' for attendance.' }}">
+                                    <thead class="uppercase">
+                                        <tr>
+                                            <th class="w-5"></th>
+                                            <th class="w-5">Ref#</th>
+                                            <th>Student Name</th>
+                                            <th>Sex</th>
+                                            <th>Transit</th>
+                                            <th>Affiliation</th>
+                                            <th>Guardian</th>
+                                            <th>Status</th>
+                                            <th>Last Updated</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+
                             </div>
                         </div>
                     </div>

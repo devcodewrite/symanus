@@ -85,60 +85,63 @@ class AdvanceFeePaymentController extends Controller
     public function destroy(AdvanceFeePayment $advanceFeePayment)
     {
         //
-    } 
+    }
     /**
-    * Update a resource for json
-    * @return \Iluminate\Http\Response
-    */
-   public function make_payments_json(Request $request)
-   {
-       $rules = [ 
-           'amount' => 'required|numeric',
-           'id' => 'required|exists:students,id',
-           'attendance.id' => 'required|exists:attendances,id',
-       ];
-
-       $validator = Validator::make($request->input(), $rules);
-       $error = "";
-       foreach($validator->errors()->messages() as $message){
-           $error .= $message[0]."\n";
-       }
-
-       if ($validator->fails()) {
-           $out = [
-               'message' => trim($error),
-               'status' => false,
-               'input' => $request->all()
-           ];
-           return Response::json($out);
-       }
-
-        $payment = [
-               'student_id'=> $request->input('id'),
-               'amount' => $request->amount,
-               'paid_at' => Carbon::now('Africa/Accra')->format('Y-m-d'),
-               'paid_by' => $request->firstname.' '.$request->surname,
-               'attendance_id' => $request->input('attendance.id'),
-               'fee_type_id' => $request->input('fee_type_id'),
-               'user_id' => auth()->user()->id,
+     * Update a resource for json
+     * @return \Iluminate\Http\Response
+     */
+    public function make_payments_json(Request $request)
+    {
+        $rules = [
+            'amount' => 'required|numeric',
+            'id' => 'required|exists:students,id',
+            'attendance.id' => 'required|exists:attendances,id',
         ];
 
-        $dvfeepay = AdvanceFeePayment::updateOrCreate($payment);
-       if($dvfeepay) {
-               $out = [
-                   'data' =>  $dvfeepay,
-                   'message' => 'Payment made successfully!',
-                   'status' => true,
-                   'input' => $request->all()
-               ];
-           } else {
-               $out = [
-                   'message' => "Data couldn't be processed! Please try again!",
-                   'status' => false,
-                   'input' => $request->all()
-               ];
-           }
-       return Response::json($out);
-     
-   }
+        $validator = Validator::make($request->input(), $rules);
+        $error = "";
+        foreach ($validator->errors()->messages() as $message) {
+            $error .= $message[0] . "\n";
+        }
+
+        if ($validator->fails()) {
+            $out = [
+                'message' => trim($error),
+                'status' => false,
+                'input' => $request->all()
+            ];
+            return Response::json($out);
+        }
+
+        $payment = [
+            'student_id' => $request->input('id'),
+            'amount' => $request->amount,
+            'paid_at' => Carbon::now('Africa/Accra')->format('Y-m-d'),
+            'paid_by' => $request->firstname . ' ' . $request->surname,
+            'attendance_id' => $request->input('attendance.id'),
+            'fee_type_id' => $request->input('fee_type_id'),
+            'user_id' => auth()->user()->id,
+        ];
+        $param = [
+            'student_id' => $request->input('id'),
+            'attendance_id' => $request->input('attendance.id')
+        ];
+
+        $dvfeepay = AdvanceFeePayment::updateOrCreate($param, $payment);
+        if ($dvfeepay) {
+            $out = [
+                'data' =>  $dvfeepay,
+                'message' => 'Payment made successfully!',
+                'status' => true,
+                'input' => $request->all()
+            ];
+        } else {
+            $out = [
+                'message' => "Data couldn't be processed! Please try again!",
+                'status' => false,
+                'input' => $request->all()
+            ];
+        }
+        return Response::json($out);
+    }
 }

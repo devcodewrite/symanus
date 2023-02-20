@@ -63,7 +63,9 @@ class BillObserver
      */
     public function deleted(Bill $bill)
     {
-        //
+        foreach($bill->billFees() as $billFee){
+            $billFee->delete();
+        }
     }
 
     /**
@@ -74,7 +76,7 @@ class BillObserver
      */
     public function restored(Bill $bill)
     {
-        //
+        
     }
 
     /**
@@ -85,6 +87,6 @@ class BillObserver
      */
     public function forceDeleted(Bill $bill)
     {
-        //
+        
     }
 }

@@ -249,9 +249,9 @@ setTimeout(function(){
 
 
 $('.rdelete').on('click',function(e){
-    let targetUrl = location.href;
-    if($(this).attr('href') && $(this).attr('href') !== 'javascript:;') targetUrl = $(this).attr('href');
-    
+    let targetUrl = $(this).data('target-url');
+    let redirectUrl = $(this).data('redirect-url');
+
     Swal.fire({
         title: "Are you sure ?",
         text:  `You want to delete this record! You wouldn't be able to recover it!`,
@@ -294,8 +294,7 @@ $('.rdelete').on('click',function(e){
                         text: d.message,
                     });
                     setTimeout(() => {
-                        let segments = location.href.toString().split('/').pop();
-                        location.assign(segments.join('/'));
+                        location.assign(redirectUrl);
                     }, 500);
                 } else {
                     Swal.fire({

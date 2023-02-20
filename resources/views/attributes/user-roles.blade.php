@@ -145,7 +145,7 @@
                                 <div class="grid grid-cols-3 overflow-x-auto gap-5 divide-y divide-slate-300">
                                     @foreach ($userRole->permission->toArray() as $key => $value)
                                         @continue($key === 'id')
-                                        <x-permission-card :permission="$userRole->permission" :key="$key" :options="$value" :disabled="$userRole->permission->is_admin" />
+                                        <x-permission-card :permission="$userRole->permission" :key="$key" :options="$value" :disabled="$userRole->permission->is_admin||$userRole->permission->is_super_admin" />
                                     @endforeach
                                 </div>
                                 <div class="p-5">

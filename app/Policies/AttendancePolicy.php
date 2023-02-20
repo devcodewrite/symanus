@@ -101,6 +101,22 @@ class AttendancePolicy
     }
 
     /**
+     * Determine whether the user can report the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Attendance  $attendance
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function approve(User $user, Attendance $attendance)
+    {
+        if($user->permission->is_admin){
+            return Response::allow();
+        }
+
+        return  $attendance->approvalUser->id === $user->id
+        ?Response::allow():Response::deny("You don't have permission to approve attendance");
+    }
+    /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
