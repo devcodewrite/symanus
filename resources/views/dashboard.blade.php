@@ -67,34 +67,72 @@
                     </x-overview-card>
                 @endif
                 @if (Gate::inspect('viewAny', $attendance)->allowed())
-                <x-overview-card title="Attendances" :items="[
-                    [
-                        'label' => 'Draft',
-                        'num' => $attendance->where(['status' => 'draft'])->count(),
-                        'url' => route('attendances.index'),
-                    ],
-                    [
-                        'label' => 'Awaiting Approval',
-                        'num' => $attendance->where(['status' => 'submitted'])->count(),
-                        'url' => route('attendances.index'),
-                    ],
-                    [
-                        'label' => 'Approved',
-                        'num' => $attendance->where(['status' => 'approved'])->count(),
-                        'url' => route('attendances.index'),
-                    ],
-                    [
-                        'label' => 'Rejected',
-                        'num' => $attendance->where(['status' => 'rejected'])->count(),
-                        'url' => route('attendances.index'),
-                    ],
-                ]">
-                    <x-slot name="icon">
-                        <x-svg.attendance
-                            class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
-                    </x-slot>
-                </x-overview-card>
-            @endif
+                    <x-overview-card title="Attendances" :items="[
+                        [
+                            'label' => 'Draft',
+                            'num' => $attendance->where(['status' => 'draft'])->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                        [
+                            'label' => 'Awaiting Approval',
+                            'num' => $attendance->where(['status' => 'submitted'])->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                        [
+                            'label' => 'Approved',
+                            'num' => $attendance->where(['status' => 'approved'])->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                        [
+                            'label' => 'Rejected',
+                            'num' => $attendance->where(['status' => 'rejected'])->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                    ]">
+                        <x-slot name="icon">
+                            <x-svg.attendance
+                                class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
+                        </x-slot>
+                    </x-overview-card>
+                @elseif (Gate::inspect(
+                        'view',
+                        $attendance->where(['user_id' => auth()->user()->id])->first())->allowed())
+                    <x-overview-card title="Attendances" :items="[
+                        [
+                            'label' => 'Draft',
+                            'num' => $attendance
+                                ->where(['status' => 'draft', 'user_id' => auth()->user()->id])
+                                ->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                        [
+                            'label' => 'Awaiting Approval',
+                            'num' => $attendance
+                                ->where(['status' => 'submitted', 'user_id' => auth()->user()->id])
+                                ->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                        [
+                            'label' => 'Approved',
+                            'num' => $attendance
+                                ->where(['status' => 'approved', 'user_id' => auth()->user()->id])
+                                ->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                        [
+                            'label' => 'Rejected',
+                            'num' => $attendance
+                                ->where(['status' => 'rejected', 'user_id' => auth()->user()->id])
+                                ->count(),
+                            'url' => route('attendances.index'),
+                        ],
+                    ]">
+                        <x-slot name="icon">
+                            <x-svg.attendance
+                                class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
+                        </x-slot>
+                    </x-overview-card>
+                @endif
                 @if (Gate::inspect('viewAny', $user)->allowed())
                     <x-overview-card title="Users" :items="[
                         [
@@ -160,12 +198,12 @@
                     </x-overview-card>
                 @endif
                 @if (Gate::inspect('viewAny', $sms)->allowed())
-                <x-overview-card title="SMS" :items="[['label' => 'Balance', 'num' => $setting->getValue('sms_units', 0)]]">
-                    <x-slot name="icon">
-                        <x-svg.sms class="h-8 w-8" />
-                    </x-slot>
-                </x-overview-card>
-            @endif
+                    <x-overview-card title="SMS" :items="[['label' => 'Balance', 'num' => $setting->getValue('sms_units', 0)]]">
+                        <x-slot name="icon">
+                            <x-svg.sms class="h-8 w-8" />
+                        </x-slot>
+                    </x-overview-card>
+                @endif
             </div>
             <!-- End Grid -->
         </div>

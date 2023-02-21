@@ -13,6 +13,7 @@ use App\Models\FeeType;
 use App\Models\Student;
 use DataTables;
 use DB;
+use Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -207,15 +208,20 @@ class AttendanceController extends Controller
      */
     public function datatable()
     {
+        $where = [];
+        if(!Gate::inspect('viewAny', new Attendance())->allowed()){
+            $where = array_merge($where,['attendances.user_id' => auth()->user()->id]);
+        }
         return DataTables::of(Attendance::with(
             [
                 'class:id,name,level',
                 'user:id,username,firstname,surname,email,rstate',
             ]
-        ))->searchPane(
+        )->where($where))->searchPane(
             'adate',
             fn () => Attendance::query()
                 ->select('adate as value', 'adate as label', DB::raw('count(*) as total'))
+                ->where($where)
                 ->groupBy('adate')
                 ->get(),
             function (Builder $query, array $values) {
@@ -248,6 +254,7 @@ class AttendanceController extends Controller
                     DB::raw('count(*) as total')
                 ])
                     ->join('classes', 'classes.id', '=', 'attendances.class_id')
+                    ->where($where)
                     ->groupBy('class_id')
                     ->groupBy('classes.name')
                     ->get(),

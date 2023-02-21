@@ -19,8 +19,10 @@ class AttendancePolicy
      */
     public function viewAny(User $user)
     {
-        return  in_array('view',explode(',',$user->permission->attendances))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        if($user->is_admin){
+            return Response::allow();
+        }
+        return  in_array('view',explode(',',$user->permission->attendances))?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -32,8 +34,11 @@ class AttendancePolicy
      */
     public function view(User $user, Attendance $attendance)
     {
+        if($user->is_admin){
+            return Response::allow();
+        }
         return  in_array('view',explode(',',$user->permission->attendances))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        ||$attendance->user_id ===$user->id?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**

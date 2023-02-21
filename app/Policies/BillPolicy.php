@@ -32,8 +32,11 @@ class BillPolicy
      */
     public function view(User $user, Bill $bill)
     {
+        if($user->is_admin){
+            return Response::allow();
+        }
         return  in_array('view',explode(',',$user->permission->bills))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        ||$bill->user_id===$user->id?Response::allow():Response::deny("You don't have permission to view this model");
     }
 
     /**
