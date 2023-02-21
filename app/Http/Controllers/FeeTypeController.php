@@ -113,7 +113,7 @@ class FeeTypeController extends Controller
             ];
             return Response::json($out);
         }
-        $feeType->fill($validator->safe()->except('action'));
+        $feeType->fill($validator->safe()->merge(['for_attendance_bills' => $request->input('for_attendance_bills', 0)])->except('action'));
 
         if($feeType->save()){
             $out = [
