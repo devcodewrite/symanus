@@ -3,8 +3,8 @@
     @endsection
     @section('breadcrumb')
         <x-breadcrumb :items="[
-            ['title' => 'Reporting', 'url' => route('reporting.income-by-user')],
-            ['title' => 'Advance Payment by User', 'url' => route('reporting.income-by-user')],
+            ['title' => 'Reporting', 'url' => route('reporting.advance-by-user')],
+            ['title' => 'Advance Payment by User', 'url' => route('reporting.advance-by-user')],
         ]" />
     @endsection
     <!-- Content -->
@@ -29,7 +29,7 @@
                 <div class="mt-3 p-5">
                     <div class="divide-y divide-slate-300 flex flex-col gap-8" id="basic-tabs-1" role="tabpanel"
                         aria-labelledby="basic-tabs-item-1">
-                        <form class="flex flex-col gap-5" action="{{ route('reporting.income-by-user') }}"
+                        <form class="flex flex-col gap-5" action="{{ route('reporting.advance-by-user') }}"
                             method="GET">
                             <div class="flex flex-row gap-5">
                                 <span class="text-gray-400">Reporting name </span>
@@ -57,7 +57,7 @@
                             </div>
                         </form>
                         <main class="p-5">
-                            <table class="dt-report-income-by-user display w-full"
+                            <table class="dt-report-advance-by-user display w-full"
                             data-title="{{ isset($reportFrom)?Str::of("Advance Payment Reporting for Users")->headline():'' }}"
                             data-subtitle="{{ isset($reportFrom)?($reportFrom.' to '.$reportTo):'' }}">
                                 <thead class="uppercase">
@@ -121,7 +121,7 @@
 
     <!-- End Content -->
     @section('script')
-        <script src="{{ asset('js/reporting/income-by-user.js') }} " defer></script>
+        <script src="{{ asset('js/reporting/advance-by-user.js') }} " defer></script>
     @endsection
 
 </x-app-layout>
