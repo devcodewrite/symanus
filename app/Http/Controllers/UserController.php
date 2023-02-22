@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Module;
 use App\Models\Permission;
 use App\Models\User;
@@ -368,7 +369,7 @@ class UserController extends Controller
                 ->where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")
                 ->get();
             $users = $users->filter(function ($user) {
-                return Gate::forUser($user)->allows('approveAnyAttendance');
+                return Gate::forUser($user)->allows('approveAny', new Attendance());
             });
             $out = [
                 'results' => $users,

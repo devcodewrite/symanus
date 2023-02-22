@@ -121,6 +121,18 @@ class AttendancePolicy
         return  $attendance->approvalUser->id === $user->id
         ?Response::allow():Response::deny("You don't have permission to approve attendance");
     }
+
+    public function approveAny(User $user)
+    {
+        if ($user->permission)
+            return (in_array('approve-attendance', explode(',', $user->permission->attendances))
+                || $user->permission->is_admin) ? Response::allow() : Response::deny("You don't have permission to view this model");
+
+        return (in_array('approve-attendance', explode(',', $user->userRole->permission->attendances))
+            || $user->userRole->permission->is_admin) ? Response::allow() : Response::deny("You don't have permission to view this model");
+    }
+
+
     /**
      * Determine whether the user can restore the model.
      *
