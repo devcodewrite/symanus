@@ -112,12 +112,15 @@
                                         <span class="w-full uppercase font-semibold text-black-600">Related Bills
                                             Summary</span>
                                     </div>
-                                    <div class="flex flex-row justify-between py-3">
-                                        <span class="w-1/2 text-gray-600">Estimated Amount</span>
-                                        <span class="w-1/2 text-green-600 font-semibold">
-                                            GHS {{ number_format($attendance->totalBill(), 2) }}
-                                        </span>
-                                    </div>
+                                    @if ($attendance->status !== 'approved' || $attendance->status !== 'submitted')
+                                        <div class="flex flex-row justify-between py-3">
+                                            <span class="w-1/2 text-gray-600">Estimated Amount</span>
+                                            <span class="w-1/2 text-green-600 font-semibold">
+                                                GHS {{ number_format($attendance->totalBill(), 2) }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    
                                     <div class="flex flex-row justify-between py-3">
                                         <span class="w-1/2 text-gray-600">Advance Amount</span>
                                         <span class="w-1/2 text-sky-600 font-semibold">
