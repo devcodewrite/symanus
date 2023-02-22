@@ -23,11 +23,11 @@ class CreatePermissionsTable extends Migration
             $table->set('students', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
             $table->set('guardians', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
             $table->set('classes', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
-            $table->set('attendances', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
+            $table->set('attendances', ['view','create','update', 'delete', 'force-delete','report','approve-attendance'])->nullable();
             $table->set('fee_types', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
             $table->set('fees', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
             $table->set('expense_types', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
-            $table->set('expenses', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
+            $table->set('expenses', ['view','create','update', 'delete', 'force-delete','report', 'approve-expense'])->nullable();
             $table->set('bills', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
             $table->set('semesters', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
             $table->set('staffs', ['view','create','update', 'delete', 'force-delete','report'])->nullable();
