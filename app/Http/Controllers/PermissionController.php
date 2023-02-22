@@ -79,8 +79,8 @@ class PermissionController extends Controller
             $permissions = array_merge($permissions, [$key => implode(',', $perm)]);
         }
         foreach($rules as $key => $field){
-            if(!$request->input($field)){
-                $permissions = array_merge($permissions, [$key => '']);
+            if(!$request->input($key)){
+                $permissions[$key] = '';
             }
         }
         $permissions = array_merge($permissions, $validator->safe(['is_admin']));
