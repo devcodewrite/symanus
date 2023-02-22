@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use DataTables;
 use DB;
+use Gate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Response;
@@ -22,7 +23,14 @@ class ClassesController extends Controller
      */
     public function datatable()
     {
-        return DataTables::of(Classes::with('user:id,username,firstname,surname,email,rstate'))->make(true);
+        $where = [];
+        if (!Gate::inspect('viewAny', new Classes())->allowed()) {
+            $where = array_merge($where, ['classes.user_id' => auth()->user()->id]);
+        }
+        return DataTables::of(
+            Classes::with('user:id,username,firstname,surname,email,rstate')
+                ->where($where)
+        )->make(true);
     }
 
     /**
@@ -32,8 +40,9 @@ class ClassesController extends Controller
     public function related_students_datatable(Request $request)
     {
         return DataTables::of(Student::where('class_id', $request->input('class_id'))
-        ->with(['guardian:id,firstname,surname,phone,sex',
-                ]))
+            ->with([
+                'guardian:id,firstname,surname,phone,sex',
+            ]))
             ->searchPane(
                 'sex',
                 fn () => Student::select('sex as value', 'sex as label', DB::raw('count(*) as total'))
@@ -130,8 +139,8 @@ class ClassesController extends Controller
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";
-        foreach($validator->errors()->messages() as $message){
-            $error .= $message[0]."\n";
+        foreach ($validator->errors()->messages() as $message) {
+            $error .= $message[0] . "\n";
         }
 
         if ($validator->fails()) {
@@ -144,14 +153,14 @@ class ClassesController extends Controller
         }
 
         $class = Classes::create($validator->safe(array_keys($rules)));
-        if($class){
+        if ($class) {
             $out = [
                 'data' => $class,
                 'message' => 'Class created successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Data couldn't be processed! Please try again!",
                 'status' => false,
@@ -185,7 +194,7 @@ class ClassesController extends Controller
      */
     public function edit(Classes $class)
     {
-        return view('class.edit',['class' => $class]);
+        return view('class.edit', ['class' => $class]);
     }
 
     /**
@@ -197,19 +206,19 @@ class ClassesController extends Controller
      */
     public function update(Request $request, Classes $class)
     {
-        $rules =[ 'name' => 'required|string|max:45'];
+        $rules = ['name' => 'required|string|max:45'];
 
-        if($class->level === $request->input('level')) {
-            array_merge($rules, [ 'level' => 'required|integer']);
+        if ($class->level === $request->input('level')) {
+            array_merge($rules, ['level' => 'required|integer']);
         }
-        if($class->user_id === $request->input('user_id')){
+        if ($class->user_id === $request->input('user_id')) {
             array_merge($rules, ['user_id' => 'nullable|integer|in:classes,user_id|in:users,id']);
         }
-        
+
         $validator = Validator::make($request->input(), $rules);
         $error = "";
-        foreach($validator->errors()->messages() as $message){
-            $error .= $message[0]."\n";
+        foreach ($validator->errors()->messages() as $message) {
+            $error .= $message[0] . "\n";
         }
 
         if ($validator->fails()) {
@@ -225,14 +234,14 @@ class ClassesController extends Controller
         $class->level = $request->input('level');
         $class->user_id = $request->input('user_id');
 
-        if($class->save()){
+        if ($class->save()) {
             $out = [
                 'data' => $class,
                 'message' => 'Class updated successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Data couldn't be processed! Please try again!",
                 'status' => false,
@@ -250,12 +259,12 @@ class ClassesController extends Controller
      */
     public function destroy(Classes $class)
     {
-        if($class->delete()){
+        if ($class->delete()) {
             $out = [
                 'message' => 'Class deleted successfully!',
                 'status' => true,
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Nothing done!",
                 'status' => false,
@@ -264,26 +273,25 @@ class ClassesController extends Controller
         return Response::json($out);
     }
 
-     /**
+    /**
      * Mass update the resources.
      *
      * @return \Illuminate\Http\Response
      */
     public function datatable_action(Request $request)
     {
-        if($request->input('action') === 'delete' && $request->input('data')){
+        if ($request->input('action') === 'delete' && $request->input('data')) {
             $ids = [];
-            foreach($request->input('data') as $class){
+            foreach ($request->input('data') as $class) {
                 array_push($ids, $class['id']);
             }
-            if(Classes::destroy($ids)){
+            if (Classes::destroy($ids)) {
                 $out = [
                     'message' => 'Class(es) deleted successfully!',
                     'status' => true,
                     'input' => $request->all()
                 ];
-            }
-            else {
+            } else {
                 $out = [
                     'message' => "Nothing done!",
                     'status' => false,
@@ -291,21 +299,21 @@ class ClassesController extends Controller
                 ];
             }
             return Response::json($out);
-            
-        }
-        else if($request->input('action') === 'close-rstate' 
-            && $request->input('data')) {
+        } else if (
+            $request->input('action') === 'close-rstate'
+            && $request->input('data')
+        ) {
             $ids = [];
-            foreach($request->input('data') as $class){
+            foreach ($request->input('data') as $class) {
                 array_push($ids, $class['id']);
             }
-            if(Classes::whereIn('id', $ids)->update(['rstate'=>'close'])){
+            if (Classes::whereIn('id', $ids)->update(['rstate' => 'close'])) {
                 $out = [
                     'message' => 'Class(es) closed successfully!',
                     'status' => true,
                     'input' => $request->all()
                 ];
-            }else {
+            } else {
                 $out = [
                     'message' => "Nothing done!",
                     'status' => false,
@@ -313,20 +321,21 @@ class ClassesController extends Controller
                 ];
             }
             return Response::json($out);
-
-        }else if( $request->input('action') === 'open-rstate' 
-            && $request->input('data')) {
+        } else if (
+            $request->input('action') === 'open-rstate'
+            && $request->input('data')
+        ) {
             $ids = [];
-            foreach($request->input('data') as $class){
+            foreach ($request->input('data') as $class) {
                 array_push($ids, $class['id']);
             }
-            if(Classes::whereIn('id', $ids)->update(['rstate'=>'open'])){
+            if (Classes::whereIn('id', $ids)->update(['rstate' => 'open'])) {
                 $out = [
                     'message' => 'Class(es) open successfully!',
                     'status' => true,
                     'input' => $request->all()
                 ];
-            }else {
+            } else {
                 $out = [
                     'message' => "Nothing done!",
                     'status' => false,
@@ -335,16 +344,16 @@ class ClassesController extends Controller
             }
             return Response::json($out);
         }
-            $out = [
-                'message' => "Data couldn't be processed! Please try again!",
-                'status' => false,
-                'input' => $request->all()
-            ];
-        
+        $out = [
+            'message' => "Data couldn't be processed! Please try again!",
+            'status' => false,
+            'input' => $request->all()
+        ];
+
         return Response::json($out);
     }
 
-     /**
+    /**
      * Display a listing of the resource for select2.
      *
      * @return \Illuminate\Http\Response
@@ -354,21 +363,22 @@ class ClassesController extends Controller
         //
         if ($request->ajax()) {
 
-            $term = trim($request->get('term',''));
+            $term = trim($request->get('term', ''));
 
             $classes = Classes::select(['id', DB::raw('name as text')])
-                        ->where('name', 'LIKE',  "%$term%")
-                        ->orderBy('name', 'asc')
-                        ->get();
+                ->where('name', 'LIKE',  "%$term%")
+                ->orderBy('name', 'asc')
+                ->get();
             $out = [
                 'results' => $classes,
                 'pagination' => [
-                   'more' => false,]
+                    'more' => false,
+                ]
             ];
 
             return Response::json($out);
         }
 
-       return Response::json(['message' => 'Invalid request data']);
+        return Response::json(['message' => 'Invalid request data']);
     }
 }
