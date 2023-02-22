@@ -103,6 +103,7 @@
                                 <x-select id="approval_user_id"
                                     class="mt-1 block w-full select2-approval-users overfllow-y-auto shadow-md"
                                     name="approval_user_id" placeholder="Select the user" required>
+                                    <option value=""></option>
                                     @if (isset($attendance))
                                         <option value="{{ $attendance->approval_user_id }}" selected>
                                             {{ $attendance->approvalUser->firstname }}

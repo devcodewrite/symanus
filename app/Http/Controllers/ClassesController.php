@@ -365,8 +365,14 @@ class ClassesController extends Controller
 
             $term = trim($request->get('term', ''));
 
+            $where = [];
+            if (!Gate::inspect('viewAny', new Classes())->allowed()) {
+                $where = array_merge($where, ['classes.user_id' => auth()->user()->id]);
+            }
+
             $classes = Classes::select(['id', DB::raw('name as text')])
                 ->where('name', 'LIKE',  "%$term%")
+                ->where($where)
                 ->orderBy('name', 'asc')
                 ->get();
             $out = [
