@@ -112,7 +112,7 @@
                                         <span class="w-full uppercase font-semibold text-black-600">Related Bills
                                             Summary</span>
                                     </div>
-                                    @if ($attendance->status !== 'approved' || $attendance->status !== 'submitted')
+                                    @if ($attendance->status !== 'approved' && $attendance->status !== 'submitted')
                                         <div class="flex flex-row justify-between py-3">
                                             <span class="w-1/2 text-gray-600">Estimated Amount</span>
                                             <span class="w-1/2 text-green-600 font-semibold">
