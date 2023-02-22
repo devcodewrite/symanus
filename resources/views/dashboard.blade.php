@@ -188,13 +188,13 @@
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('viewAny', $class)->allowed())
+               
                     <x-overview-card title="Classes" :items="[['label' => 'Total', 'num' => $class->count(), 'url' => route('classes.index')]]">
                         <x-slot name="icon">
                             <x-svg.class class="h-8 w-8" />
                         </x-slot>
                     </x-overview-card>
-                @endif
+              
                 @if (Gate::inspect('viewAny', $sms)->allowed())
                     <x-overview-card title="SMS" :items="[['label' => 'Balance', 'num' => $setting->getValue('sms_units', 0)]]">
                         <x-slot name="icon">
