@@ -94,7 +94,7 @@
                                 class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
                         </x-slot>
                     </x-overview-card>
-                @else
+                @elseif (Gate::inspect('view', $attendance->where(['user_id' => auth()->user()->id])->first())->allowed())
                     <x-overview-card title="Attendances" :items="[
                         [
                             'label' => 'Draft',
@@ -151,7 +151,7 @@
                         </x-slot>
                     </x-overview-card>
                 @endif
-                @if (Gate::inspect('viewAny', $student)->allowed())
+                @canany(['update', 'create'], $student)
                     <x-overview-card title="Students" :items="[
                         [
                             'label' => 'Open',
@@ -168,7 +168,7 @@
                             <x-svg.student class="h-8 w-8" />
                         </x-slot>
                     </x-overview-card>
-                @endif
+                @endcanany
                 @if (Gate::inspect('viewAny', $guardian)->allowed())
                     <x-overview-card title="Guardians" :items="[
                         [
