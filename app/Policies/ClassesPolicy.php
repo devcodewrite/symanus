@@ -19,8 +19,11 @@ class ClassesPolicy
      */
     public function viewAny(User $user)
     {
-        return  in_array('view',explode(',',$user->permission->classes))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        if ($user->is_admin) {
+            return Response::allow();
+        }
+        return  in_array('view', explode(',', $user->permission->classes))
+            ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -32,12 +35,11 @@ class ClassesPolicy
      */
     public function view(User $user, Classes $classes)
     {
-        $c = [];
-        foreach($classes->all() as $class){
-            array_push($c, $class->id);
+        if ($user->is_admin) {
+            return Response::allow();
         }
-        return  $user->classes->whereIn('id', $c)->count() > 0
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        return  $classes->user_id === $user->id
+            ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -48,8 +50,8 @@ class ClassesPolicy
      */
     public function create(User $user)
     {
-        return  in_array('create',explode(',',$user->permission->classes))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        return  in_array('create', explode(',', $user->permission->classes))
+            ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -61,8 +63,8 @@ class ClassesPolicy
      */
     public function update(User $user, Classes $classes)
     {
-        return  in_array('update',explode(',',$user->permission->classes))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        return  in_array('update', explode(',', $user->permission->classes))
+            ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -74,8 +76,8 @@ class ClassesPolicy
      */
     public function delete(User $user, Classes $classes)
     {
-        return  in_array('delete',explode(',',$user->permission->classes))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        return  in_array('delete', explode(',', $user->permission->classes))
+            ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -87,8 +89,8 @@ class ClassesPolicy
      */
     public function restore(User $user, Classes $classes)
     {
-        return  in_array('restore',explode(',',$user->permission->classes))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        return  in_array('restore', explode(',', $user->permission->classes))
+            ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
     /**
@@ -100,7 +102,7 @@ class ClassesPolicy
      */
     public function forceDelete(User $user, Classes $classes)
     {
-        return  in_array('force-delete',explode(',',$user->permission->classes))
-        ?Response::allow():Response::deny("You don't have permission to view this model");
+        return  in_array('force-delete', explode(',', $user->permission->classes))
+            ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 }
