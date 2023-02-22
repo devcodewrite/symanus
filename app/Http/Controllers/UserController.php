@@ -368,7 +368,7 @@ class UserController extends Controller
                 ->where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")
                 ->get();
             $users = $users->filter(function ($user) {
-                return Gate::forUser($user)->allows('approveAnyExpense', $user);
+                return Gate::forUser($user)->allows('approveAnyAttendance');
             });
             $out = [
                 'results' => $users,

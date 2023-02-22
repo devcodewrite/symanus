@@ -31,10 +31,20 @@ class UserPolicy
     public function approveAnyExpense(User $user)
     {
         if ($user->permission)
-            return (in_array('approve expenses', explode(',', $user->permission->expenses))
+            return (in_array('approve-expenses', explode(',', $user->permission->expenses))
                 || $user->permission->is_admin) ? Response::allow() : Response::deny("You don't have permission to view this model");
 
-        return (in_array('approve expenses', explode(',', $user->userRole->permission->expenses))
+        return (in_array('approve-expenses', explode(',', $user->userRole->permission->expenses))
+            || $user->userRole->permission->is_admin) ? Response::allow() : Response::deny("You don't have permission to view this model");
+    }
+
+    public function approveAnyAttendance(User $user)
+    {
+        if ($user->permission)
+            return (in_array('approve-attendance', explode(',', $user->permission->attendances))
+                || $user->permission->is_admin) ? Response::allow() : Response::deny("You don't have permission to view this model");
+
+        return (in_array('approve-attendance', explode(',', $user->userRole->permission->attendances))
             || $user->userRole->permission->is_admin) ? Response::allow() : Response::deny("You don't have permission to view this model");
     }
 
