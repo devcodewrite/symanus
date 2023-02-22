@@ -79,7 +79,7 @@ class PermissionController extends Controller
             $permissions = array_merge($permissions, [$key => implode(',', $perm)]);
         }
         foreach($rules as $key => $field){
-            if(!$request->input($key)){
+            if(sizeof($request->input($key)) === 0){
                 $permissions[$key] = '';
             }
         }
