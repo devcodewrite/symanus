@@ -7,6 +7,7 @@ use App\Models\Classes;
 use App\Models\Guardian;
 use App\Models\Module;
 use App\Models\Student;
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -23,11 +24,24 @@ class StudentController extends Controller
      */
     public function datatable()
     {
-        return DataTables::of(Student::with(['class:id,name','guardian:id,firstname,surname,phone,sex'])->latest())
-            
+        $where = [];
+        if (!Gate::inspect('viewAny', new Student())->allowed()) {
+            $where = array_merge($where, ['classes.user_id' => auth()->user()->id]);
+        }
+      
+        return DataTables::of(
+            Student::with(['class:id,name', 'guardian:id,firstname,surname,phone,sex'])
+                ->join("classes",'classes.id','=','students.class_id')
+                ->where($where)
+                ->orderBy('students.created_at', 'asc')
+                ->select("students.*")
+        )
+
             ->searchPane(
                 'sex',
                 fn () => Student::query()
+                ->join("classes",'classes.id','=','students.class_id')
+                ->where($where)
                     ->select('sex as value', 'sex as label', DB::raw('count(*) as total'))
                     ->groupBy('sex')
                     ->get(),
@@ -40,11 +54,15 @@ class StudentController extends Controller
                 }
             )
             ->searchPane(
-                'class',Student::select([
+                'class',
+                Student::select([
                     'class_id as value',
                     'classes.name as label',
-                    DB::raw('count(*) as total')])
-                    ->join('classes', 'classes.id','=','students.class_id')
+                    DB::raw('count(*) as total')
+                ])
+               
+                    ->join('classes', 'classes.id', '=', 'students.class_id')
+                    ->where($where)
                     ->groupBy('class_id')
                     ->groupBy('classes.name')
                     ->get(),
@@ -60,6 +78,8 @@ class StudentController extends Controller
                 'transit',
                 fn () => Student::query()
                     ->select('transit as value', 'transit as label', DB::raw('count(*) as total'))
+                    ->join("classes",'classes.id','=','students.class_id')
+                    ->where($where)
                     ->groupBy('transit')
                     ->get(),
                 function (Builder $query, array $values) {
@@ -74,6 +94,8 @@ class StudentController extends Controller
                 'affiliation',
                 fn () => Student::query()
                     ->select('affiliation as value', 'affiliation as label', DB::raw('count(*) as total'))
+                    ->join("classes",'classes.id','=','students.class_id')
+                    ->where($where)
                     ->groupBy('affiliation')
                     ->get(),
                 function (Builder $query, array $values) {
@@ -88,6 +110,8 @@ class StudentController extends Controller
                 'rstate',
                 fn () => Student::query()
                     ->select('rstate as value', 'rstate as label', DB::raw('count(*) as total'))
+                    ->join("classes",'classes.id','=','students.class_id')
+                    ->where($where)
                     ->groupBy('rstate')
                     ->get(),
                 function (Builder $query, array $values) {
@@ -101,52 +125,54 @@ class StudentController extends Controller
             ->make(true);
     }
 
-     /**
+    /**
      * Display a listing of resource for tadatables
      * @return \Iluminate\Http\Response
      */
     public function related_bills_datatable(Request $request)
     {
         return DataTables::of(Bill::where('student_id', $request->input('student_id'))
-                ->with(['user', 'fees'])
-                ->latest())
-                ->searchPane(
-                    'user',Bill::select([
-                        'user_id as value',
-                        DB::raw('concat(users.firstname," ",users.surname) as label'),
-                        DB::raw('count(*) as total')])
-                        ->join('users', 'users.id','=','bills.user_id')
-                        ->where('student_id', $request->input('student_id'))
-                        ->groupBy('user_id')
-                        ->groupBy('users.firstname')
-                        ->groupBy('users.surname')
-                        ->get(),
-                    function (Builder $query, array $values) {
-                        return $query
-                            ->whereIn(
-                                'user_id',
-                                $values
-                            );
-                    }
-                )
+            ->with(['user', 'fees'])
+            ->latest())
             ->searchPane(
-                    'bdate',
-                    fn () => Bill::query()
-                        ->select('bdate as value', 'bdate as label', DB::raw('count(*) as total'))
-                        ->where('student_id', $request->input('student_id'))
-                        ->groupBy('bdate')
-                        ->get(),
-                    function (Builder $query, array $values) {
-                        return $query
-                            ->whereIn(
-                                'bdate',
-                                $values
-                            );
-                    }
-                )
-                ->make(true);
+                'user',
+                Bill::select([
+                    'user_id as value',
+                    DB::raw('concat(users.firstname," ",users.surname) as label'),
+                    DB::raw('count(*) as total')
+                ])
+                    ->join('users', 'users.id', '=', 'bills.user_id')
+                    ->where('student_id', $request->input('student_id'))
+                    ->groupBy('user_id')
+                    ->groupBy('users.firstname')
+                    ->groupBy('users.surname')
+                    ->get(),
+                function (Builder $query, array $values) {
+                    return $query
+                        ->whereIn(
+                            'user_id',
+                            $values
+                        );
+                }
+            )
+            ->searchPane(
+                'bdate',
+                fn () => Bill::query()
+                    ->select('bdate as value', 'bdate as label', DB::raw('count(*) as total'))
+                    ->where('student_id', $request->input('student_id'))
+                    ->groupBy('bdate')
+                    ->get(),
+                function (Builder $query, array $values) {
+                    return $query
+                        ->whereIn(
+                            'bdate',
+                            $values
+                        );
+                }
+            )
+            ->make(true);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -166,9 +192,9 @@ class StudentController extends Controller
     public function create()
     {
         $st = Student::orderBy('id', 'desc')->first();
-        $st = $st?$st:(object)['id' => 0];
+        $st = $st ? $st : (object)['id' => 0];
         $data = [
-            'new_studentid' => date('ym').Str::padLeft(random_int($st->id+1,999999),6, 0),
+            'new_studentid' => date('ym') . Str::padLeft(random_int($st->id + 1, 999999), 6, 0),
         ];
         return view('student.edit', $data);
     }
@@ -198,8 +224,8 @@ class StudentController extends Controller
         ];
         $validator = Validator::make($request->input(), $rules);
         $error = "";
-        foreach($validator->errors()->messages() as $message){
-            $error .= $message[0]."\n";
+        foreach ($validator->errors()->messages() as $message) {
+            $error .= $message[0] . "\n";
         }
 
         if ($validator->fails()) {
@@ -211,23 +237,23 @@ class StudentController extends Controller
             return Response::json($out);
         }
         $file = $request->file('avatar');
-        if($file){
+        if ($file) {
             $file_name = $request->input('studentid');
             $extension = $file->getClientOriginalExtension();
-            $path = $request->file('avatar')->storeAs('avatars/students',"$file_name.$extension",'public');
-            $data = $validator->safe()->merge(['avatar'=> url("storage/$path")])->except(['stay']);
-        }else {
-            $data =  $validator->safe()->except(['avatar','stay']);
+            $path = $request->file('avatar')->storeAs('avatars/students', "$file_name.$extension", 'public');
+            $data = $validator->safe()->merge(['avatar' => url("storage/$path")])->except(['stay']);
+        } else {
+            $data =  $validator->safe()->except(['avatar', 'stay']);
         }
         $student = Student::create($data);
-        if($student){
+        if ($student) {
             $out = [
                 'data' => $student,
                 'message' => 'student created successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Data couldn't be processed! Please try again!",
                 'status' => false,
@@ -291,8 +317,8 @@ class StudentController extends Controller
 
         $validator = Validator::make($request->input(), $rules);
         $error = "";
-        foreach($validator->errors()->messages() as $message){
-            $error .= $message[0]."\n";
+        foreach ($validator->errors()->messages() as $message) {
+            $error .= $message[0] . "\n";
         }
 
         if ($validator->fails()) {
@@ -304,24 +330,24 @@ class StudentController extends Controller
             return Response::json($out);
         }
         $file = $request->file('avatar');
-        if($file){
+        if ($file) {
             $file_name = $request->input('studentid');
             $extension = $file->getClientOriginalExtension();
-            $path = $request->file('avatar')->storeAs('avatars/students',"$file_name.$extension",'public');
-            $data = $validator->safe()->merge(['avatar'=> url("storage/$path")."?v=".random_int(0,99)])->except(['stay']);
-        }else {
-            $data =  $validator->safe()->except(['avatar','stay']);
+            $path = $request->file('avatar')->storeAs('avatars/students', "$file_name.$extension", 'public');
+            $data = $validator->safe()->merge(['avatar' => url("storage/$path") . "?v=" . random_int(0, 99)])->except(['stay']);
+        } else {
+            $data =  $validator->safe()->except(['avatar', 'stay']);
         }
         $student->fill($data);
 
-        if($student->save()){
+        if ($student->save()) {
             $out = [
                 'data' => $student,
                 'message' => 'Student updated successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Data couldn't be processed! Please try again!",
                 'status' => false,
@@ -340,12 +366,12 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        if($student->delete()){
+        if ($student->delete()) {
             $out = [
                 'message' => 'Student deleted successfully!',
                 'status' => true,
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Nothing done!",
                 'status' => false,
@@ -354,27 +380,26 @@ class StudentController extends Controller
         return Response::json($out);
     }
 
-      /**
+    /**
      * Mass update the resources.
      *
      * @return \Illuminate\Http\Response
      */
     public function datatable_action(Request $request)
     {
-        
-        if($request->input('action') === 'delete' && $request->input('data')){
+
+        if ($request->input('action') === 'delete' && $request->input('data')) {
             $ids = [];
-            foreach($request->input('data') as $student){
+            foreach ($request->input('data') as $student) {
                 array_push($ids, $student['id']);
             }
-            if(Student::destroy($ids)){
+            if (Student::destroy($ids)) {
                 $out = [
                     'message' => 'Student(s) deleted successfully!',
                     'status' => true,
                     'input' => $request->all()
                 ];
-            }
-            else {
+            } else {
                 $out = [
                     'message' => "Nothing done!",
                     'status' => false,
@@ -382,21 +407,21 @@ class StudentController extends Controller
                 ];
             }
             return Response::json($out);
-            
-        }
-        else if($request->input('action') === 'close-rstate' 
-            && $request->input('data')) {
+        } else if (
+            $request->input('action') === 'close-rstate'
+            && $request->input('data')
+        ) {
             $ids = [];
-            foreach($request->input('data') as $row){
+            foreach ($request->input('data') as $row) {
                 array_push($ids, $row['id']);
             }
-            if(Student::whereIn('id', $ids)->update(['rstate'=>'close'])){
+            if (Student::whereIn('id', $ids)->update(['rstate' => 'close'])) {
                 $out = [
                     'message' => 'Student(s) closed successfully!',
                     'status' => true,
                     'input' => $request->all()
                 ];
-            }else {
+            } else {
                 $out = [
                     'message' => "Nothing done!",
                     'status' => false,
@@ -404,20 +429,21 @@ class StudentController extends Controller
                 ];
             }
             return Response::json($out);
-
-        }else if( $request->input('action') === 'open-rstate' 
-            && $request->input('data')) {
+        } else if (
+            $request->input('action') === 'open-rstate'
+            && $request->input('data')
+        ) {
             $ids = [];
-            foreach($request->input('data') as $student){
+            foreach ($request->input('data') as $student) {
                 array_push($ids, $student['id']);
             }
-            if(Student::whereIn('id', $ids)->update(['rstate'=>'open'])){
+            if (Student::whereIn('id', $ids)->update(['rstate' => 'open'])) {
                 $out = [
                     'message' => 'Student(s) open successfully!',
                     'status' => true,
                     'input' => $request->all()
                 ];
-            }else {
+            } else {
                 $out = [
                     'message' => "Nothing done!",
                     'status' => false,
@@ -426,16 +452,16 @@ class StudentController extends Controller
             }
             return Response::json($out);
         }
-            $out = [
-                'message' => "Data couldn't be processed! Please try again!",
-                'status' => false,
-                'input' => $request->all()
-            ];
-        
+        $out = [
+            'message' => "Data couldn't be processed! Please try again!",
+            'status' => false,
+            'input' => $request->all()
+        ];
+
         return Response::json($out);
     }
 
-     /**
+    /**
      * Display a listing of the resource for select2.
      *
      * @return \Illuminate\Http\Response
@@ -445,36 +471,36 @@ class StudentController extends Controller
         //
         if ($request->ajax()) {
 
-            $term = trim($request->get('term',''));
+            $term = trim($request->get('term', ''));
             $take = 10;
             $page = $request->get('page', 1);
-            $skip = ($page - 1 )*$take;
+            $skip = ($page - 1) * $take;
 
             $total = Student::where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")->count();
-            
+
             $users = Student::select(['id', DB::raw('concat(firstname ," ", surname) as text'), 'avatar', 'sex'])
-                        ->where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")
-                        ->orderBy('firstname', 'asc')
-                        ->skip($skip)
-                        ->take($take)
-                        ->get();
+                ->where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")
+                ->orderBy('firstname', 'asc')
+                ->skip($skip)
+                ->take($take)
+                ->get();
             $out = [
                 'results' => $users,
                 'pagination' => [
-                   'more' => ($skip + $take < $total),
-                   'page' => intval($page),
-                   'totalRows' => $total,
-                   'totalPages' => intval($total/$take + ($total%$take > 0?1:0))
+                    'more' => ($skip + $take < $total),
+                    'page' => intval($page),
+                    'totalRows' => $total,
+                    'totalPages' => intval($total / $take + ($total % $take > 0 ? 1 : 0))
                 ]
             ];
 
             return Response::json($out);
         }
 
-       return Response::json(['message' => 'Invalid request data']);
+        return Response::json(['message' => 'Invalid request data']);
     }
 
-     /**
+    /**
      * Display a listing of the resource for json.
      *
      * @return \Illuminate\Http\Response
@@ -482,20 +508,20 @@ class StudentController extends Controller
     public function student_balance_json(Request $request)
     {
         if ($request->json()) {
-            $student = Student::find($request->input('data.student.id',0));
-            if($student){
-            $out = [
-                'data' => $student->getBalanceByAttendance($request->input('data.attendance.id', 0)),
-                'status' => true,
-            ];
-        }else {
-            $out = [
-                'status' => false,
-                'message' => "Student not found!",
-            ];
-        }
+            $student = Student::find($request->input('data.student.id', 0));
+            if ($student) {
+                $out = [
+                    'data' => $student->getBalanceByAttendance($request->input('data.attendance.id', 0)),
+                    'status' => true,
+                ];
+            } else {
+                $out = [
+                    'status' => false,
+                    'message' => "Student not found!",
+                ];
+            }
             return Response::json($out);
         }
-       return Response::json(['message' => 'Invalid request data']);
+        return Response::json(['message' => 'Invalid request data']);
     }
 }
