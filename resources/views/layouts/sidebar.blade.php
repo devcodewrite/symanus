@@ -23,7 +23,7 @@
                             <x-svg.student />
                         </x-slot>
                         <x-sidebar-nav-sublink title="List Students" url="{{ route('students.index') }}" uri="students" />
-                        @if (Gate::inspect('viewAny', $student)->allowed())
+                        @if (Gate::inspect('create', $student)->allowed())
                             <x-sidebar-nav-sublink title="New Student" url="{{ route('students.create') }}"
                                 uri="students/create" />
                         @endif
