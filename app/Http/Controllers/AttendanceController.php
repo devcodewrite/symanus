@@ -236,6 +236,7 @@ class AttendanceController extends Controller
                 'status',
                 fn () => Attendance::query()
                     ->select('status as value', 'status as label', DB::raw('count(*) as total'))
+                    ->where($where)
                     ->groupBy('status')
                     ->get(),
                 function (Builder $query, array $values) {
