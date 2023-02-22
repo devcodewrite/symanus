@@ -80,7 +80,7 @@ class PermissionController extends Controller
         }
         foreach($rules as $key => $field){
             if($request->input($key) === null){
-                $permissions[$key] = '';
+                $permissions[$key] = null;
             }
         }
         $permissions = array_merge($permissions, $validator->safe(['is_admin']));
