@@ -118,24 +118,21 @@ form.on("submit", function (e) {
                         if (typeof d.input === "object") {
                             if (d.input._method === "post") {
                                 $(form).trigger("reset");
-                                $(".select2-fees,.select2-feetype")
-                                    .val("")
-                                    .trigger("change.select2");
+                                $("select").val("").trigger("change.select2");
                             }
                             let default_redirect =
                                 form.getAttribute("data-redirect-url");
                             default_redirect = default_redirect
-                                ? default_redirect + `/${d?.data?.id}`
+                                ? default_redirect + `/${d.data.id}`
                                 : null;
                             let crrurl = new URL(location.href);
                             let backto = crrurl.searchParams.get("backtourl");
-                            let redirect_url = backto
-                                ? backto
-                                : (d.data?default_redirect:form.getAttribute("data-redirect-url"));
-
+                            let redirect_url = backto ? backto : default_redirect;
+    
                             if (redirect_url && !d.input?.stay)
                                 setTimeout(location.assign(redirect_url), 500);
                         }
+    
                         Swal.fire({
                             icon: "success",
                             text: d.message,

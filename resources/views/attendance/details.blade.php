@@ -190,10 +190,10 @@
                                 <x-a-button-p class="py-3.5 max-w-fit" :href="route('attendances.edit', ['attendance' => $attendance->id])">
                                     {{ __('Modify') }}
                                 </x-a-button-p>
-                                <x-button class="py-3.5 max-w-fit rdelete" :data-target-url="route('attendances.destroy', ['attendance' => $attendance->id])"
+                                <x-a-button-r class="py-3.5 max-w-fit rdelete" :data-target-url="route('attendances.destroy', ['attendance' => $attendance->id])"
                                     data-redirect-url="{{ route('attendances.index') }}">
                                     {{ __('Delete') }}
-                                </x-button>
+                                </x-a-button-r>
                             @endif
                         </div>
                     </div>

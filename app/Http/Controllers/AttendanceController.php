@@ -209,8 +209,8 @@ class AttendanceController extends Controller
     public function datatable()
     {
         $where = [];
-        if(!Gate::inspect('viewAny', new Attendance())->allowed()){
-            $where = array_merge($where,['attendances.user_id' => auth()->user()->id]);
+        if (!Gate::inspect('viewAny', new Attendance())->allowed()) {
+            $where = array_merge($where, ['attendances.user_id' => auth()->user()->id]);
         }
         return DataTables::of(Attendance::with(
             [
@@ -353,13 +353,17 @@ class AttendanceController extends Controller
 
                     foreach ($students as $row) {
                         $bill =  Bill::updateOrCreate([
-                            'user_id' => auth()->user()->id,
                             'student_id' => $row->id,
                             'bdate' => $attendance->adate,
+                        ], [
+                            'user_id' => auth()->user()->id,
                             'attendance_id' => $attendance->id
                         ]);
-
-                        BillFee::updateOrCreate(['bill_id' => $bill->id, 'fee_id' => $fee->id, 'amount' => $fee->amount]);
+                        
+                        BillFee::updateOrCreate(
+                            ['bill_id' => $bill->id, 'fee_id' => $fee->id],
+                            ['amount' => $fee->amount]
+                        );
                     }
                 }
             }
@@ -481,7 +485,7 @@ class AttendanceController extends Controller
     public function destroy(Attendance $attendance)
     {
         //Bill::where('attendance_id', $attendance->id)->delete();
-        AttendanceStudent::where('attendance_id',$attendance->id)->delete();
+        AttendanceStudent::where('attendance_id', $attendance->id)->delete();
 
         if ($attendance->delete()) {
             $out = [

@@ -246,9 +246,10 @@ class BillController extends Controller
             ];
             return Response::json($out);
         }
-        
-        foreach($bill->fees as $fee)
-         $bf = BillFee::updateOrCreate(['bill_id'=>$bill->id, 'fee_id' => $fee->id]);
+        BillFee::where('bill_id', $bill->id)->delete();
+        foreach($request->fees as $fee_id)
+        $fee = Fee::find($fee_id);
+         $bf = BillFee::updateOrCreate(['bill_id'=>$bill->id,'fee_id' => $fee->id, 'amount' => $fee->amount]);
         
          if($bf){
             $out = [
@@ -275,7 +276,20 @@ class BillController extends Controller
      */
     public function destroy(Bill $bill)
     {
-        //
+        BillFee::where('bill_id',$bill->id)->delete();
+
+        if ($bill->delete()) {
+            $out = [
+                'message' => 'Bill deleted successfully!',
+                'status' => true,
+            ];
+        } else {
+            $out = [
+                'message' => "Cannot delete this record!",
+                'status' => false,
+            ];
+        }
+        return Response::json($out);
     }
 
      /**
