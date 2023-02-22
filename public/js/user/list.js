@@ -96,7 +96,7 @@ var studentTable = $('.dt-users').DataTable({
     {
         data: 'sex',
         render:function(data, type, row){
-            return data.toUpperCase();
+            return data?data.toUpperCase():'';
         }
     },{
         data:'email'
@@ -111,6 +111,7 @@ var studentTable = $('.dt-users').DataTable({
         {
             data: 'rstate',
             render:function(data, type, row){
+                if(!data) return '';
                 if(type === 'display'){
                     let labels = {
                         open: 'bg-green-600',

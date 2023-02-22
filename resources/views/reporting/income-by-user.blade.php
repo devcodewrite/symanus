@@ -82,7 +82,7 @@
                                         <tr>
                                             <th class="text-left">
                                                 {{ $rRow->firstname }}
-                                                {{ $rRow->surname }}{{ __('@') }}{{ $rRow->username }}
+                                                {{ $rRow->surname }}
                                             </th>
                                             @php
                                                 $totalRow = 0;

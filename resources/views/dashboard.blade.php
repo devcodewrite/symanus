@@ -94,9 +94,7 @@
                                 class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
                         </x-slot>
                     </x-overview-card>
-                @elseif (Gate::inspect(
-                        'view',
-                        $attendance->where(['user_id' => auth()->user()->id])->first())->allowed())
+                @else
                     <x-overview-card title="Attendances" :items="[
                         [
                             'label' => 'Draft',

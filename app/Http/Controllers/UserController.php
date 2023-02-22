@@ -25,12 +25,17 @@ class UserController extends Controller
      */
     public function datatable()
     {
-        return DataTables::of(User::with(['userRole'])->latest())
+        return DataTables::of(
+            User::with(['userRole'])
+               ->where('id','!=', '1')
+                ->latest()
+        )
             ->searchPane(
                 'sex',
                 fn () => User::query()
                     ->select('sex as value', 'sex as label', DB::raw('count(*) as total'))
                     ->groupBy('sex')
+                    ->where('id','!=', '1')
                     ->get(),
                 function (Builder $query, array $values) {
                     return $query
@@ -45,6 +50,7 @@ class UserController extends Controller
                 fn () => User::query()
                     ->select('rstate as value', 'rstate as label', DB::raw('count(*) as total'))
                     ->groupBy('rstate')
+                    ->where('id','!=', '1')
                     ->get(),
                 function (Builder $query, array $values) {
                     return $query
@@ -284,7 +290,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $response = Gate::inspect('delete', $user);
-        if(!$response->allowed()) {
+        if (!$response->allowed()) {
             $out = [
                 'message' => $response->message(),
                 'status' => false,
@@ -292,12 +298,12 @@ class UserController extends Controller
             return Response::json($out);
         }
 
-        if($user->delete()){
+        if ($user->delete()) {
             $out = [
                 'message' => 'User deleted successfully!',
                 'status' => true,
             ];
-        }else {
+        } else {
             $out = [
                 'message' => "Nothing done!",
                 'status' => false,
@@ -358,12 +364,12 @@ class UserController extends Controller
 
             $term = trim($request->get('term', ''));
 
-            $users = User::select(['id','user_role_id','permission_id', DB::raw('concat(firstname ," ", surname) as text'), 'avatar', 'sex'])
+            $users = User::select(['id', 'user_role_id', 'permission_id', DB::raw('concat(firstname ," ", surname) as text'), 'avatar', 'sex'])
                 ->where(DB::raw('concat(firstname ," ", surname)'), 'LIKE',  "%$term%")
                 ->get();
             $users = $users->filter(function ($user) {
-                return Gate::forUser($user)->allows('approveAnyExpense',$user);
-             });
+                return Gate::forUser($user)->allows('approveAnyExpense', $user);
+            });
             $out = [
                 'results' => $users,
                 'pagination' => [

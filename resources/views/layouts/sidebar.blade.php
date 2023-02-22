@@ -14,48 +14,52 @@
         </x-sidebar-nav-link>
 
         <!-- Student and Guardians -->
-        @if (
-            $module->hasModuleGroup('Students & Guardians Managment') &&
-                (Gate::inspect('viewAny', $student)->allowed() || Gate::inspect('viewAny', $guardian)->allowed()))
+        @if ($module->hasModuleGroup('Students & Guardians Managment'))
             <p class="text-sm font-bold">Students & Guardians</p>
-            @if ($module->hasModule('Students Management') && Gate::inspect('viewAny', $student)->allowed())
-                <x-sidebar-nav-link title="Students" uri="students">
-                    <x-slot name="icon">
-                        <x-svg.student />
-                    </x-slot>
-                    <x-sidebar-nav-sublink title="List Students" url="{{ route('students.index') }}" uri="students" />
-                    @if (Gate::inspect('viewAny', $student)->allowed())
-                        <x-sidebar-nav-sublink title="New Student" url="{{ route('students.create') }}"
-                            uri="students/create" />
-                    @endif
-                </x-sidebar-nav-link>
+            @if ($module->hasModule('Students Management'))
+                @canany(['create', 'viewAny'], $student)
+                    <x-sidebar-nav-link title="Students" uri="students">
+                        <x-slot name="icon">
+                            <x-svg.student />
+                        </x-slot>
+                        <x-sidebar-nav-sublink title="List Students" url="{{ route('students.index') }}" uri="students" />
+                        @if (Gate::inspect('viewAny', $student)->allowed())
+                            <x-sidebar-nav-sublink title="New Student" url="{{ route('students.create') }}"
+                                uri="students/create" />
+                        @endif
+                    </x-sidebar-nav-link>
+                @endcanany
             @endif
-            @if ($module->hasModule('Guardians Management') && Gate::inspect('viewAny', $guardian)->allowed())
-                <x-sidebar-nav-link title="Gurdians" uri="guardians">
-                    <x-sidebar-nav-sublink title="List Guardians" url="{{ route('guardians.index') }}"
-                        uri="guardians" />
-                    @if (Gate::inspect('create', $guardian)->allowed())
-                        <x-sidebar-nav-sublink title="New Guardian" url="{{ route('guardians.create') }}"
-                            uri="guardians/create" />
-                    @endif
-                </x-sidebar-nav-link>
+            @if ($module->hasModule('Guardians Management'))
+                @canany(['create', 'viewAny'], $guardian)
+                    <x-sidebar-nav-link title="Gurdians" uri="guardians">
+                        <x-sidebar-nav-sublink title="List Guardians" url="{{ route('guardians.index') }}"
+                            uri="guardians" />
+                        @if (Gate::inspect('create', $guardian)->allowed())
+                            <x-sidebar-nav-sublink title="New Guardian" url="{{ route('guardians.create') }}"
+                                uri="guardians/create" />
+                        @endif
+                    </x-sidebar-nav-link>
+                @endcanany
             @endif
         @endif
         <!-- Education -->
         @if ($module->hasModuleGroup('Education Managment'))
             <p class="text-sm font-bold">Education</p>
-            @if ($module->hasModule('Attendance Management') && Gate::inspect('viewAny', $attendance)->allowed())
-                <x-sidebar-nav-link title="Attendance" uri="attendance">
-                    <x-slot name="icon">
-                        <x-svg.attendance />
-                    </x-slot>
-                    <x-sidebar-nav-sublink title="List Attendances" url="{{ route('attendances.index') }}"
-                        uri="attendances" />
-                    @if (Gate::inspect('create', $attendance)->allowed())
-                        <x-sidebar-nav-sublink title="Take Attendances" url="{{ route('attendances.create') }}"
-                            uri="attendances/create" />
-                    @endif
-                </x-sidebar-nav-link>
+            @if ($module->hasModule('Attendance Management'))
+                @canany(['create', 'viewAny'], $attendance)
+                    <x-sidebar-nav-link title="Attendance" uri="attendance">
+                        <x-slot name="icon">
+                            <x-svg.attendance />
+                        </x-slot>
+                        <x-sidebar-nav-sublink title="List Attendances" url="{{ route('attendances.index') }}"
+                            uri="attendances" />
+                        @if (Gate::inspect('create', $attendance)->allowed())
+                            <x-sidebar-nav-sublink title="Take Attendances" url="{{ route('attendances.create') }}"
+                                uri="attendances/create" />
+                        @endif
+                    </x-sidebar-nav-link>
+                @endcanany
             @endif
             @if ($module->hasModule('Assessment Management'))
                 <x-sidebar-nav-link title="Assessment" uri="assessment">
@@ -78,17 +82,19 @@
                         uri="courses/create" />
                 </x-sidebar-nav-link>
             @endif
-            @if ($module->hasModule('Classes Management') && Gate::inspect('viewAny', $class)->allowed())
-                <x-sidebar-nav-link title="Classes" uri="classes">
-                    <x-slot name="icon">
-                        <x-svg.class />
-                    </x-slot>
-                    <x-sidebar-nav-sublink title="List Classes" url="{{ route('classes.index') }}" uri="classes" />
-                    @if (Gate::inspect('create', $class)->allowed())
-                        <x-sidebar-nav-sublink title="New Class" url="{{ route('classes.create') }}"
-                            uri="classes/create" />
-                    @endif
-                </x-sidebar-nav-link>
+            @if ($module->hasModule('Classes Management'))
+                @canany(['create', 'viewAny'], $class)
+                    <x-sidebar-nav-link title="Classes" uri="classes">
+                        <x-slot name="icon">
+                            <x-svg.class />
+                        </x-slot>
+                        <x-sidebar-nav-sublink title="List Classes" url="{{ route('classes.index') }}" uri="classes" />
+                        @can('create', $class)
+                            <x-sidebar-nav-sublink title="New Class" url="{{ route('classes.create') }}"
+                                uri="classes/create" />
+                        @endcan
+                    </x-sidebar-nav-link>
+                @endcanany
             @endif
         @endif
         <!-- Accounting -->
@@ -102,38 +108,43 @@
                 </x-sidebar-nav-link>
             @endif
 
-            @if ($module->hasModule('Fees Collection Management') && Gate::inspect('viewAny', $fee)->allowed())
-                <x-sidebar-nav-link title="Fees" uri="fees">
-                    <x-slot name="icon">
-                        <x-svg.payment />
-                    </x-slot>
-                    <x-sidebar-nav-sublink title="List Fees" url="{{ route('fees.index') }}" uri="fees" />
-                    @if (Gate::inspect('create', $fee)->allowed())
-                        <x-sidebar-nav-sublink title="New Fees" url="{{ route('fees.create') }}" uri="fees/create" />
-                    @endif
-                </x-sidebar-nav-link>
-                <x-sidebar-nav-link title="Bills & Payments" uri="bills">
-                    <x-slot name="icon">
-                        <x-svg.payment />
-                    </x-slot>
-                    <x-sidebar-nav-sublink title="List Bills" url="{{ route('bills.index') }}" uri="bills" />
-                    <x-sidebar-nav-sublink title="Generate New Bills" url="{{ route('bills.create') }}"
-                        uri="bills/create" />
-                </x-sidebar-nav-link>
+            @if ($module->hasModule('Fees Collection Management'))
+                @canany(['create', 'viewAny'], $fee)
+                    <x-sidebar-nav-link title="Fees" uri="fees">
+                        <x-slot name="icon">
+                            <x-svg.payment />
+                        </x-slot>
+                        <x-sidebar-nav-sublink title="List Fees" url="{{ route('fees.index') }}" uri="fees" />
+                        @if (Gate::inspect('create', $fee)->allowed())
+                            <x-sidebar-nav-sublink title="New Fees" url="{{ route('fees.create') }}" uri="fees/create" />
+                        @endif
+                    </x-sidebar-nav-link>
+                @endcanany
+                @canany(['create', 'viewAny'], $bill)
+                    <x-sidebar-nav-link title="Bills & Payments" uri="bills">
+                        <x-slot name="icon">
+                            <x-svg.payment />
+                        </x-slot>
+                        <x-sidebar-nav-sublink title="List Bills" url="{{ route('bills.index') }}" uri="bills" />
+                        <x-sidebar-nav-sublink title="Generate New Bills" url="{{ route('bills.create') }}"
+                            uri="bills/create" />
+                    </x-sidebar-nav-link>
+                @endcanany
             @endif
-            @if ($module->hasModule('Expense Management') && Gate::inspect('viewAny', $expense)->allowed())
-                <x-sidebar-nav-link title="Expense Reports" uri="expense-reports">
-                    <x-slot name="icon">
-                        <x-svg.attendance />
-                    </x-slot>
-                    <x-sidebar-nav-sublink title="List Expense Report" url="{{ route('expense-reports.index') }}"
-                        uri="expense-reports" />
-                    @if (Gate::inspect('create', $expense)->allowed())
-                        <x-sidebar-nav-sublink title="New Expense Report" url="{{ route('expense-reports.create') }}"
-                            uri="expense-reports/create" />
-                    @endif
-
-                </x-sidebar-nav-link>
+            @if ($module->hasModule('Expense Management'))
+                @canany(['create', 'viewAny'], $calss)
+                    <x-sidebar-nav-link title="Expense Reports" uri="expense-reports">
+                        <x-slot name="icon">
+                            <x-svg.attendance />
+                        </x-slot>
+                        <x-sidebar-nav-sublink title="List Expense Report" url="{{ route('expense-reports.index') }}"
+                            uri="expense-reports" />
+                        @if (Gate::inspect('create', $expense)->allowed())
+                            <x-sidebar-nav-sublink title="New Expense Report" url="{{ route('expense-reports.create') }}"
+                                uri="expense-reports/create" />
+                        @endif
+                    </x-sidebar-nav-link>
+                @endcanany
             @endif
             @if ($module->hasModule('Salaries Management'))
                 <x-sidebar-nav-link title="Salaries" uri="salaries">
@@ -150,7 +161,8 @@
                         <x-svg.attendance />
                     </x-slot>
                     @if ($module->hasModule('Students Management'))
-                        <x-sidebar-nav-link title="Student List" url="{{ route('reporting.student-list') }}" uri="reporting/student-list"/>
+                        <x-sidebar-nav-link title="Student List" url="{{ route('reporting.student-list') }}"
+                            uri="reporting/student-list" />
                     @endif
                     @if ($module->hasModuleGroup('Finance & Accounting Management'))
                         @if ($module->hasModule('Fees Collection Management') && Gate::inspect('report', $bill)->allowed())
