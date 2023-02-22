@@ -93,7 +93,7 @@
                             <x-svg.attendance
                                 class="flex-shrink-0 overflow-visible h-8 w-8 text-gray-400 dark:text-gray-600" />
                         </x-slot>
-                    </x-overview-card>
+         </x-overview-card>
                 @elseif (Gate::inspect('view', $attendance->where(['user_id' => auth()->user()->id])->first())->allowed())
                     <x-overview-card title="Attendances" :items="[
                         [
@@ -188,13 +188,13 @@
                         </x-slot>
                     </x-overview-card>
                 @endif
-               
-                    <x-overview-card title="Classes" :items="[['label' => 'Total', 'num' => $class->count(), 'url' => route('classes.index')]]">
-                        <x-slot name="icon">
-                            <x-svg.class class="h-8 w-8" />
-                        </x-slot>
-                    </x-overview-card>
-              
+
+                <x-overview-card title="Classes" :items="[['label' => 'Total', 'num' => $class->count(), 'url' => route('classes.index')]]">
+                    <x-slot name="icon">
+                        <x-svg.class class="h-8 w-8" />
+                    </x-slot>
+                </x-overview-card>
+
                 @if (Gate::inspect('viewAny', $sms)->allowed())
                     <x-overview-card title="SMS" :items="[['label' => 'Balance', 'num' => $setting->getValue('sms_units', 0)]]">
                         <x-slot name="icon">
