@@ -83,18 +83,16 @@
                 </x-sidebar-nav-link>
             @endif
             @if ($module->hasModule('Classes Management'))
-                @canany(['create', 'viewAny'], $class)
-                    <x-sidebar-nav-link title="Classes" uri="classes">
-                        <x-slot name="icon">
-                            <x-svg.class />
-                        </x-slot>
-                        <x-sidebar-nav-sublink title="List Classes" url="{{ route('classes.index') }}" uri="classes" />
-                        @can('create', $class)
-                            <x-sidebar-nav-sublink title="New Class" url="{{ route('classes.create') }}"
-                                uri="classes/create" />
-                        @endcan
-                    </x-sidebar-nav-link>
-                @endcanany
+                <x-sidebar-nav-link title="Classes" uri="classes">
+                    <x-slot name="icon">
+                        <x-svg.class />
+                    </x-slot>
+                    <x-sidebar-nav-sublink title="List Classes" url="{{ route('classes.index') }}" uri="classes" />
+                    @can('create', $class)
+                        <x-sidebar-nav-sublink title="New Class" url="{{ route('classes.create') }}"
+                            uri="classes/create" />
+                    @endcan
+                </x-sidebar-nav-link>
             @endif
         @endif
         <!-- Accounting -->
