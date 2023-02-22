@@ -78,11 +78,7 @@ class PermissionController extends Controller
         foreach($validator->safe()->except('is_admin') as $key => $perm){
             $permissions = array_merge($permissions, [$key => implode(',', $perm)]);
         }
-        foreach($rules as $key => $field){
-            if($request->input($key) === null){
-                $permissions[$key] = null;
-            }
-        }
+       
         $permissions = array_merge($permissions, $validator->safe(['is_admin']));
         $permission->fill($permissions);
 
@@ -178,6 +174,11 @@ class PermissionController extends Controller
         $permissions = [];
         foreach($validator->safe()->except('is_admin') as $key => $perm){
             $permissions = array_merge($permissions, [$key => implode(',', $perm)]);
+        }
+        foreach($rules as $key => $field){
+            if($request->input($key) === null){
+                $permission[$key] = null;
+            }
         }
         $permissions =  array_merge($permissions, $validator->safe(['is_admin']));
       
