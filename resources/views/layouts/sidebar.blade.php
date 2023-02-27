@@ -130,7 +130,7 @@
                 @endcanany
             @endif
             @if ($module->hasModule('Expense Management'))
-                @canany(['create', 'viewAny'], $calss)
+                @canany(['create', 'viewAny'], $class)
                     <x-sidebar-nav-link title="Expense Reports" uri="expense-reports">
                         <x-slot name="icon">
                             <x-svg.attendance />

@@ -89,7 +89,6 @@
                                         {{ $fee->feeType->title }}
                                     </a>
                                 </div>
-
                                 <div class="flex flex-row justify-between py-3">
                                     <span class="w-1/2 text-gray-600">Total releted billings</span>
                                     @if ($fee->billings)
@@ -139,18 +138,19 @@
                         </div>
 
                         <div class="py-5">
-                            <x-a-button-p class="ml-3 py-3.5 item-end">
-                                {{ __('Clone') }}
-                            </x-a-button-p>
                             <x-a-button-w class="ml-3 py-3.5 item-end">
                                 {{ __("Generate Student's Bills") }}
                             </x-a-button-w>
                             <x-a-button-p class="ml-3 py-3.5 item-end" :href="route('fees.edit', ['fee' => $fee->id])">
                                 {{ __('Modify') }}
                             </x-a-button-p>
-                            <x-a-button class="ml-3 py-3.5 shadow-md">
+                            <x-a-button class="ml-3 py-3.5 shadow-md close">
                                 {{ __('Close') }}
                             </x-a-button>
+                            <x-a-button-r class="py-3.5 max-w-fit rdelete" :data-target-url="route('fees.destroy', ['fee' => $fee->id])"
+                                data-redirect-url="{{ route('fees.index') }}">
+                                {{ __('Delete') }}
+                            </x-a-button-r>
                         </div>
                     </div>
                     <div id="basic-tabs-2" class="hidden" role="tabpanel" aria-labelledby="basic-tabs-item-2">

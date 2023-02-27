@@ -145,7 +145,8 @@
                             <x-a-button class="ml-3 py-3.5 shadow-md close">
                                 {{ __('Close') }}
                             </x-a-button>
-                            <x-a-button-r class="ml-3 py-3.5 shadow-md rdelete">
+                            <x-a-button-r class="py-3.5 max-w-fit rdelete" :data-target-url="route('users.destroy', ['user' => $user->id])"
+                                data-redirect-url="{{ route('users.index') }}">
                                 {{ __('Delete') }}
                             </x-a-button-r>
                         </div>
