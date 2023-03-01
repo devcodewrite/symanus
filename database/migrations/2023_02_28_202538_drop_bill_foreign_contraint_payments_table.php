@@ -14,7 +14,7 @@ class DropBillForeignContraintPaymentsTable extends Migration
     public function up()
     {
         Schema::table('payments', function (Blueprint $table) {
-            $table->dropForeign('bill_id');
+            $table->dropForeign('payments_bill_id_foreign');
           });
     }
 
