@@ -133,14 +133,16 @@ class Attendance extends Model
             ->where('attendance_students.attendance_id', $this->id)
             ->where('attendance_students.status', 'present')
             ->leftJoin('payments', 'payments.bill_id', 'bills.id')
-            ->sum(DB::raw('bill_fees.amount - ifnull(payments.amount,0)'));
+            ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount - ifnull(payments.amount,0) ELSE bill_fees.alt_amount - ifnull(payments.amount,0) END)) as total")
+            ->first()->total;
     }
     public function totalBill()
     {
         return $this->bills()
             ->join('bill_fees', 'bill_fees.bill_id', '=', 'bills.id')
             ->where('bills.attendance_id', $this->id)
-            ->sum('bill_fees.amount');
+            ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+            ->first()->total;
     }
 
     public function totalStudent()
@@ -171,7 +173,7 @@ class Attendance extends Model
                     $payments,
                     [
                         'student_id' => $student->id,
-                        'amount' => $bf->amount,
+                        'amount' => $bf->alt_amount?$bf->alt_amount:$bf->amount,
                         'paid_at' => Carbon::now('Africa/Accra')->format('Y-m-d'),
                         'paid_by' => $student->firstname . ' ' . $student->surname,
                         'bill_id' => $bf->bill_id,

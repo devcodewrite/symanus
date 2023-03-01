@@ -53,6 +53,7 @@ Route::middleware('auth:api')->prefix('/json')->group(function(){
     Route::get('/attendance-related-students', [AttendanceController::class, 'related_students_json']);
     Route::put('/attendance-related-students', [AttendanceController::class, 'update_related_students_json']);
     Route::put('/student-advance-payment', [AdvanceFeePaymentController::class, 'make_payments_json']);
+    Route::put('/student-bill-payment', [BillController::class, 'adjust_bill_json']);
     Route::put('/student-balance', [StudentController::class, 'student_balance_json']);
 });
 Route::middleware('auth:api')->prefix('/datatable-actions')->group(function(){

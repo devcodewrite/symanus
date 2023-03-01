@@ -38,7 +38,7 @@ class AttendanceController extends Controller
         $result = [];
         foreach ($students as $student) {
             $bill = $student->bills->where('student_id', $student->student_id)->first();
-            if ($bill) $student->balance = $bill->totalBill() - $bill->totalPayment();
+            if ($bill) $student->balance = $bill->totalAttendanceBill() - $bill->totalPayment();
             else $student->balance = "0.00";
 
             $adv = AdvanceFeePayment::where([
@@ -109,7 +109,7 @@ class AttendanceController extends Controller
                 ->where('student_id', $request->input('data.student', 0))
                 ->first();
             $bill = $atst->bills->where('student_id', $atst->student_id)->first();
-            $atst->balance = $bill->totalBill();
+            $atst->balance = $bill->totalAttendanceBill();
 
             $out = [
                 'data' => $atst,

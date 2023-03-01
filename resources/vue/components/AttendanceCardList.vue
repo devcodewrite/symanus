@@ -5,6 +5,7 @@
     <AttendanceCard
       @toggle-status="$emit('toggle-status',checkitem.attendance_id,checkitem)"
       @make-payment="$emit('make-payment', checkitem)"
+      @adjust-bill="$emit('adjust-bill',checkitem)"
       :checkitem="checkitem"
     />
   </div>
@@ -22,6 +23,6 @@ export default {
   components: {
     AttendanceCard,
   },
-  emits: ['make-payment', 'toggle-status'],
+  emits: ['make-payment', 'toggle-status','adjust-bill'],
 }
 </script>

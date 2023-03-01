@@ -11,6 +11,7 @@
         :checklist="checklist"
         @toggle-status="toggleStatus"
         @make-payment="makePayment"
+        @adjust-bill="adjustBill"
       />
     </div>
     <Footer />
@@ -100,6 +101,101 @@ export default {
                       ? {
                           ...checkitem,
                           advance: result.data.amount,
+                        }
+                      : checkitem
+                  );
+
+                  Swal.fire({
+                    icon: "success",
+                    text: result.message,
+                  });
+                } else {
+                  Swal.fire({
+                    icon: "error",
+                    text: result.message,
+                  });
+                }
+              });
+            })
+            .catch((error) => {
+              Swal.showValidationMessage(`Request failed: ${error}`);
+            });
+        })
+        .catch((err) => {
+          if (err) {
+            Swal.fire(
+              "Ops!",
+              "Data couldn't be processed! Please try again!",
+              "error"
+            );
+          } else {
+            Swal.fire.stopLoading();
+            Swal.fire.close();
+          }
+        });
+    },
+     async adjustBill(item) {
+      //console.log(item.balance);
+      Swal.fire({
+        title: `Edit Payment`,
+        html: `<p>Student: ${item.student.firstname} ${item.student.surname}</p>`+
+          `<input id="amount" name="amount" placeholder="Enter Amount" class="mb-2 h-10 px-1 w-full border">` +
+          '<select id="fee-type" name="fee_type_id" class="w-full"></select>',
+        preConfirm: function () {
+          return new Promise(function (resolve) {
+            resolve({amount:$("#amount").val(), fee_type_id:$("#fee-type").val()});
+          });
+        },
+        willOpen: function () {
+          $("#swal-input1").focus();
+          $.ajax({ 
+              url: "/api/select2/attendance-fee-types",
+              dataType: "json",
+              data: {api_token : $('meta[name="api-token"]').attr("content") },
+              success: function(d, s){
+                if(!d) return Swal.fire({ icon: "success", text: "Couldn't load fee types!"});
+                 d.results.forEach((item)=>{
+                    $('#fee-type').append($(`<option value="${item.id}">`).text(item.text));
+                 });
+              }
+          });
+        },
+        showCancelButton: true,
+        confirmButtonText: "Save",
+      })
+        .then((result) => {
+          if (!result.isConfirmed) return null;
+          
+          return fetch(`../api/json/student-bill-payment`, {
+            method: "PUT",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              ...result.value,
+              attendance: item.attendance,
+              ...item.student,
+              api_token: $('meta[name="api-token"]').attr("content"),
+            }),
+          })
+            .then((response) => {
+              response.json().then((result) => {
+                if (
+                  typeof result.status !== "boolean" ||
+                  typeof result.message !== "string"
+                ) {
+                  Swal.fire({
+                    icon: "error",
+                    text: "Malformed data response! Please try agian.",
+                  });
+                  return;
+                }
+                if (result.status === true) {
+                  this.checklist = this.checklist.map((checkitem) =>
+                    checkitem.student_id === item.student_id
+                      ? {
+                          ...checkitem,
+                          balance: result.data,
                         }
                       : checkitem
                   );

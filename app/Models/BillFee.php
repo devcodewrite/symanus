@@ -14,7 +14,7 @@ class BillFee extends Model
      * @var array
      */
     protected $fillable = [
-        'bill_id', 'fee_id','amount',
+        'bill_id', 'fee_id','amount','alt_amount',
     ];
 
      /**

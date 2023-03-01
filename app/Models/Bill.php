@@ -124,6 +124,19 @@ class Bill extends Model
      * Get the total bill amount for bill
      */
 
+     public function totalAttendanceBill()
+     {
+        return 
+        $this->billFees()
+        ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+        ->first()
+        ->total;
+     }
+
+      /**
+     * Get the total bill amount for bill
+     */
+
      public function totalBill()
      {
         return $this->billFees()->sum('amount');
