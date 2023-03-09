@@ -145,6 +145,7 @@ var billTable = $(".dt-bills").DataTable({
             data: "student",name:'id',
             render: function (data, type, row) {
                 if (type === "display") {
+                    if(!data) return "No Student Found!";
                     let icon = data.avatar
                         ? `<img src="${data.avatar}" class="h-10 w-auto" />`
                         : $(".svg-icon-student")[0].outerHTML;
