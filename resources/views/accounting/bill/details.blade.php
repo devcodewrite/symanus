@@ -1,3 +1,6 @@
+@php
+    use App\Models\Fee;
+@endphp
 <x-app-layout>
     @section('style')
     @endsection
@@ -118,10 +121,18 @@
                                 @foreach ($bill->billFees as $key => $row)
                                     <div class="flex flex-row justify-between py-3">
                                         <span class="px-2">#{{ $key + 1 }}</span>
-                                        <span class="w-1/3 text-gray-600"> {{ $row->fee->feeType->title }} </span>
-                                        <span class="w-2/3">
-                                            {{ $row->amount }}
-                                        </span>
+                                        <span class="w-1/3 text-gray-600"> {{ $row->fee?$row->fee->feeType->title:Fee::withTrashed()->find($row->fee_id)->feeType->title; }} </span>
+                                        @if ($row->alt_amount)
+                                            <span class="w-2/3">
+                                                <s>{{ $row->amount }}</s>
+                                                {{ $row->alt_amount }}
+                                            </span>
+                                        @else
+                                            <span class="w-2/3">
+                                                {{ $row->amount }}
+                                            </span>
+                                        @endif
+
                                     </div>
                                 @endforeach
                             </div>
@@ -172,10 +183,13 @@
                                         <x-select id="feetype" class="mt-1 min-w-max select2-feetype shadow-md"
                                             name="fee_type_id">
                                             <option value=""></option>
-                                            @foreach ($bill->fees as $key => $fee)
+                                            @foreach ($bill->fees()->withTrashed()->get() as $key => $fee)
                                                 <option value="{{ old('fee_type_id', $fee->feeType->id) }}"
                                                     {{ old('fee_type_id', isset($payment) ? $payment->feeType->id : '') === $fee->feeType->id ? 'selected' : '' }}>
-                                                    {{ $fee->feeType->title }}{{ '@' }}{{ $bill->billFees->where('fee_id', $fee->id)->first()->amount }}
+                                                    @php
+                                                        $bf = $bill->billFees->where('fee_id', $fee->id)->first();
+                                                    @endphp
+                                                    {{ $fee->feeType->title }}{{ '@' }}{{ $bf->alt_amount ? "$bf->alt_amount" : $bf->amount }}
                                                 </option>
                                             @endforeach
                                         </x-select>

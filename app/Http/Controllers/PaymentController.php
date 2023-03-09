@@ -242,7 +242,7 @@ class PaymentController extends Controller
          ];
          $payments = [];
          $feeBalance = floatval($request->input('amount'));
-        foreach($bill->fees as $fee){
+        foreach($bill->billFees as $fee){
             $paid = $bill->payments()->where('fee_type_id', $fee->fee_type_id)->first();
 
             if(($paid?$paid->amount:0) < $fee->amount){

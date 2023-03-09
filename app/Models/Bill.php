@@ -15,10 +15,10 @@ class Bill extends Model
      * @var array
      */
     protected $fillable = [
-        'student_id', 'bdate', 'user_id','attendance_id'
+        'student_id', 'bdate', 'user_id', 'attendance_id'
     ];
 
-     /**
+    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -43,7 +43,7 @@ class Bill extends Model
         return BillFee::join('bills', 'bills.id', '=', 'bill_fees.bill_id')
             ->where('bills.id', $this->id)
             ->leftJoin('payments', 'payments.bill_id', 'bills.id')
-            ->sum(DB::raw('bill_fees.amount - ifnull(payments.amount,0)')) <= 0?'Paid':'Unpaid';
+            ->sum(DB::raw('bill_fees.amount - ifnull(payments.amount,0)')) <= 0 ? 'Paid' : 'Unpaid';
     }
     /**
      * Get the user that owns the fee.
@@ -62,31 +62,31 @@ class Bill extends Model
         return $this->belongsTo(Student::class);
     }
 
-     /**
+    /**
      * Get the student that owns the fee.
      */
     public function guardian()
     {
-        return $this->hasOneThrough(Guardian::class,Student::class);
+        return $this->hasOneThrough(Guardian::class, Student::class);
     }
 
     /**
-    * The fees that belong to the bill.
-    */
+     * The fees that belong to the bill.
+     */
     public function fees()
     {
         return $this->belongsToMany(Fee::class, 'bill_fees');
     }
 
-     /**
-    * The fees that belong to the bill for attendance only.
-    */
+    /**
+     * The fees that belong to the bill for attendance only.
+     */
     public function attendanceFees()
     {
         return $this->belongsToMany(Fee::class, 'bill_fees')
-                ->join('fee_types', 'fee_types.id','=', 'fees.fee_type_id')
-                ->where('fee_types.for_attendance_bills', 1)
-                ->get();
+            ->join('fee_types', 'fee_types.id', '=', 'fees.fee_type_id')
+            ->where('fee_types.for_attendance_bills', 1)
+            ->get();
     }
 
     public function billFees()
@@ -101,20 +101,22 @@ class Bill extends Model
     {
         return $this->hasMany(Payment::class);
     }
-    
-    public function paidCount(){
+
+    public function paidCount()
+    {
         $count = 0;
-        foreach(Bill::all() as $bill ){
-            if($bill->billFees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
+        foreach (Bill::all() as $bill) {
+            if ($bill->billFees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
                 $count++;
         }
         return $count;
     }
 
-    public function paidCountByDate(string $date){
+    public function paidCountByDate(string $date)
+    {
         $count = 0;
-        foreach(Bill::where('bdate', $date)->get() as $bill ){
-            if($bill->billFees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
+        foreach (Bill::where('bdate', $date)->get() as $bill) {
+            if ($bill->billFees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
                 $count++;
         }
         return $count;
@@ -124,30 +126,32 @@ class Bill extends Model
      * Get the total bill amount for bill
      */
 
-     public function totalAttendanceBill()
-     {
-        return 
-        $this->billFees()
-        ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
-        ->first()
-        ->total;
-     }
+    public function totalAttendanceBill()
+    {
+        return
+            $this->billFees()
+            ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+            ->first()
+            ->total;
+    }
 
-      /**
+    /**
      * Get the total bill amount for bill
      */
 
-     public function totalBill()
-     {
-        return $this->billFees()->sum('amount');
-     }
+    public function totalBill()
+    {
+        return $this->billFees()
+            ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+            ->first()->total;
+    }
 
-      /**
+    /**
      * Get the total payment amount for bill
      */
 
-     public function totalPayment()
-     {
+    public function totalPayment()
+    {
         return $this->payments()->sum('amount');
-     }
+    }
 }

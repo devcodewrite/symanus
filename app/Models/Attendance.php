@@ -173,7 +173,7 @@ class Attendance extends Model
                     $payments,
                     [
                         'student_id' => $student->id,
-                        'amount' => $bf->alt_amount?$bf->alt_amount:$bf->amount,
+                        'amount' => ($bf->alt_amount?$bf->alt_amount:$bf->amount),
                         'paid_at' => Carbon::now('Africa/Accra')->format('Y-m-d'),
                         'paid_by' => $student->firstname . ' ' . $student->surname,
                         'bill_id' => $bf->bill_id,

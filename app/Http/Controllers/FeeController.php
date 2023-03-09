@@ -254,6 +254,7 @@ class FeeController extends Controller
             foreach($request->input('data') as $fee){
                 array_push($ids, $fee['id']);
             }
+            
             if(Fee::destroy($ids)){
                 $out = [
                     'message' => 'Fee(es) deleted successfully!',
