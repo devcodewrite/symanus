@@ -77,7 +77,7 @@ class Classes extends Model
         return $this->hasManyThrough(AdvanceFeePayment::class, Student::class, 'class_id');
     }
 
-     /**
+    /**
      * Get the fees for the class.
      */
     public function fees()
@@ -97,7 +97,7 @@ class Classes extends Model
     {
         $from = $from ? $from : Bill::orderBy('bdate', 'desc')->first()->bdate;
         $to = $to ? $to : Bill::orderBy('bdate', 'asc')->first()->bdate;
-      //  $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
+        //  $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
 
         if ($feeType) {
             $bills = $this->bills()->whereBetween('bdate', [$from, $to])->get();
@@ -105,7 +105,8 @@ class Classes extends Model
             foreach ($bills as $bill) {
                 $totalBills += $bill->billFees()->join('fees', 'fees.id', '=', 'bill_fees.fee_id')
                     ->where('fee_type_id', $feeType->id)
-                    ->sum('bill_fees.amount');
+                    ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+                    ->first()->total;
             }
             return $totalBills;
         }
@@ -123,41 +124,41 @@ class Classes extends Model
 
     public function incomeReport(FeeType $feeType = null, $from = null, $to = null)
     {
-        $from = $from?$from:Payment::orderBy('paid_at', 'desc')->first()->created_at;
-        $to = $to?$to:Payment::orderBy('paid_at', 'asc')->first()->created_at;
-       // $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
+        $from = $from ? $from : Payment::orderBy('paid_at', 'desc')->first()->created_at;
+        $to = $to ? $to : Payment::orderBy('paid_at', 'asc')->first()->created_at;
+        // $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
 
-       if($feeType){
-        $totalPayment = $this->payments()
+        if ($feeType) {
+            $totalPayment = $this->payments()
                 ->where('fee_type_id', $feeType->id)
                 ->whereBetween('paid_at', [$from, $to])
                 ->sum('amount');
-        return $totalPayment;
-       }
-       $totalPayment = $this->payments()
-                ->whereBetween('paid_at', [$from, $to])
-                ->sum('amount');
+            return $totalPayment;
+        }
+        $totalPayment = $this->payments()
+            ->whereBetween('paid_at', [$from, $to])
+            ->sum('amount');
 
-       return $totalPayment;
+        return $totalPayment;
     }
 
     public function advanceReport(FeeType $feeType = null, $from = null, $to = null)
     {
-        $from = $from?$from:AdvanceFeePayment::orderBy('paid_at', 'desc')->first()->created_at;
-        $to = $to?$to:AdvanceFeePayment::orderBy('paid_at', 'asc')->first()->created_at;
-       // $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
+        $from = $from ? $from : AdvanceFeePayment::orderBy('paid_at', 'desc')->first()->created_at;
+        $to = $to ? $to : AdvanceFeePayment::orderBy('paid_at', 'asc')->first()->created_at;
+        // $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
 
-       if($feeType){
-        $totalPayment = $this->advancePayments()
+        if ($feeType) {
+            $totalPayment = $this->advancePayments()
                 ->where('fee_type_id', $feeType->id)
                 ->whereBetween('paid_at', [$from, $to])
                 ->sum('amount');
-        return $totalPayment;
-       }
-       $totalPayment = $this->advancePayments()
-                ->whereBetween('paid_at', [$from, $to])
-                ->sum('amount');
+            return $totalPayment;
+        }
+        $totalPayment = $this->advancePayments()
+            ->whereBetween('paid_at', [$from, $to])
+            ->sum('amount');
 
-       return $totalPayment;
+        return $totalPayment;
     }
 }

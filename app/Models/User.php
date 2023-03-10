@@ -163,7 +163,8 @@ class User extends Authenticatable
             foreach ($bills as $bill) {
                 $totalBills += $bill->billFees()->join('fees', 'fees.id', '=', 'bill_fees.fee_id')
                     ->where('fee_type_id', $feeType->id)
-                    ->sum('bill_fees.amount');
+                    ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+                    ->first()->total;
             }
             return $totalBills;
         }

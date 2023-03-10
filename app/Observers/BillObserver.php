@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\AdvanceFeePayment;
 use App\Models\Bill;
+use App\Models\BillFee;
 use App\Models\Payment;
 
 class BillObserver
@@ -16,32 +17,7 @@ class BillObserver
      */
     public function created(Bill $bill)
     {
-        // settle attendance bills if adavance payment is avaliable
-        if ($bill->attendance_id) {
-            $advances = AdvanceFeePayment::where('attendance_id', $bill->attendance_id)->get();
-            $payments = [];
-            foreach ($advances as $advance) {
-                $fee = $bill->fees()->where('fee_type_id', $advance->fee_type_id)->first();
-                $billAmount = $fee->findBillFee($bill->id)->amount;
-                if($advance->amount - $billAmount >= 0){
-                    $advance->amount = $advance->amount - $billAmount;
-                    array_push($payments,[
-                        'bill_id' => $bill->id,
-                        'amount' => $billAmount,
-                        'fee_type_id' => $advance->fee_type_id,
-                        'student_id' => $bill->student_id,
-                        'paid_by' => $advance->paid_by,
-                        'user_id' => auth()->user()->id,
-                        'paid_at' => $advance->paid_at,
-                    ]);
-                    $advance->save();
-                }
-            }
-            if(sizeof($payments) > 0 )
-                if(Payment::updateOrCreate($payments)){
-                    AdvanceFeePayment::where('amount','<=', 0)->delete();
-                }
-        }
+      
     }
 
     /**
@@ -63,9 +39,6 @@ class BillObserver
      */
     public function deleted(Bill $bill)
     {
-        foreach($bill->billFees() as $billFee){
-            $billFee->delete();
-        }
     }
 
     /**

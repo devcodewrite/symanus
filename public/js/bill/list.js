@@ -134,7 +134,7 @@ var billTable = $(".dt-bills").DataTable({
 
                 let amount = Number(0); 
                 data.forEach(fee => {
-                    amount += Number.parseFloat(fee.amount);
+                    amount += Number.parseFloat(fee.alt_amount?fee.alt_amount:fee.amount);
                 });
                 if(type === 'display')
                     return amount.toFixed(2);
@@ -186,7 +186,7 @@ var billTable = $(".dt-bills").DataTable({
             render:function(data,type,row){
 
                     if(type === 'display'){
-                        return `<span class="${({Unpaid:'bg-red-600',Paid:'bg-green-600'})[data]} py-1 px-2  text-white rounded">${data}</span>`;
+                        return `<span class="${({Unpaid:'bg-red-600',Paid:'bg-green-600',Started:'bg-yellow-600'})[data]} py-1 px-2  text-white rounded">${data}</span>`;
                     }
                    
                 return data;

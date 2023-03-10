@@ -82,9 +82,9 @@ class PaymentController extends Controller
             $fee = $bill->fees->where('fee_type_id', $request->fee_type_id)->first();
             $billFee = BillFee::where('fee_id', $fee->id)->where('bill_id', $request->bill_id)->first();
             
-            if($request->amount != $billFee->amount){
+            if($request->amount != ($billFee->alt_amount?$billFee->alt_amount:$billFee->amount)){
                 $out = [
-                    'message' => "Amount should be {$billFee->amount}!",
+                    'message' => "Amount should be ".($billFee->alt_amount?$billFee->alt_amount:$billFee->amount)."!",
                     'status' => false,
                     'input' => $request->all()
                 ];

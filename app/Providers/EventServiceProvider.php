@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Models\Attendance;
 use App\Models\AttendanceStudent;
 use App\Models\Bill;
+use App\Models\BillFee;
 use App\Models\UserRole;
 use App\Observers\AttendanceObserver;
 use App\Observers\AttendanceStudentObserver;
+use App\Observers\BillFeeObserver;
 use App\Observers\BillObserver;
 use App\Observers\UserRoleObserver;
 use Illuminate\Auth\Events\Registered;
@@ -37,6 +39,7 @@ class EventServiceProvider extends ServiceProvider
     {
         Attendance::observe(AttendanceObserver::class);
         Bill::observe(BillObserver::class);
+        BillFee::observe(BillFeeObserver::class);
         AttendanceStudent::observe(AttendanceStudentObserver::class);
         UserRole::observe(UserRoleObserver::class);
     }

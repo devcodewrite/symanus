@@ -36,15 +36,20 @@ class Bill extends Model
         return BillFee::join('bills', 'bills.id', '=', 'bill_fees.bill_id')
             ->where('bills.id', $this->id)
             ->leftJoin('payments', 'payments.bill_id', 'bills.id')
-            ->sum(DB::raw('bill_fees.amount - ifnull(payments.amount,0)'));
+            ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount - ifnull(payments.amount,0) ELSE bill_fees.alt_amount - ifnull(payments.amount,0) END)) as total")
+            ->first()->total;
     }
 
     public function getStatusAttribute()
     {
-        return BillFee::join('bills', 'bills.id', '=', 'bill_fees.bill_id')
+    
+        $balance = BillFee::join('bills', 'bills.id', '=', 'bill_fees.bill_id')
             ->where('bills.id', $this->id)
             ->leftJoin('payments', 'payments.bill_id', 'bills.id')
-            ->sum(DB::raw('bill_fees.amount - ifnull(payments.amount,0)')) <= 0 ? 'Paid' : 'Unpaid';
+            ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount - ifnull(payments.amount,0) ELSE bill_fees.alt_amount - ifnull(payments.amount,0) END)) as total")
+            ->first()->total;
+        $paid = $this->totalPayment();
+        return $balance <= 0 ? 'Paid' : ($paid > 0?"Started":'Unpaid');
     }
     /**
      * Get the user that owns the fee.
@@ -107,7 +112,8 @@ class Bill extends Model
     {
         $count = 0;
         foreach (Bill::all() as $bill) {
-            if ($bill->billFees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
+            if ($bill->billFees() ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+            ->first()->total - $bill->payments()->sum('amount') <= 0)
                 $count++;
         }
         return $count;
@@ -117,7 +123,8 @@ class Bill extends Model
     {
         $count = 0;
         foreach (Bill::where('bdate', $date)->get() as $bill) {
-            if ($bill->billFees()->sum('amount') - $bill->payments()->sum('amount') <= 0)
+            if ($bill->billFees()->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+            ->first()->total - $bill->payments()->sum('amount') <= 0)
                 $count++;
         }
         return $count;

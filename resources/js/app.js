@@ -261,6 +261,15 @@ $('.rdelete').on('click',function(e){
     }).then((result) => {
         if (!result.isConfirmed) return Swal.fire("Record is safe!");
 
+        Swal.fire({
+            title:"Please, wait...",
+            text: "proccessing...",
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+             didOpen: () => {
+            Swal.showLoading();},
+        });
+
         $.ajax({
             method: "DELETE",
             url: targetUrl,
@@ -270,6 +279,7 @@ $('.rdelete').on('click',function(e){
             dataType: "json",
             cache: false,
             success: function (d, r) {
+                Swal.close();
                 if (!d || r === "nocontent") {
                     Swal.fire({
                         icon: "error",
@@ -304,6 +314,7 @@ $('.rdelete').on('click',function(e){
                 }
             },
             error: function (r) {
+                Swal.close();
                 Swal.fire({
                     icon: "error",
                     text: "Unable to submit form! Please try agian.",

@@ -16,7 +16,7 @@ class Fee extends Model
      * @var array
      */
     protected $fillable = [
-        'description', 'class_id', 'rstatus', 'fee_type_id'
+        'description', 'class_id', 'rstatus', 'fee_type_id','amount',
     ];
 
      /**

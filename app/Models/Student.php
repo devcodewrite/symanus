@@ -16,17 +16,16 @@ class Student extends Model
      * @var array
      */
     protected $fillable = [
-        'studentid', 'firstname','class_id', 'surname', 'sex', 'address', 'dateofbirth', 'avatar',
+        'studentid', 'firstname', 'class_id', 'surname', 'sex', 'address', 'dateofbirth', 'avatar',
         'rstate', 'admitted_at', 'transit', 'affiliation', 'linked_files', 'guardian_id',
     ];
 
-     /**
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be cast to native types.
@@ -39,16 +38,16 @@ class Student extends Model
     ];
 
     /**
-    * Get the guardian that owns the student.
-    */
+     * Get the guardian that owns the student.
+     */
     public function guardian()
     {
         return $this->belongsTo(Guardian::class);
     }
 
     /**
-    * Get the class that owns the student.
-    */
+     * Get the class that owns the student.
+     */
     public function class()
     {
         return $this->belongsTo(Classes::class, 'class_id');
@@ -63,7 +62,7 @@ class Student extends Model
         return $this->hasMany(Payment::class);
     }
 
-     /**
+    /**
      * Get the fees for the student.
      */
     public function fees()
@@ -80,69 +79,73 @@ class Student extends Model
     }
 
     /**
-    * The attendances that belong to the student.
-    */
+     * The attendances that belong to the student.
+     */
     public function attendances()
     {
         return $this->belongsToMany(Attendance::class, 'attendance_students');
     }
 
-     /**
+    /**
      * get Avatar for staff
      */
-    public function getAvatar() :string
+    public function getAvatar(): string
     {
         $imgs = [
             'male' => asset('img/man.png'),
             'female' => asset('img/woman.png'),
             'other' => asset('img/user.png')
         ];
-        return $this->avatar?$this->avatar:$imgs[$this->sex];
+        return $this->avatar ? $this->avatar : $imgs[$this->sex];
     }
 
     public function getBalance(FeeType $feeType = null, $from = null, $to = null)
     {
         $billForDate = Bill::orderBy('bdate', 'asc')->first();
-        $from = $from?$from:($billForDate?$billForDate->bdate:now('Africa/Accra')->format('Y-m-d'));
+        $from = $from ? $from : ($billForDate ? $billForDate->bdate : now('Africa/Accra')->format('Y-m-d'));
         $billForDate = Bill::orderBy('bdate', 'desc')->first();
-        $to = $to?$to:($billForDate?$billForDate->bdate:now('Africa/Accra')->format('Y-m-d'));
-       // $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
+        $to = $to ? $to : ($billForDate ? $billForDate->bdate : now('Africa/Accra')->format('Y-m-d'));
+        // $to = Carbon::createFromFormat('Y-m-d', $to)->addDay();
 
-       if($feeType){
-        $bills = $this->bills()->whereBetween('bdate', [$from, $to])->get();
-        $totalBills = 0;
-        foreach($bills as $bill){
-            $totalBills += $bill->billFees()->join('fees', 'fees.id', '=', 'bill_fees.fee_id')
+        if ($feeType) {
+            $bills = $this->bills()->whereBetween('bdate', [$from, $to])->get();
+            $totalBills = 0;
+            foreach ($bills as $bill) {
+                $totalBills += $bill->billFees()->join('fees', 'fees.id', '=', 'bill_fees.fee_id')
                     ->where('fee_type_id', $feeType->id)
-                    ->sum('bill_fees.amount');
-        }
-        $totalPayment = $this->payments()
+                    ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+                    ->first()->total;
+            }
+            $totalPayment = $this->payments()
                 ->where('fee_type_id', $feeType->id)
                 ->whereBetween('paid_at', [$from, $to])
                 ->sum('amount');
+            return $totalBills - $totalPayment;
+        }
+
+        $bills = $this->bills()
+            ->whereBetween('bdate', [$from, $to])
+            ->get();
+        $totalBills = 0;
+
+        foreach ($bills as $bill) {
+            $totalBills += $bill->billFees()
+                ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+                ->first()->total;
+        }
+        $totalPayment = $this->payments()
+            ->whereBetween('paid_at', [$from, $to])
+            ->sum('amount');
+
         return $totalBills - $totalPayment;
-       }
-
-       $bills = $this->bills()
-                ->whereBetween('bdate', [$from, $to])
-                ->get();
-       $totalBills = 0;
-       
-       foreach($bills as $bill){
-            $totalBills += $bill->billFees->sum('amount');
-       }
-       $totalPayment = $this->payments()
-                ->whereBetween('paid_at', [$from, $to])
-                ->sum('amount');
-
-       return $totalBills-$totalPayment;
     }
 
     public function getBalanceByAttendance(int $attendance)
     {
         return $this->bills()
-        ->join('bill_fees', 'bill_fees.bill_id', '=', 'bills.id')
-        ->where('bills.attendance_id', $attendance)
-        ->sum('bill_fees.amount');
+            ->join('bill_fees', 'bill_fees.bill_id', '=', 'bills.id')
+            ->where('bills.attendance_id', $attendance)
+            ->selectRaw("SUM((CASE WHEN bill_fees.alt_amount IS NULL THEN bill_fees.amount ELSE bill_fees.alt_amount END)) as total")
+            ->first()->total;
     }
 }

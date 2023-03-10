@@ -175,7 +175,7 @@ class Attendance extends Model
                     [
                         'student_id' => $student->id,
                         'amount' => ($bf->alt_amount?$bf->alt_amount:$bf->amount),
-                        'paid_at' => Carbon::now('Africa/Accra')->format('Y-m-d'),
+                        'paid_at' => $this->adate,
                         'paid_by' => $student->firstname . ' ' . $student->surname,
                         'bill_id' => $bf->bill_id,
                         'fee_type_id' => $bf->fee->fee_type_id,
