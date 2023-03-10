@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropBillForeignContraintPaymentsTable extends Migration
+class AddedSoftdeleteBillsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class DropBillForeignContraintPaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('payments', function (Blueprint $table) {
-            $table->dropForeign('payments_bill_id_foreign');
+        Schema::table('bills', function (Blueprint $table) {
+            $table->softDeletes();
           });
     }
 

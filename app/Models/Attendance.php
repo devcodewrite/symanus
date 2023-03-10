@@ -163,10 +163,11 @@ class Attendance extends Model
     public function settleBills()
     {
         $payments = [];
+        $atid = $this->id;
         foreach ($this->presentStudents() as $student) {
             $bfs = Bill::where([
                 'student_id' => $student->id,
-                'attendance_id'  => $this->id,
+                'attendance_id'  => $atid,
             ])->first()->billFees;
             foreach ($bfs as $bf)
                 array_push(
@@ -185,14 +186,15 @@ class Attendance extends Model
                 );
         }
 
-        if (DB::table('payments')->insert($payments)) {
-            foreach ($payments as $payment) {
-                BillFee::where('bill_id', $payment['bill_id'])->delete();
-                Bill::where('id', $payment['bill_id'])->delete();
-            }
-            return true;
+        foreach ($this->absentStudents as $student) {
+            $bill = Bill::where([
+                'student_id' => $student->id,
+                'attendance_id'  =>$atid,
+            ])->first();
+            $bill->delete();
         }
-        return false;
+
+       return DB::table('payments')->insert($payments);
     }
 
     public function removeBills()

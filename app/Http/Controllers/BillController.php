@@ -448,7 +448,7 @@ class BillController extends Controller
         if ($bf) {
             $out = [
                 'data' =>  $bf->alt_amount,
-                'message' => 'Payment made successfully!',
+                'message' => 'Bill amount changed successfully!',
                 'status' => true,
                 'input' => $request->all()
             ];
