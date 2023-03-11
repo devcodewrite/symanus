@@ -94,7 +94,7 @@ var billTable = $(".dt-bills").DataTable({
                 if (type === "display") {
                     let amount = 0;
                     data.bill_fees.forEach(fee => {
-                        amount += Number.parseFloat(fee.amount);
+                        amount += Number.parseFloat(fee.alt_amount?fee.alt_amount:fee.amount);
                     });
                    
                     let icon = $(".svg-icon-class")[0].outerHTML;

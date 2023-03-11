@@ -59,6 +59,6 @@
 
     <!-- End Content -->
     @section('script')
-        <script src="{{ asset('js/bill/list.js') }}?v=1" defer></script>
+        <script src="{{ asset('js/bill/list.js') }}?v=2" defer></script>
     @endsection
 </x-app-layout>
